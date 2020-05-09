@@ -1,2 +1,2 @@
-import {getClassName} from './getClassName'
-export { getClassName}
+import { getClassName } from './getClassName'
+export { getClassName }

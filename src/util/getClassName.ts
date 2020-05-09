@@ -50,7 +50,7 @@ const addAllProperties = (
     ...properties.reduce(
       (innerAcc, className) => addSingleProperty(className, innerAcc),
       {}
-    )
+    ),
   }
 }
 
