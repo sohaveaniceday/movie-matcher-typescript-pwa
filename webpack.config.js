@@ -10,9 +10,5 @@ module.exports = {
         use: ['babel-loader'],
       }
     ]
-  },
-  plugins: [
-    require('tailwindcss'),
-    require('autoprefixer'),
-  ]
+  }
 }
