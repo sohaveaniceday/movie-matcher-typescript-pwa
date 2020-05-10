@@ -1,7 +1,10 @@
 import React from 'react'
+import { FilmInputs } from './FilmInputs'
 
-const Home = () => {
-  return <div>hello</div>
+export const Home = () => {
+  return (
+    <div>
+      <FilmInputs />
+    </div>
+  )
 }
-
-export default Home
