@@ -4,7 +4,7 @@ import { FilmInputs } from './FilmInputs'
 export const Home = () => {
   return (
     <div>
-      <FilmInputs />
+      <FilmInputs user={'user1'} />
     </div>
   )
 }
