@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Input } from '../tailwind'
 import { useForm } from 'react-hook-form'
 import { useServiceState } from '../util'
-import { getFilm } from '../fetch'
+import { getFilm, getTmdbFilm } from '../fetch'
 
 type FilmInputsProps = {
   user: 'user1' | 'user2'
@@ -14,9 +14,11 @@ export const FilmInputs: React.FC<FilmInputsProps> = ({
   const onSubmit = (data: any) => console.log(data)
   const onSubmitApi = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const result: any = await getFilm()
+    const result: any = await getTmdbFilm('space')
     console.log('result', result)
   }
+
+  const [searchResults, setSearchResults] = useState([])
 
   const [state]: State[] = useServiceState()
 
