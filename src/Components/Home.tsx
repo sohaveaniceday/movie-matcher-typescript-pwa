@@ -1,5 +1,5 @@
 import React from 'react'
-import { FilmInputs } from './FilmInputs'
+import { FilmInputs } from './FilmsFom'
 
 export const Home = () => {
   return (
