@@ -1,38 +1,8 @@
 import React, { MouseEvent, KeyboardEvent, ChangeEvent } from 'react'
-import { getClassName } from '../util'
 import { useObjectState } from '../util'
 
-type InputProps = {
-  register: any
-  name: string
-  cssClasses?: string[]
-  suggestions?: string[]
-}
-
-export const Input: React.FC<InputProps> = ({
-  register,
-  name,
-  cssClasses = [],
-  suggestions = [],
-}: InputProps) => {
-  const inputClassName = getClassName([
-    ...cssClasses,
-    'w-full',
-    'px-4',
-    'py-2',
-    'leading-tight',
-    'text-gray-700',
-    'bg-gray-200',
-    'rounded',
-    'appearance-none',
-    'focus:outline-none',
-    'focus:border-purple-500',
-  ])
-
-  const [
-    { showSuggestions, activeSuggestion, filteredSuggestions, userInput },
-    updateState,
-  ] = useObjectState({
+export const AutoSuggest = ({ suggestions }: { suggestions: any }) => {
+  const [state, updateState] = useObjectState({
     // The active selection's index
     activeSuggestion: 0,
     // The suggestions that match the user's input
@@ -42,6 +12,13 @@ export const Input: React.FC<InputProps> = ({
     // What the user has entered
     userInput: '',
   })
+
+  const {
+    showSuggestions,
+    activeSuggestion,
+    filteredSuggestions,
+    userInput,
+  } = state
 
   // Event fired when the input value is changed
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -76,6 +53,8 @@ export const Input: React.FC<InputProps> = ({
 
   // Event fired when the user presses a key down
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    const { activeSuggestion, filteredSuggestions } = state
+
     // User pressed the enter key, update the input and close the
     // suggestions
     if (e.keyCode === 13) {
@@ -128,10 +107,7 @@ export const Input: React.FC<InputProps> = ({
   return (
     <>
       <input
-        className={inputClassName}
         type='text'
-        name={name}
-        ref={register}
         onChange={onChange}
         onKeyDown={onKeyDown}
         value={userInput}

@@ -3,7 +3,7 @@ import { Input } from '../tailwind'
 import { useForm } from 'react-hook-form'
 import { useServiceState } from '../util'
 import { getFilm, getTmdbFilm } from '../fetch'
-
+import { AutoSuggest } from './AutoSuggest'
 type FilmInputsProps = {
   user: 'user1' | 'user2'
 }
@@ -26,13 +26,14 @@ export const FilmInputs: React.FC<FilmInputsProps> = ({
     <form className='w-full max-w-md m-x-auto' onSubmit={onSubmitApi}>
       {Object.keys(state[user]).map((film) => {
         return (
-          <Input
-            key={film}
-            cssClasses={['m-5']}
-            register={register}
-            name={film}
-            onChange={() => console.log('register', register)}
-          />
+          <div className={'m-5'}>
+            <Input
+              key={film}
+              register={register}
+              name={film}
+              suggestions={['hello']}
+            />
+          </div>
         )
       })}
       <input
