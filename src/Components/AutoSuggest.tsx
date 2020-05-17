@@ -1,4 +1,4 @@
-import React, { MouseEvent, KeyboardEvent, ChangeEvent } from 'react'
+import React, { MouseEvent, KeyboardEvent, ChangeEvent, useEffect } from 'react'
 import { useObjectState } from '../util'
 import { TextInput } from '../tailwind'
 
@@ -6,14 +6,14 @@ type AutoSuggestProp = {
   suggestions?: string[]
   register: Function
   name: string
-  onChangeFunc?: Function
+  onChange: Function
 }
 
 export const AutoSuggest = ({
   suggestions = [],
   register,
   name,
-  onChangeFunc,
+  onChange: onChangeFunc,
 }: AutoSuggestProp) => {
   const [
     { showSuggestions, activeSuggestion, filteredSuggestions, userInput },
@@ -29,13 +29,9 @@ export const AutoSuggest = ({
     userInput: '',
   })
 
-  // Event fired when the input value is changed
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChangeFunc && onChangeFunc(e.currentTarget.value)
-    const userInput = e.currentTarget.value
-
+  useEffect(() => {
     // Filter our suggestions that don't contain the user's input
-    const filteredSuggestions = suggestions.filter(
+    const newFilteredSuggestions = suggestions.filter(
       (suggestion: string) =>
         suggestion.toLowerCase().indexOf(userInput.toLowerCase()) > -1
     )
@@ -44,8 +40,15 @@ export const AutoSuggest = ({
     // suggestion and make sure the suggestions are shown
     updateState({
       activeSuggestion: 0,
-      filteredSuggestions,
+      filteredSuggestions: newFilteredSuggestions,
       showSuggestions: true,
+    })
+  }, [suggestions])
+
+  // Event fired when the input value is changed
+  const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    onChangeFunc && onChangeFunc()
+    updateState({
       userInput: e.currentTarget.value,
     })
   }
@@ -118,6 +121,8 @@ export const AutoSuggest = ({
 
   return (
     <>
+      {console.log('filteredSuggestions', filteredSuggestions)}
+
       <TextInput
         onChange={onChange}
         onKeyDown={onKeyDown}
