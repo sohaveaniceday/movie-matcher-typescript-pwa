@@ -1,8 +1,24 @@
 import React, { MouseEvent, KeyboardEvent, ChangeEvent } from 'react'
 import { useObjectState } from '../util'
+import { TextInput } from '../tailwind'
 
-export const AutoSuggest = ({ suggestions }: { suggestions: any }) => {
-  const [state, updateState] = useObjectState({
+type AutoSuggestProp = {
+  suggestions?: string[]
+  register: Function
+  name: string
+  onChangeFunc?: Function
+}
+
+export const AutoSuggest = ({
+  suggestions = [],
+  register,
+  name,
+  onChangeFunc,
+}: AutoSuggestProp) => {
+  const [
+    { showSuggestions, activeSuggestion, filteredSuggestions, userInput },
+    updateState,
+  ] = useObjectState({
     // The active selection's index
     activeSuggestion: 0,
     // The suggestions that match the user's input
@@ -13,15 +29,9 @@ export const AutoSuggest = ({ suggestions }: { suggestions: any }) => {
     userInput: '',
   })
 
-  const {
-    showSuggestions,
-    activeSuggestion,
-    filteredSuggestions,
-    userInput,
-  } = state
-
   // Event fired when the input value is changed
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onChangeFunc && onChangeFunc(e.currentTarget.value)
     const userInput = e.currentTarget.value
 
     // Filter our suggestions that don't contain the user's input
@@ -53,8 +63,6 @@ export const AutoSuggest = ({ suggestions }: { suggestions: any }) => {
 
   // Event fired when the user presses a key down
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    const { activeSuggestion, filteredSuggestions } = state
-
     // User pressed the enter key, update the input and close the
     // suggestions
     if (e.keyCode === 13) {
@@ -94,7 +102,11 @@ export const AutoSuggest = ({ suggestions }: { suggestions: any }) => {
           }
 
           return (
-            <li className={className} key={suggestion} onClick={onClick}>
+            <li
+              className={className}
+              key={`${suggestion}-${index}`}
+              onClick={onClick}
+            >
               {suggestion}
             </li>
           )
@@ -106,11 +118,12 @@ export const AutoSuggest = ({ suggestions }: { suggestions: any }) => {
 
   return (
     <>
-      <input
-        type='text'
+      <TextInput
         onChange={onChange}
         onKeyDown={onKeyDown}
         value={userInput}
+        name={name}
+        register={register}
       />
       {suggestionsListComponent}
     </>

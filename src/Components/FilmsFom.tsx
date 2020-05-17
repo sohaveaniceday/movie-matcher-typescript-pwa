@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Input } from '../tailwind'
 import { useForm } from 'react-hook-form'
 import { useServiceState } from '../util'
 import { getFilm, getTmdbFilm } from '../fetch'
@@ -15,24 +14,37 @@ export const FilmInputs: React.FC<FilmInputsProps> = ({
   const onSubmitApi = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const result: any = await getTmdbFilm('space')
-    console.log('result', result)
   }
 
-  const [searchResults, setSearchResults] = useState([])
+  const [filmSuggestions, setFilmSuggestions] = useState([])
+
+  const onChangeFunc = async (value: string) => {
+    if (value?.length > 3) {
+      const results: any = await getTmdbFilm('space')
+      console.log('result', results)
+      const resultNames = results.Search.map((result: any) => result.Title)
+      setFilmSuggestions(resultNames)
+    }
+  }
 
   const [state]: State[] = useServiceState()
 
   return (
-    <form className='w-full max-w-md m-x-auto' onSubmit={onSubmitApi}>
+    <form
+      className='w-full max-w-md m-x-auto'
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      {console.log('errors', errors)}
       {Object.keys(state[user]).map((film) => {
         return (
-          <div className={'m-5'}>
-            <Input
-              key={film}
-              register={register}
+          <div className={'m-5'} key={film}>
+            <AutoSuggest
+              register={register({ required: true })}
               name={film}
-              suggestions={['hello']}
+              onChangeFunc={onChangeFunc}
+              suggestions={filmSuggestions}
             />
+            {errors[film] && <div>This is required.</div>}
           </div>
         )
       })}
