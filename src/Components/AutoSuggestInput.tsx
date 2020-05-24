@@ -44,29 +44,37 @@ export const AutoSuggest = ({
   }, [suggestions])
 
   // Event fired when the input value is changed
-  const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    onChangeFunc && onChangeFunc(e)
+  const onChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (onChangeFunc) {
+      event.persist()
+      const { value, name } = event.target
+      onChangeFunc && onChangeFunc(value, name)
+    }
     updateState({
-      userInput: e.currentTarget.value,
+      userInput: event.currentTarget.value,
     })
   }
 
   // Event fired when the user clicks on a suggestion
-  const onClick = (e: MouseEvent<HTMLLIElement>) => {
+  const onClick = (event: MouseEvent<HTMLLIElement>) => {
+    if (onChangeFunc) {
+      const { value } = event.currentTarget
+      onChangeFunc && onChangeFunc(value, name)
+    }
     // Update the user input and reset the rest of the state
     updateState({
       activeSuggestion: 0,
       filteredSuggestions: [],
       showSuggestions: false,
-      userInput: e?.currentTarget?.innerText,
+      userInput: event?.currentTarget?.innerText,
     })
   }
 
   // Event fired when the user presses a key down
-  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     // User pressed the enter key, update the input and close the
     // suggestions
-    if (e.keyCode === 13) {
+    if (event.keyCode === 13) {
       updateState({
         activeSuggestion: 0,
         showSuggestions: false,
@@ -74,7 +82,7 @@ export const AutoSuggest = ({
       })
     }
     // User pressed the up arrow, decrement the index
-    else if (e.keyCode === 38) {
+    else if (event.keyCode === 38) {
       if (activeSuggestion === 0) {
         return
       }
@@ -82,7 +90,7 @@ export const AutoSuggest = ({
       updateState({ activeSuggestion: activeSuggestion - 1 })
     }
     // User pressed the down arrow, increment the index
-    else if (e.keyCode === 40) {
+    else if (event.keyCode === 40) {
       if (activeSuggestion - 1 === filteredSuggestions.length) {
         return
       }

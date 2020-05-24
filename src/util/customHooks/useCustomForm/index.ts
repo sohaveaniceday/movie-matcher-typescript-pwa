@@ -17,10 +17,7 @@ export const useCustomForm = ({
   const [onSubmitting, setOnSubmitting] = useState<boolean>(false)
   const [onBlur, setOnBlur] = useState<boolean>(false)
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { target } = event
-    const { name, value } = target
-    event.persist()
+  const handleChange = (value: string, name: string) => {
     setValues({ ...values, [name]: value })
     onChange({ values })
   }

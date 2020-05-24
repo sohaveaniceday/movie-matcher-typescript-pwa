@@ -58,8 +58,8 @@ export const FilmInputs: React.FC<FilmInputsProps> = ({
   //   }
   // }
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    handleChange(event)
+  const onChange = (value: string, name: string) => {
+    handleChange(value, name)
     console.log('other event')
   }
 
