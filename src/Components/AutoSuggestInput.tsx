@@ -3,15 +3,13 @@ import { useObjectState } from '../util'
 import { TextInput } from '../tailwind'
 
 type AutoSuggestProp = {
-  suggestions?: string[]
-  register: Function
+  suggestions: string[]
+  onChange?: Function
   name: string
-  onChange: Function
 }
 
 export const AutoSuggest = ({
   suggestions = [],
-  register,
   name,
   onChange: onChangeFunc,
 }: AutoSuggestProp) => {
@@ -47,7 +45,7 @@ export const AutoSuggest = ({
 
   // Event fired when the input value is changed
   const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    onChangeFunc && onChangeFunc()
+    onChangeFunc && onChangeFunc(e)
     updateState({
       userInput: e.currentTarget.value,
     })
@@ -122,13 +120,11 @@ export const AutoSuggest = ({
   return (
     <>
       {console.log('filteredSuggestions', filteredSuggestions)}
-
       <TextInput
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-        value={userInput}
         name={name}
-        register={register}
+        onChange={onChange}
+        value={userInput}
+        onKeyDown={onKeyDown}
       />
       {suggestionsListComponent}
     </>

@@ -2,21 +2,19 @@ import React, { KeyboardEvent, ChangeEvent } from 'react'
 import { getClassName } from '../util'
 
 type TextInputProps = {
-  register: any
   name: string
-  cssClasses?: string[]
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void
+  cssClasses?: string[]
+  value: string
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void
-  value?: string
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
-  register,
   name,
   cssClasses = [],
+  value,
   onChange,
   onKeyDown,
-  value,
 }: TextInputProps) => {
   const inputClassName = getClassName([
     ...cssClasses,
@@ -37,10 +35,9 @@ export const TextInput: React.FC<TextInputProps> = ({
       className={inputClassName}
       type='text'
       name={name}
-      ref={register}
+      value={value}
       onChange={onChange}
       onKeyDown={onKeyDown}
-      value={value}
     />
   )
 }
