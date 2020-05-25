@@ -3,13 +3,11 @@ import { useState, useEffect, useRef } from 'react'
 type useCustomFormProps = {
   initialValues: any
   onSubmit: Function
-  onChange: Function
 }
 
 export const useCustomForm = ({
   initialValues,
   onSubmit,
-  onChange,
 }: useCustomFormProps) => {
   const [values, setValues] = useState(initialValues || {})
   const [errors, setErrors] = useState({})
@@ -19,7 +17,6 @@ export const useCustomForm = ({
 
   const handleChange = (value: string, name: string) => {
     setValues({ ...values, [name]: value })
-    onChange({ values })
   }
 
   const handleBlur = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -45,28 +45,28 @@ export const AutoSuggest = ({
 
   // Event fired when the input value is changed
   const onChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = event.target
     if (onChangeFunc) {
       event.persist()
-      const { value, name } = event.target
       onChangeFunc && onChangeFunc(value, name)
     }
     updateState({
-      userInput: event.currentTarget.value,
+      userInput: value,
     })
   }
 
   // Event fired when the user clicks on a suggestion
   const onClick = (event: MouseEvent<HTMLLIElement>) => {
+    const { innerText } = event.currentTarget
     if (onChangeFunc) {
-      const { value } = event.currentTarget
-      onChangeFunc && onChangeFunc(value, name)
+      onChangeFunc && onChangeFunc(innerText, name)
     }
     // Update the user input and reset the rest of the state
     updateState({
       activeSuggestion: 0,
       filteredSuggestions: [],
       showSuggestions: false,
-      userInput: event?.currentTarget?.innerText,
+      userInput: innerText,
     })
   }
 
@@ -127,7 +127,6 @@ export const AutoSuggest = ({
 
   return (
     <>
-      {console.log('filteredSuggestions', filteredSuggestions)}
       <TextInput
         name={name}
         onChange={onChange}
