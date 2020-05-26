@@ -5,6 +5,7 @@ import {
   useCustomForm,
   throttle,
   debounce,
+  useDebounce,
 } from '../util'
 import { getFilm } from '../fetch'
 import { AutoSuggest } from './AutoSuggestInput'
@@ -26,6 +27,7 @@ export const FilmInputs: React.FC<FilmInputsProps> = ({
     handleBlur,
     handleChange,
     handleSubmit,
+    currentValue,
   } = useCustomForm({
     initialValues,
     onSubmit: (results: any) => console.log({ values }),
@@ -40,17 +42,40 @@ export const FilmInputs: React.FC<FilmInputsProps> = ({
 
   const { data, loading, error, fetchData } = useFetch()
 
-  const fetchFilmSuggestions = () => {
-    console.log('firing')
-    // fetchData(
-    //   `http://www.omdbapi.com/?apikey=${process.env.REACT_APP_OMDB_API_KEY}&s=${value}`,
-    //   {
-    //     method: 'GET',
-    //   }
-    // )
+  const fetchFilmSuggestions = (value: string) => {
+    // const searchValue = currentInput && values[currentInput]
+    console.log('values firing', value)
+    fetchData(
+      `http://www.omdbapi.com/?apikey=${process.env.REACT_APP_OMDB_API_KEY}&s=${values}`,
+      {
+        method: 'GET',
+      }
+    )
   }
 
-  const debounceFetch = useCallback(debounce(fetchFilmSuggestions, 3000), [])
+  // const debounceFetch = useCallback(debounce(fetchFilmSuggestions, 1000), [])
+
+  const debouncedSearchTerm = useDebounce(currentValue, 500)
+
+  // Here's where the API call happens
+  // We use useEffect since this is an asynchronous action
+  useEffect(
+    () => {
+      // Make sure we have a value (user has entered something in input)
+      if (debouncedSearchTerm && debouncedSearchTerm.length > 3) {
+        // Set isSearching state
+        // Fire off our API call
+        fetchFilmSuggestions(debouncedSearchTerm)
+      } else {
+        setFilmSuggestions([])
+      }
+    },
+    // This is the useEffect input array
+    // Our useEffect function will only execute if this value changes ...
+    // ... and thanks to our hook it will only change if the original ...
+    // value (searchTerm) hasn't changed for more than 500ms.
+    [debouncedSearchTerm]
+  )
 
   const throttleFetch = useCallback(throttle(fetchFilmSuggestions, 3000), [])
 
@@ -113,22 +138,19 @@ export const FilmInputs: React.FC<FilmInputsProps> = ({
   const onChange = (value: string, name: string) => {
     handleChange(value, name)
 
-    if (value.length > 3 && value.length <= 5) {
-      console.log('og')
-      throttleFetch()
-    } else if (value.length > 5) {
-      console.log('go')
-      debounceFetch()
-    } else {
-      setFilmSuggestions([])
-    }
+    // if (value.length > 3) {
+    //   console.log('go')
+    //   debounceFetch()
+    // } else {
+    //   setFilmSuggestions([])
+    // }
   }
 
   const [state]: State[] = useServiceState()
 
   return (
     <form className='w-full max-w-md m-x-auto' onSubmit={handleSubmit}>
-      {console.log('values', values, errors)}
+      {console.log('values', values, errors, currentValue)}
       {Object.keys(state[user]).map((film) => {
         return (
           <div className={'m-5'} key={film}>

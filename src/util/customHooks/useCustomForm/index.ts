@@ -14,9 +14,11 @@ export const useCustomForm = ({
   const [touched, setTouched] = useState({})
   const [onSubmitting, setOnSubmitting] = useState<boolean>(false)
   const [onBlur, setOnBlur] = useState<boolean>(false)
+  const [currentValue, setCurrentValue] = useState<string>('')
 
   const handleChange = (value: string, name: string) => {
     setValues({ ...values, [name]: value })
+    setCurrentValue(value)
   }
 
   const handleBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,11 +26,13 @@ export const useCustomForm = ({
     const { name } = target
     setTouched({ ...touched, [name]: true })
     setErrors({ ...errors })
+    setCurrentValue('')
   }
 
   const handleSubmit = (event: any) => {
     if (event) event.preventDefault()
     setErrors({ ...errors })
+    setCurrentValue('')
     onSubmit({ values, errors })
   }
 
@@ -39,5 +43,6 @@ export const useCustomForm = ({
     handleChange,
     handleBlur,
     handleSubmit,
+    currentValue,
   }
 }
