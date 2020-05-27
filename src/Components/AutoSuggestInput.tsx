@@ -1,18 +1,35 @@
-import React, { MouseEvent, KeyboardEvent, ChangeEvent, useEffect } from 'react'
-import { useObjectState } from '../util'
+import React, {
+  MouseEvent,
+  KeyboardEvent,
+  ChangeEvent,
+  useEffect,
+  MutableRefObject,
+  FC,
+  ReactNode,
+} from 'react'
+import { useObjectState, getClassName } from '../util'
 import { TextInput } from '../tailwind'
 
-type AutoSuggestProp = {
-  suggestions: string[]
-  onChange?: Function
+export type SuggestionProps = {
   name: string
+  element: ReactNode
 }
 
-export const AutoSuggest = ({
+type AutoSuggestProps = {
+  suggestions: SuggestionProps[]
+  onChange?: Function
+  name: string
+  isLoading: boolean
+  allowFetch: MutableRefObject<boolean>
+}
+
+export const AutoSuggest: FC<AutoSuggestProps> = ({
   suggestions = [],
   name,
+  isLoading,
+  allowFetch,
   onChange: onChangeFunc,
-}: AutoSuggestProp) => {
+}: AutoSuggestProps) => {
   const [
     { showSuggestions, activeSuggestion, filteredSuggestions, userInput },
     updateState,
@@ -29,9 +46,14 @@ export const AutoSuggest = ({
 
   useEffect(() => {
     // Filter our suggestions that don't contain the user's input
-    const newFilteredSuggestions = suggestions.filter(
-      (suggestion: string) =>
-        suggestion.toLowerCase().indexOf(userInput.toLowerCase()) > -1
+    const newFilteredSuggestions = suggestions.reduce(
+      (acc: SuggestionProps[], current: SuggestionProps): SuggestionProps[] => {
+        const { name } = current
+        return name.toLowerCase().indexOf(userInput.toLowerCase()) > -1
+          ? [...acc, current]
+          : acc
+      },
+      []
     )
 
     // Update the user input and filtered suggestions, reset the active
@@ -45,6 +67,7 @@ export const AutoSuggest = ({
 
   // Event fired when the input value is changed
   const onChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    allowFetch.current = true
     const { value, name } = event.target
     if (onChangeFunc) {
       event.persist()
@@ -57,6 +80,7 @@ export const AutoSuggest = ({
 
   // Event fired when the user clicks on a suggestion
   const onClick = (event: MouseEvent<HTMLLIElement>) => {
+    allowFetch.current = false
     const { innerText } = event.currentTarget
     if (onChangeFunc) {
       onChangeFunc && onChangeFunc(innerText, name)
@@ -78,7 +102,7 @@ export const AutoSuggest = ({
       updateState({
         activeSuggestion: 0,
         showSuggestions: false,
-        userInput: filteredSuggestions[activeSuggestion],
+        userInput: filteredSuggestions[activeSuggestion].name,
       })
     }
     // User pressed the up arrow, decrement the index
@@ -101,25 +125,25 @@ export const AutoSuggest = ({
 
   const suggestionsListComponent =
     showSuggestions && userInput && filteredSuggestions.length > 0 ? (
-      <ul className='suggestions'>
-        {filteredSuggestions.map((suggestion: string, index: number) => {
-          let className
+      <ul className='absolute bg-white border-2'>
+        {filteredSuggestions.map(
+          ({ name, element }: SuggestionProps, index: number) => {
+            const isActiveSuggestion = activeSuggestion === index
 
-          // Flag the active suggestion with a class
-          if (index === activeSuggestion) {
-            className = 'suggestion-active'
+            return (
+              <li
+                className={getClassName([
+                  [isActiveSuggestion, ['bg-blue-300', 'text-white']],
+                  'cursor-pointer',
+                ])}
+                key={`${name}-${index}`}
+                onClick={onClick}
+              >
+                {element}
+              </li>
+            )
           }
-
-          return (
-            <li
-              className={className}
-              key={`${suggestion}-${index}`}
-              onClick={onClick}
-            >
-              {suggestion}
-            </li>
-          )
-        })}
+        )}
       </ul>
     ) : (
       <></>

@@ -1,23 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import {
-  useServiceState,
-  useFetch,
-  useCustomForm,
-  throttle,
-  debounce,
-  useDebounce,
-} from '../util'
-import { getFilm } from '../fetch'
-import { AutoSuggest } from './AutoSuggestInput'
-// import { throttle, debounce } from 'throttle-debounce'
+import React, { useState, useEffect, useRef, FC } from 'react'
+import { useServiceState, useFetch, useCustomForm, useDebounce } from '../util'
+import { AutoSuggest, SuggestionProps } from './AutoSuggestInput'
 
 type FilmInputsProps = {
   user: 'user1' | 'user2'
 }
 
-export const FilmInputs: React.FC<FilmInputsProps> = ({
-  user,
-}: FilmInputsProps) => {
+export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
   const initialValues = { film1: '', film2: '', film3: '' }
 
   const {
@@ -32,37 +21,39 @@ export const FilmInputs: React.FC<FilmInputsProps> = ({
     initialValues,
     onSubmit: (results: any) => console.log({ values }),
   })
-  // const onSubmit = (data: any) => console.log(data)
-  // const onSubmitApi = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault()
-  //   const result: any = await getTmdbFilm('space')
-  // }
 
-  const [filmSuggestions, setFilmSuggestions] = useState(['hello', 'you'])
+  const [filmSuggestions, setFilmSuggestions] = useState<SuggestionProps[]>([])
 
-  const { data, loading, error, fetchData } = useFetch()
+  const allowFetch = useRef(true)
+  const { data, isLoading, error, fetchData } = useFetch()
 
   const fetchFilmSuggestions = (value: string) => {
-    // const searchValue = currentInput && values[currentInput]
     console.log('values firing', value)
     fetchData(
-      `http://www.omdbapi.com/?apikey=${process.env.REACT_APP_OMDB_API_KEY}&s=${values}`,
+      // `http://www.omdbapi.com/?apikey=${
+      //   process.env.REACT_APP_OMDB_API_KEY
+      // }&s=${encodeURIComponent(value)}`,
+      `https://api.themoviedb.org/3/search/movie?api_key=${
+        process.env.REACT_APP_TMDB_API_KEY
+      }&query=${encodeURIComponent(value)}`,
       {
         method: 'GET',
       }
     )
   }
 
-  // const debounceFetch = useCallback(debounce(fetchFilmSuggestions, 1000), [])
-
-  const debouncedSearchTerm = useDebounce(currentValue, 500)
+  const debouncedSearchTerm = useDebounce(currentValue, 400)
 
   // Here's where the API call happens
   // We use useEffect since this is an asynchronous action
   useEffect(
     () => {
       // Make sure we have a value (user has entered something in input)
-      if (debouncedSearchTerm && debouncedSearchTerm.length > 3) {
+      if (
+        allowFetch.current &&
+        debouncedSearchTerm &&
+        debouncedSearchTerm.length > 1
+      ) {
         // Set isSearching state
         // Fire off our API call
         fetchFilmSuggestions(debouncedSearchTerm)
@@ -77,87 +68,56 @@ export const FilmInputs: React.FC<FilmInputsProps> = ({
     [debouncedSearchTerm]
   )
 
-  const throttleFetch = useCallback(throttle(fetchFilmSuggestions, 3000), [])
-
   useEffect(() => {
     console.log('inside data', data)
-    if (data?.Response === 'True') {
-      const resultNames = data.Search.map((result: any) => result.Title)
-      setFilmSuggestions(resultNames)
+    // if (data?.Response === 'True') {
+    //   const results = data.Search.map(
+    //     ({ Title, Year }: any) => `${Title} (${Year})`
+    //   )
+    //   setFilmSuggestions(results)
+    // } else {
+    //   setFilmSuggestions([])
+    // }
+    if (data?.results?.length > 0) {
+      const results = data.results.map(
+        ({ title, release_date, poster_path }: any) => {
+          const year = release_date?.substring(0, 4)
+          const titleWithYear = `${title}${year ? ` (${year})` : ''}`
+          return {
+            element: (
+              <div className='flex p-2'>
+                {poster_path && (
+                  <img
+                    className='h-20'
+                    src={`https://image.tmdb.org/t/p/original/${poster_path}`}
+                  />
+                )}
+                <div className='ml-2'>{titleWithYear}</div>
+              </div>
+            ),
+            name: titleWithYear,
+          }
+        }
+      )
+      setFilmSuggestions(results)
     } else {
       setFilmSuggestions([])
     }
   }, [data])
 
-  // const handleChange = (value: string) => {
-  //   if (value?.length > 3) {
-  //     console.log('firing')
-  //     fetchData(
-  //       `http://www.omdbapi.com/?apikey=${process.env.REACT_APP_OMDB_API_KEY}&s=${value}`,
-  //       {
-  //         method: 'GET',
-  //       }
-  //     )
-  //   } else {
-  //     setFilmSuggestions([])
-  //   }
-  // }
-
-  // as long as it continues to be invoked, it will not be triggered
-  // function debounce(func: any, interval: any) {
-  //   var timeout: any
-  //   return function (this: any) {
-  //     console.log('in debounce')
-  //     var context = this,
-  //       args = arguments
-  //     var later = function () {
-  //       timeout = null
-  //       func.apply(context, args)
-  //     }
-  //     clearTimeout(timeout)
-  //     timeout = setTimeout(later, interval || 200)
-  //   }
-  // }
-
-  // const throttle = (func: Function, delay: number) => {
-  //   // If setTimeout is already scheduled, no need to do anything
-  //   if (timerId) {
-  //     return
-  //   }
-
-  //   // Schedule a setTimeout after delay seconds
-  //   timerId = setTimeout(function () {
-  //     func()
-
-  //     // Once setTimeout function execution is finished, timerId = undefined so that in <br>
-  //     // the next scroll event function execution can be scheduled by the setTimeout
-  //     timerId = undefined
-  //   }, delay)
-  // }
-
-  const onChange = (value: string, name: string) => {
-    handleChange(value, name)
-
-    // if (value.length > 3) {
-    //   console.log('go')
-    //   debounceFetch()
-    // } else {
-    //   setFilmSuggestions([])
-    // }
-  }
-
   const [state]: State[] = useServiceState()
 
   return (
     <form className='w-full max-w-md m-x-auto' onSubmit={handleSubmit}>
-      {console.log('values', values, errors, currentValue)}
       {Object.keys(state[user]).map((film) => {
         return (
           <div className={'m-5'} key={film}>
             <AutoSuggest
+              allowFetch={allowFetch}
+              isLoading={isLoading}
               suggestions={filmSuggestions}
               name={film}
-              onChange={onChange}
+              onChange={handleChange}
             />
           </div>
         )

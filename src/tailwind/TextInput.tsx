@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, ChangeEvent } from 'react'
+import React, { KeyboardEvent, ChangeEvent, FC } from 'react'
 import { getClassName } from '../util'
 
 type TextInputProps = {
@@ -9,7 +9,7 @@ type TextInputProps = {
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void
 }
 
-export const TextInput: React.FC<TextInputProps> = ({
+export const TextInput: FC<TextInputProps> = ({
   name,
   cssClasses = [],
   value,
