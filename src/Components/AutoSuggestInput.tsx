@@ -8,7 +8,7 @@ import React, {
   ReactNode,
 } from 'react'
 import { useObjectState, getClassName } from '../util'
-import { TextInput } from '../tailwind'
+import { TextInput } from './common'
 
 export type SuggestionProps = {
   name: string

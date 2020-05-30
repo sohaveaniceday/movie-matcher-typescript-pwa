@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, FC } from 'react'
 import { useServiceState, useFetch, useCustomForm, useDebounce } from '../util'
 import { AutoSuggest, SuggestionProps } from './AutoSuggestInput'
-
+import { Icon } from './common'
 type FilmInputsProps = {
   user: 'user1' | 'user2'
 }
@@ -108,10 +108,10 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
   const [state]: State[] = useServiceState()
 
   return (
-    <form className='w-full max-w-md m-x-auto' onSubmit={handleSubmit}>
+    <form className='max-w-md' onSubmit={handleSubmit}>
       {Object.keys(state[user]).map((film) => {
         return (
-          <div className={'m-5'} key={film}>
+          <div className={'m-5 flex'} key={film}>
             <AutoSuggest
               allowFetch={allowFetch}
               isLoading={isLoading}
@@ -119,6 +119,7 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
               name={film}
               onChange={handleChange}
             />
+            <Icon iconName='tick' className='w-6 h-6 m-2 text-green-400' />
           </div>
         )
       })}

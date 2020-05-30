@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
-import { Tick } from './svgs'
-import { BaseTypes, getClassName } from '../util'
+import { Tick } from '../../images/svgs'
+import { BaseTypes, getClassName } from '../../util'
 
 const svgMap: {
   [key: string]: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
@@ -12,10 +12,10 @@ export type IconName = 'tick'
 
 type IconProps = {
   iconName: string
-  cssClasses: string[]
+  cssClasses?: string[]
 } & BaseTypes<JSX.IntrinsicElements['svg']>
 
-const Icon: FC<IconProps> = ({
+export const Icon: FC<IconProps> = ({
   iconName,
   cssClasses = [],
   ...svgProps
