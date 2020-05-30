@@ -1,2 +1,2 @@
-export * from './TextInput'
+export * from './forms/TextInput'
 export * from './Icon'

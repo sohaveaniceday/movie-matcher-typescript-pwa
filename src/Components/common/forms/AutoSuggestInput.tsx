@@ -7,8 +7,8 @@ import React, {
   FC,
   ReactNode,
 } from 'react'
-import { useObjectState, getClassName } from '../util'
-import { TextInput } from './common'
+import { useObjectState, getClassName } from '../../../util'
+import { TextInput } from '..'
 
 export type SuggestionProps = {
   name: string

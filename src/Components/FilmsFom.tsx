@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, FC } from 'react'
 import { useServiceState, useFetch, useCustomForm, useDebounce } from '../util'
-import { AutoSuggest, SuggestionProps } from './AutoSuggestInput'
+import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
 import { Icon } from './common'
 type FilmInputsProps = {
   user: 'user1' | 'user2'

@@ -1,5 +1,5 @@
 import React, { KeyboardEvent, ChangeEvent, FC } from 'react'
-import { getClassName } from '../../util'
+import { getClassName } from '../../../util'
 
 type TextInputProps = {
   name: string
