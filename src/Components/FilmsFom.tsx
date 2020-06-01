@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, FC, useCallback } from 'react'
+import React, { useState, useEffect, useRef, FC } from 'react'
 import { useServiceState, useFetch, useCustomForm, useDebounce } from '../util'
 import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
-import { Icon } from './common'
+// import { Icon } from './common'
 type FilmInputsProps = {
   user: 'user1' | 'user2'
 }
@@ -25,25 +25,7 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
   const [filmSuggestions, setFilmSuggestions] = useState<SuggestionProps[]>([])
 
   const allowFetch = useRef(true)
-  const { data, isLoading, fetchData } = useFetch()
-
-  const fetchFilmSuggestions = useCallback(
-    (value: string) => {
-      console.log('values firing', value)
-      fetchData(
-        // `http://www.omdbapi.com/?apikey=${
-        //   process.env.REACT_APP_OMDB_API_KEY
-        // }&s=${encodeURIComponent(value)}`,
-        `https://api.themoviedb.org/3/search/movie?api_key=${
-          process.env.REACT_APP_TMDB_API_KEY
-        }&query=${encodeURIComponent(value)}`,
-        {
-          method: 'GET',
-        }
-      )
-    },
-    [fetchData]
-  )
+  const { data, isLoading, setUrl } = useFetch()
 
   const debouncedSearchTerm = useDebounce(currentValue, 400)
 
@@ -59,14 +41,18 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
       ) {
         // Set isSearching state
         // Fire off our API call
-        fetchFilmSuggestions(debouncedSearchTerm)
+        setUrl(
+          `https://api.themoviedb.org/3/search/movie?api_key=${
+            process.env.REACT_APP_TMDB_API_KEY
+          }&query=${encodeURIComponent(debouncedSearchTerm)}`
+        )
       }
     },
     // This is the useEffect input array
     // Our useEffect function will only execute if this value changes ...
     // ... and thanks to our hook it will only change if the original ...
     // value (searchTerm) hasn't changed for more than 500ms.
-    [debouncedSearchTerm, fetchFilmSuggestions]
+    [debouncedSearchTerm, setUrl]
   )
 
   useEffect(() => {
@@ -113,7 +99,7 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
     <form className='max-w-md' onSubmit={handleSubmit}>
       {Object.keys(state[user]).map((film) => {
         return (
-          <div className={'m-5 flex'} key={film}>
+          <div className={'m-5'} key={film}>
             <AutoSuggest
               allowFetch={allowFetch}
               isLoading={isLoading}
@@ -121,7 +107,7 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
               name={film}
               onChange={handleChange}
             />
-            <Icon iconName='tick' className='w-6 h-6 m-2 text-green-400' />
+            {/* <Icon iconName='tick' className='w-6 h-6 m-2 text-green-400' /> */}
           </div>
         )
       })}

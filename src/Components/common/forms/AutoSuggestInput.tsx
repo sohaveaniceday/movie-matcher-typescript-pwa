@@ -46,24 +46,29 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
 
   useEffect(() => {
     // Filter our suggestions that don't contain the user's input
-    const newFilteredSuggestions = suggestions.reduce(
-      (acc: SuggestionProps[], current: SuggestionProps): SuggestionProps[] => {
-        const { name } = current
-        return name.toLowerCase().indexOf(userInput.toLowerCase()) > -1
-          ? [...acc, current]
-          : acc
-      },
-      []
-    )
+    if (allowFetch.current) {
+      const newFilteredSuggestions = suggestions.reduce(
+        (
+          acc: SuggestionProps[],
+          current: SuggestionProps
+        ): SuggestionProps[] => {
+          const { name } = current
+          return name.toLowerCase().indexOf(userInput.toLowerCase()) > -1
+            ? [...acc, current]
+            : acc
+        },
+        []
+      )
 
-    // Update the user input and filtered suggestions, reset the active
-    // suggestion and make sure the suggestions are shown
-    updateState({
-      activeSuggestion: 0,
-      filteredSuggestions: newFilteredSuggestions,
-      showSuggestions: true,
-    })
-  }, [suggestions, updateState, userInput])
+      // Update the user input and filtered suggestions, reset the active
+      // suggestion and make sure the suggestions are shown
+      updateState({
+        activeSuggestion: 0,
+        filteredSuggestions: newFilteredSuggestions,
+        showSuggestions: true,
+      })
+    }
+  }, [suggestions, updateState, userInput, allowFetch])
 
   // Event fired when the input value is changed
   const onChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -82,9 +87,8 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   const onClick = (event: MouseEvent<HTMLLIElement>) => {
     allowFetch.current = false
     const { innerText } = event.currentTarget
-    if (onChangeFunc) {
-      onChangeFunc && onChangeFunc(innerText, name)
-    }
+    onChangeFunc && onChangeFunc(innerText, name)
+
     // Update the user input and reset the rest of the state
     updateState({
       activeSuggestion: 0,
@@ -99,6 +103,9 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
     // User pressed the enter key, update the input and close the
     // suggestions
     if (event.keyCode === 13) {
+      allowFetch.current = false
+      onChangeFunc &&
+        onChangeFunc(filteredSuggestions[activeSuggestion].name, name)
       updateState({
         activeSuggestion: 0,
         showSuggestions: false,
