@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 
 type useCustomFormProps = {
   initialValues: any
@@ -12,8 +12,8 @@ export const useCustomForm = ({
   const [values, setValues] = useState(initialValues || {})
   const [errors, setErrors] = useState({})
   const [touched, setTouched] = useState({})
-  const [onSubmitting, setOnSubmitting] = useState<boolean>(false)
-  const [onBlur, setOnBlur] = useState<boolean>(false)
+  // const [onSubmitting, setOnSubmitting] = useState<boolean>(false)
+  // const [onBlur, setOnBlur] = useState<boolean>(false)
   const [currentValue, setCurrentValue] = useState<string>('')
 
   const handleChange = (value: string, name: string) => {

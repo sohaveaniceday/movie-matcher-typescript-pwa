@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, FC } from 'react'
+import React, { useState, useEffect, useRef, FC, useCallback } from 'react'
 import { useServiceState, useFetch, useCustomForm, useDebounce } from '../util'
 import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
 import { Icon } from './common'
@@ -10,37 +10,40 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
   const initialValues = { film1: '', film2: '', film3: '' }
 
   const {
-    values,
-    errors,
-    touched,
-    handleBlur,
+    // values,
+    // errors,
+    // touched,
+    // handleBlur,
     handleChange,
     handleSubmit,
     currentValue,
   } = useCustomForm({
     initialValues,
-    onSubmit: (results: any) => console.log({ values }),
+    onSubmit: ({ values: formValues }: any) => console.log(formValues),
   })
 
   const [filmSuggestions, setFilmSuggestions] = useState<SuggestionProps[]>([])
 
   const allowFetch = useRef(true)
-  const { data, isLoading, error, fetchData } = useFetch()
+  const { data, isLoading, fetchData } = useFetch()
 
-  const fetchFilmSuggestions = (value: string) => {
-    console.log('values firing', value)
-    fetchData(
-      // `http://www.omdbapi.com/?apikey=${
-      //   process.env.REACT_APP_OMDB_API_KEY
-      // }&s=${encodeURIComponent(value)}`,
-      `https://api.themoviedb.org/3/search/movie?api_key=${
-        process.env.REACT_APP_TMDB_API_KEY
-      }&query=${encodeURIComponent(value)}`,
-      {
-        method: 'GET',
-      }
-    )
-  }
+  const fetchFilmSuggestions = useCallback(
+    (value: string) => {
+      console.log('values firing', value)
+      fetchData(
+        // `http://www.omdbapi.com/?apikey=${
+        //   process.env.REACT_APP_OMDB_API_KEY
+        // }&s=${encodeURIComponent(value)}`,
+        `https://api.themoviedb.org/3/search/movie?api_key=${
+          process.env.REACT_APP_TMDB_API_KEY
+        }&query=${encodeURIComponent(value)}`,
+        {
+          method: 'GET',
+        }
+      )
+    },
+    [fetchData]
+  )
 
   const debouncedSearchTerm = useDebounce(currentValue, 400)
 
@@ -57,15 +60,13 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
         // Set isSearching state
         // Fire off our API call
         fetchFilmSuggestions(debouncedSearchTerm)
-      } else {
-        setFilmSuggestions([])
       }
     },
     // This is the useEffect input array
     // Our useEffect function will only execute if this value changes ...
     // ... and thanks to our hook it will only change if the original ...
     // value (searchTerm) hasn't changed for more than 500ms.
-    [debouncedSearchTerm]
+    [debouncedSearchTerm, fetchFilmSuggestions]
   )
 
   useEffect(() => {
@@ -88,6 +89,7 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
               <div className='flex p-2'>
                 {poster_path && (
                   <img
+                    alt={title}
                     className='h-20'
                     src={`https://image.tmdb.org/t/p/original/${poster_path}`}
                   />

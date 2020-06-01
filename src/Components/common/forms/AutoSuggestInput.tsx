@@ -26,7 +26,7 @@ type AutoSuggestProps = {
 export const AutoSuggest: FC<AutoSuggestProps> = ({
   suggestions = [],
   name,
-  isLoading,
+  // isLoading,
   allowFetch,
   onChange: onChangeFunc,
 }: AutoSuggestProps) => {
@@ -63,7 +63,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
       filteredSuggestions: newFilteredSuggestions,
       showSuggestions: true,
     })
-  }, [suggestions])
+  }, [suggestions, updateState, userInput])
 
   // Event fired when the input value is changed
   const onChange = async (event: ChangeEvent<HTMLInputElement>) => {

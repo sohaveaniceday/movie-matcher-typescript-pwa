@@ -27,7 +27,6 @@ module.exports = {
     '@typescript-eslint/member-delimiter-style': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     indent: 'off',
-    '@typescript-eslint/indent': ['error', 2],
     'prettier/prettier': 0,
   },
   settings: {
