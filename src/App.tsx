@@ -4,6 +4,7 @@ import { ObjectStateProvider } from './util'
 
 const filmData: FilmData = {
   name: '',
+  id: '',
   domesticRating: 0,
   foreignRating: 0,
 }

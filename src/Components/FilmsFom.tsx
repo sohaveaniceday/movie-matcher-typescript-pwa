@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef, FC } from 'react'
 import { useServiceState, useFetch, useCustomForm, useDebounce } from '../util'
 import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
+
 // import { Icon } from './common'
 type FilmInputsProps = {
   user: 'user1' | 'user2'
 }
 
 export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
+  const [state, updateState] = useServiceState()
+
   const initialValues = { film1: '', film2: '', film3: '' }
 
   const {
@@ -67,10 +70,11 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
     // }
     if (data?.results?.length > 0) {
       const results = data.results.map(
-        ({ title, release_date, poster_path }: any) => {
+        ({ title, release_date, poster_path, id }: any) => {
           const year = release_date?.substring(0, 4)
           const titleWithYear = `${title}${year ? ` (${year})` : ''}`
           return {
+            id: id,
             element: (
               <div className='flex p-2'>
                 {poster_path && (
@@ -93,29 +97,42 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
     }
   }, [data])
 
-  const [state]: State[] = useServiceState()
+  const onChange = (value: string, film: string, id?: string) => {
+    handleChange(value, film)
+    if (id) {
+      updateState({ [user]: { [film]: { name: value, id: id } } })
+    } else if (!id && !!state[user][film].name) {
+      updateState({ [user]: { [film]: { name: '', id: '' } } })
+    }
+  }
 
   return (
-    <form className='max-w-md' onSubmit={handleSubmit}>
-      {Object.keys(state[user]).map((film) => {
-        return (
-          <div className={'m-5'} key={film}>
-            <AutoSuggest
-              allowFetch={allowFetch}
-              isLoading={isLoading}
-              suggestions={filmSuggestions}
-              name={film}
-              onChange={handleChange}
-            />
-            {/* <Icon iconName='tick' className='w-6 h-6 m-2 text-green-400' /> */}
-          </div>
-        )
-      })}
-      <div className={'m-5'}>
-        <input
-          className='px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline'
-          type='submit'
-        />
+    <form
+      className='flex items-center justify-center h-screen'
+      onSubmit={handleSubmit}
+    >
+      <div className='inline-block'>
+        {console.log('state', state)}
+        {Object.keys(state[user]).map((film) => {
+          return (
+            <div className={'text-center my-5 w-64'} key={film}>
+              <AutoSuggest
+                allowFetch={allowFetch}
+                isLoading={isLoading}
+                suggestions={filmSuggestions}
+                name={film}
+                onChange={onChange}
+                showIcon={!!state[user][film].id}
+              />
+            </div>
+          )
+        })}
+        <div className={'text-center mx-auto my-5 w-64'}>
+          <input
+            className='px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline'
+            type='submit'
+          />
+        </div>
       </div>
     </form>
   )

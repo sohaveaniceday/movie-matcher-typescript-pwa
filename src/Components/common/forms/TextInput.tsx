@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, ChangeEvent, FC } from 'react'
+import React, { KeyboardEvent, ChangeEvent, FC, FocusEvent } from 'react'
 import { getClassName } from '../../../util'
 
 type TextInputProps = {
@@ -7,6 +7,7 @@ type TextInputProps = {
   cssClasses?: string[]
   value: string
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void
+  onBlur?: (event: FocusEvent<HTMLInputElement>) => void
 }
 
 export const TextInput: FC<TextInputProps> = ({
@@ -15,10 +16,10 @@ export const TextInput: FC<TextInputProps> = ({
   value,
   onChange,
   onKeyDown,
+  onBlur,
 }: TextInputProps) => {
   const inputClassName = getClassName([
     ...cssClasses,
-    'w-full',
     'px-4',
     'py-2',
     'leading-tight',
@@ -38,6 +39,7 @@ export const TextInput: FC<TextInputProps> = ({
       value={value}
       onChange={onChange}
       onKeyDown={onKeyDown}
+      onBlur={onBlur}
     />
   )
 }
