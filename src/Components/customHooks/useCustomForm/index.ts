@@ -30,7 +30,6 @@ export const useCustomForm = ({
 
   const handleFocus = ({ target }: FocusEvent<HTMLInputElement>) => {
     const { name } = target
-    console.log('name', name)
     setCurrentInput(name)
   }
 

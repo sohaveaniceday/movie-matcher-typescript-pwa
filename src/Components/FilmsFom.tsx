@@ -143,6 +143,7 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
       <div className='inline-block'>
         {filmKeyArray.map((filmKey, index) => {
           const filmConfirmed = !!state[user][filmKey].id
+          const disabled = filmKey !== `film${currentFilm}` || allFilmsConfirmed
 
           return (
             <div
@@ -164,7 +165,7 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
                 showIcon={filmConfirmed}
                 onBlur={handleBlur}
                 onFocus={handleFocus}
-                disabled={filmKey !== `film${currentFilm}` || allFilmsConfirmed}
+                disabled={disabled}
                 forwardRef={inputRefs.current[index]}
                 // Autofocus on first input on initial renderß
                 autoFocus={filmKey === 'film1'}
@@ -189,6 +190,7 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
                   'hover:bg-blue-700',
                   'focus:outline-none',
                   'focus:shadow-outline',
+                  'cursor-pointer',
                 ],
                 ['bg-blue-300', 'cursor-not-allowed'],
               ],

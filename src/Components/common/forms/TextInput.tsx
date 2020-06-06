@@ -68,7 +68,6 @@ export const TextInput: FC<TextInputProps> = ({
         onBlur={onBlur}
         onFocus={onFocus}
         autoFocus={autoFocus}
-        disabled={disabled}
         {...TextInputProps}
       />
     </div>
