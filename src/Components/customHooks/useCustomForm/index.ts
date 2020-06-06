@@ -1,38 +1,53 @@
-import { useState } from 'react'
+import { useState, FormEvent, ChangeEvent, FocusEvent } from 'react'
 
 type useCustomFormProps = {
   initialValues: any
   onSubmit: Function
+  initialInput?: string
 }
 
 export const useCustomForm = ({
   initialValues,
   onSubmit,
+  initialInput,
 }: useCustomFormProps) => {
   const [values, setValues] = useState(initialValues || {})
   const [errors, setErrors] = useState({})
   const [touched, setTouched] = useState({})
   // const [onSubmitting, setOnSubmitting] = useState<boolean>(false)
   // const [onBlur, setOnBlur] = useState<boolean>(false)
-  const [currentValue, setCurrentValue] = useState<string>('')
+  const [currentValue, setCurrentValue] = useState<string | undefined>(
+    undefined
+  )
+  const [currentInput, setCurrentInput] = useState<string | undefined>(
+    initialInput
+  )
 
   const handleChange = (value: string, name: string) => {
     setValues({ ...values, [name]: value })
     setCurrentValue(value)
   }
 
-  const handleBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFocus = ({ target }: FocusEvent<HTMLInputElement>) => {
+    const { name } = target
+    console.log('name', name)
+    setCurrentInput(name)
+  }
+
+  const handleBlur = (event: ChangeEvent<HTMLInputElement>) => {
     const { target } = event
     const { name } = target
     setTouched({ ...touched, [name]: true })
     setErrors({ ...errors })
-    setCurrentValue('')
+    setCurrentValue(undefined)
+    setCurrentInput(undefined)
   }
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     if (event) event.preventDefault()
     setErrors({ ...errors })
-    setCurrentValue('')
+    setCurrentValue(undefined)
+    setCurrentInput(undefined)
     onSubmit({ values, errors })
   }
 
@@ -42,7 +57,9 @@ export const useCustomForm = ({
     touched,
     handleChange,
     handleBlur,
+    handleFocus,
     handleSubmit,
     currentValue,
+    currentInput,
   }
 }

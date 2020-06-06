@@ -1,73 +1,89 @@
-import React, { useState, useEffect, useRef, FC } from 'react'
-import { useServiceState, useFetch, useCustomForm, useDebounce } from '../util'
+import React, {
+  useState,
+  useEffect,
+  FC,
+  useRef,
+  FormEvent,
+  RefObject,
+  createRef,
+} from 'react'
+import {
+  useServiceState,
+  useFetch,
+  useCustomForm,
+  useDebounce,
+  getClassName,
+} from '../util'
 import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
 
-// import { Icon } from './common'
 type FilmInputsProps = {
   user: 'user1' | 'user2'
 }
 
 export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
   const [state, updateState] = useServiceState()
+  const [currentFilm, setCurrentFilm] = useState(1)
 
   const initialValues = { film1: '', film2: '', film3: '' }
+
+  const filmDataArray: FilmData[] = Object.values(state[user])
+
+  const allFilmsConfirmed = filmDataArray.every(({ id }: FilmData) => id)
+
+  const filmKeyArray = Object.keys(state[user])
+
+  // refs to allow automatic focusing
+  const inputRefs = useRef<RefObject<HTMLInputElement>[]>(
+    filmKeyArray.map(() => createRef<HTMLInputElement>())
+  )
+
+  useEffect(() => {
+    if (state[user][`film${currentFilm}`]?.id && !allFilmsConfirmed) {
+      setCurrentFilm(currentFilm + 1)
+      inputRefs.current[currentFilm].current?.focus()
+    }
+  }, [currentFilm, state, user, allFilmsConfirmed])
 
   const {
     // values,
     // errors,
     // touched,
-    // handleBlur,
     handleChange,
     handleSubmit,
+    handleBlur,
+    handleFocus,
     currentValue,
   } = useCustomForm({
     initialValues,
     onSubmit: ({ values: formValues }: any) => console.log(formValues),
+    initialInput: 'film1',
   })
 
   const [filmSuggestions, setFilmSuggestions] = useState<SuggestionProps[]>([])
 
+  // Ref to help stop unnecessary fetches
   const allowFetch = useRef(true)
   const { data, isLoading, setUrl } = useFetch()
 
-  const debouncedSearchTerm = useDebounce(currentValue, 400)
-
-  // Here's where the API call happens
-  // We use useEffect since this is an asynchronous action
-  useEffect(
-    () => {
-      // Make sure we have a value (user has entered something in input)
-      if (
-        allowFetch.current &&
-        debouncedSearchTerm &&
-        debouncedSearchTerm.length > 1
-      ) {
-        // Set isSearching state
-        // Fire off our API call
-        setUrl(
-          `https://api.themoviedb.org/3/search/movie?api_key=${
-            process.env.REACT_APP_TMDB_API_KEY
-          }&query=${encodeURIComponent(debouncedSearchTerm)}`
-        )
-      }
-    },
-    // This is the useEffect input array
-    // Our useEffect function will only execute if this value changes ...
-    // ... and thanks to our hook it will only change if the original ...
-    // value (searchTerm) hasn't changed for more than 500ms.
-    [debouncedSearchTerm, setUrl]
-  )
+  const debouncedSearchTerm = useDebounce(currentValue || '', 400)
 
   useEffect(() => {
-    console.log('inside data', data)
-    // if (data?.Response === 'True') {
-    //   const results = data.Search.map(
-    //     ({ Title, Year }: any) => `${Title} (${Year})`
-    //   )
-    //   setFilmSuggestions(results)
-    // } else {
-    //   setFilmSuggestions([])
-    // }
+    // Make sure we have a value (user has entered something in input)
+    if (
+      allowFetch.current &&
+      debouncedSearchTerm &&
+      debouncedSearchTerm.length > 1
+    ) {
+      // Fire off our API call
+      setUrl(
+        `https://api.themoviedb.org/3/search/movie?api_key=${
+          process.env.REACT_APP_TMDB_API_KEY
+        }&query=${encodeURIComponent(debouncedSearchTerm)}`
+      )
+    }
+  }, [debouncedSearchTerm, setUrl])
+
+  useEffect(() => {
     if (data?.results?.length > 0) {
       const results = data.results.map(
         ({ title, release_date, poster_path, id }: any) => {
@@ -106,31 +122,80 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
     }
   }
 
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    handleSubmit(event)
+  }
+
+  const submitButtonRef = createRef<HTMLInputElement>()
+
+  useEffect(() => {
+    if (allFilmsConfirmed) {
+      submitButtonRef.current?.focus()
+    }
+  }, [state, user, submitButtonRef, allFilmsConfirmed])
+
   return (
     <form
       className='flex items-center justify-center h-screen'
-      onSubmit={handleSubmit}
+      onSubmit={onSubmit}
     >
+      {console.log('currentfilm', currentFilm)}
       <div className='inline-block'>
-        {console.log('state', state)}
-        {Object.keys(state[user]).map((film) => {
+        {filmKeyArray.map((filmKey, index) => {
+          const filmConfirmed = !!state[user][filmKey].id
+
           return (
-            <div className={'text-center my-5 w-64 relative'} key={film}>
+            <div
+              className={getClassName([
+                [filmConfirmed, 'text-gray-500'],
+                'text-center',
+                'my-5',
+                'w-64',
+                'relative',
+              ])}
+              key={filmKey}
+            >
               <AutoSuggest
                 allowFetch={allowFetch}
                 isLoading={isLoading}
                 suggestions={filmSuggestions}
-                name={film}
+                name={filmKey}
                 onChange={onChange}
-                showIcon={!!state[user][film].id}
+                showIcon={filmConfirmed}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                disabled={filmKey !== `film${currentFilm}` || allFilmsConfirmed}
+                forwardRef={inputRefs.current[index]}
+                // Autofocus on first input on initial renderß
+                autoFocus={filmKey === 'film1'}
               />
             </div>
           )
         })}
-        <div className={'text-center mx-auto my-5 w-64'}>
+        <div
+          className={getClassName(['w-64', 'mx-auto', 'my-5', 'text-center'])}
+        >
           <input
-            className='px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline'
+            className={getClassName([
+              'px-4',
+              'py-2',
+              'font-bold',
+              'text-white',
+              'rounded',
+              [
+                allFilmsConfirmed,
+                [
+                  'bg-blue-500',
+                  'hover:bg-blue-700',
+                  'focus:outline-none',
+                  'focus:shadow-outline',
+                ],
+                ['bg-blue-300', 'cursor-not-allowed'],
+              ],
+            ])}
             type='submit'
+            disabled={!allFilmsConfirmed}
+            ref={submitButtonRef}
           />
         </div>
       </div>

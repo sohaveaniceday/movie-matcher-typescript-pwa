@@ -6,7 +6,8 @@ import React, {
   MutableRefObject,
   FC,
   ReactNode,
-  createRef,
+  FocusEvent,
+  RefObject,
 } from 'react'
 import { useObjectState, getClassName } from '../../../util'
 import { TextInput } from '..'
@@ -24,7 +25,12 @@ type AutoSuggestProps = {
   name: string
   isLoading: boolean
   allowFetch: MutableRefObject<boolean>
-  showIcon: boolean
+  showIcon?: boolean
+  autoFocus?: boolean
+  onFocus?: (event: FocusEvent<HTMLInputElement>) => void
+  onBlur?: (event: FocusEvent<HTMLInputElement>) => void
+  disabled?: boolean
+  forwardRef?: RefObject<HTMLInputElement>
 }
 
 export const AutoSuggest: FC<AutoSuggestProps> = ({
@@ -34,9 +40,12 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   allowFetch,
   showIcon,
   onChange: onChangeFunc,
+  autoFocus,
+  onFocus,
+  onBlur,
+  disabled,
+  forwardRef,
 }: AutoSuggestProps) => {
-  const outerRef = createRef<HTMLUListElement>()
-
   const initialAutoSuggestState = {
     // The active selection's index
     activeSuggestion: 0,
@@ -54,7 +63,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
 
   useEffect(() => {
     // Filter our suggestions that don't contain the user's input
-    if (allowFetch.current) {
+    if (!disabled && allowFetch.current) {
       const newFilteredSuggestions = suggestions.reduce(
         (
           acc: SuggestionProps[],
@@ -76,7 +85,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
         showSuggestions: true,
       })
     }
-  }, [suggestions, updateAutoSuggestState, userInput, allowFetch])
+  }, [suggestions, updateAutoSuggestState, userInput, allowFetch, disabled])
 
   // Event fired when the input value is changed
   const onChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -159,39 +168,31 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
 
   const suggestionsListComponent =
     showSuggestions && userInput && filteredSuggestions.length > 0 ? (
-      <ul
-        className='absolute z-50 h-56 max-w-full overflow-y-scroll text-left bg-white border-2'
-        ref={outerRef}
-      >
-        {filteredSuggestions.map(
-          ({ name, element, id }: SuggestionProps, index: number) => {
-            const isActiveSuggestion = activeSuggestion === index
-            const innerRef = createRef<HTMLLIElement>()
+      <div className='absolute z-50 w-full h-64'>
+        <ul className='max-h-full overflow-y-scroll text-left bg-white border-2 '>
+          {filteredSuggestions.map(
+            ({ name, element, id }: SuggestionProps, index: number) => {
+              const isActiveSuggestion = activeSuggestion === index
 
-            // const handleClick = () =>
-            //   innerRef.current?.scrollIntoView({
-            //     behavior: 'smooth',
-            //   })
-
-            return (
-              <li
-                id={index.toString()}
-                data-id={id}
-                ref={innerRef}
-                className={getClassName([
-                  [isActiveSuggestion, ['bg-blue-300', 'text-white']],
-                  'cursor-pointer',
-                  'w-full',
-                ])}
-                key={`${name}-${index}`}
-                onClick={onClick}
-              >
-                {element}
-              </li>
-            )
-          }
-        )}
-      </ul>
+              return (
+                <li
+                  id={index.toString()}
+                  data-id={id}
+                  className={getClassName([
+                    [isActiveSuggestion, ['bg-blue-300', 'text-white']],
+                    'cursor-pointer',
+                    'w-full',
+                  ])}
+                  key={`${name}-${index}`}
+                  onClick={onClick}
+                >
+                  {element}
+                </li>
+              )
+            }
+          )}
+        </ul>
+      </div>
     ) : (
       <></>
     )
@@ -205,7 +206,11 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
           value={userInput}
           onKeyDown={onKeyDown}
           cssClasses={['min-w-full']}
-          // onBlur={onBlur}
+          onBlur={onBlur}
+          autoFocus={autoFocus}
+          onFocus={onFocus}
+          disabled={disabled}
+          forwardRef={forwardRef}
         />
         {showIcon && (
           <Icon
