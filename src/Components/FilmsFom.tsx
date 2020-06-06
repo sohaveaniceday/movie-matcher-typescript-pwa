@@ -115,7 +115,7 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
         {console.log('state', state)}
         {Object.keys(state[user]).map((film) => {
           return (
-            <div className={'text-center my-5 w-64'} key={film}>
+            <div className={'text-center my-5 w-64 relative'} key={film}>
               <AutoSuggest
                 allowFetch={allowFetch}
                 isLoading={isLoading}

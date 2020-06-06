@@ -7,13 +7,10 @@ import React, {
   FC,
   ReactNode,
   createRef,
-  useState,
-  useLayoutEffect,
 } from 'react'
 import { useObjectState, getClassName } from '../../../util'
 import { TextInput } from '..'
 import { Icon } from '../Icon'
-import { FixedSizeList as List } from 'react-window'
 
 export type SuggestionProps = {
   name: string
@@ -38,38 +35,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   showIcon,
   onChange: onChangeFunc,
 }: AutoSuggestProps) => {
-  const outerListRef = createRef<HTMLDivElement>()
-  const innerListRef = createRef<HTMLDivElement>()
-
-  const [scrollOffset, setScrollOffset] = useState(0)
-
-  const [pageUp, pageDown, home, end] = [33, 34, 36, 35]
-
-  const listHeight = 150
-
-  const currentHeight = innerListRef.current?.style.height.replace('px', '')
-
-  const maxHeight = (currentHeight && parseInt(currentHeight)) || listHeight
-
-  const minHeight = 0.1
-
-  const pageOffset = listHeight * 5
-
-  const keys = {
-    [pageUp]: Math.max(minHeight, scrollOffset - pageOffset),
-    [pageDown]: Math.min(scrollOffset + pageOffset, maxHeight),
-    [end]: maxHeight,
-    [home]: minHeight,
-  }
-
-  useLayoutEffect(() => {
-    outerListRef.current &&
-      outerListRef.current.scrollTo({
-        left: 0,
-        top: scrollOffset,
-        behavior: 'auto',
-      })
-  })
+  const outerRef = createRef<HTMLUListElement>()
 
   const initialAutoSuggestState = {
     // The active selection's index
@@ -147,7 +113,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
     // suggestions
     if (event.keyCode === 13) {
       allowFetch.current = false
-      onChangeFunc && onChangeFunc(selectedItem.name, name)
+      onChangeFunc && onChangeFunc(selectedItem.name, name, selectedItem.id)
       updateAutoSuggestState({
         activeSuggestion: 0,
         showSuggestions: false,
@@ -168,12 +134,13 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
         return
       }
 
-      updateAutoSuggestState({ activeSuggestion: activeSuggestion + 1 })
+      updateAutoSuggestState({
+        activeSuggestion: Math.min(
+          activeSuggestion + 1,
+          filteredSuggestions.length - 1
+        ),
+      })
     }
-  }
-
-  const handleKeyDown = ({ keyCode }: KeyboardEvent<HTMLInputElement>) => {
-    keys[keyCode] && setScrollOffset(keys[keyCode])
   }
 
   // const onBlur = () => {
@@ -184,54 +151,47 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   //   })
   // }
 
-  const Row = ({ index, isScrolling, style }: any) => (
-    <div className={index % 2 ? 'ListItemOdd' : 'ListItemEven'} style={style}>
-      {isScrolling ? 'Scrolling' : `Row ${index}`}
-    </div>
-  )
+  useEffect(() => {
+    document.getElementById(activeSuggestion)?.scrollIntoView({
+      behavior: 'smooth',
+    })
+  }, [activeSuggestion])
 
   const suggestionsListComponent =
     showSuggestions && userInput && filteredSuggestions.length > 0 ? (
-      <div
-        onKeyDown={handleKeyDown}
-        tabIndex={0}
-        className='absolute w-full h-56 max-w-xs'
+      <ul
+        className='absolute z-50 h-56 max-w-full overflow-y-scroll text-left bg-white border-2'
+        ref={outerRef}
       >
-        {/* <List
-          outerRef={outerListRef}
-          innerRef={innerListRef}
-          className='List'
-          height={listHeight}
-          itemCount={1000}
-          itemSize={35}
-          useIsScrolling
-          width={300}
-        >
-          {Row}
-        </List> */}
-        <ul className='overflow-y-scroll text-left bg-white border-2'>
-          {filteredSuggestions.map(
-            ({ name, element, id }: SuggestionProps, index: number) => {
-              const isActiveSuggestion = activeSuggestion === index
+        {filteredSuggestions.map(
+          ({ name, element, id }: SuggestionProps, index: number) => {
+            const isActiveSuggestion = activeSuggestion === index
+            const innerRef = createRef<HTMLLIElement>()
 
-              return (
-                <li
-                  data-id={id}
-                  className={getClassName([
-                    [isActiveSuggestion, ['bg-blue-300', 'text-white']],
-                    'cursor-pointer',
-                    'w-full',
-                  ])}
-                  key={`${name}-${index}`}
-                  onClick={onClick}
-                >
-                  {element}
-                </li>
-              )
-            }
-          )}
-        </ul>
-      </div>
+            // const handleClick = () =>
+            //   innerRef.current?.scrollIntoView({
+            //     behavior: 'smooth',
+            //   })
+
+            return (
+              <li
+                id={index.toString()}
+                data-id={id}
+                ref={innerRef}
+                className={getClassName([
+                  [isActiveSuggestion, ['bg-blue-300', 'text-white']],
+                  'cursor-pointer',
+                  'w-full',
+                ])}
+                key={`${name}-${index}`}
+                onClick={onClick}
+              >
+                {element}
+              </li>
+            )
+          }
+        )}
+      </ul>
     ) : (
       <></>
     )
@@ -250,7 +210,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
         {showIcon && (
           <Icon
             iconName='tick'
-            className='w-6 h-6 m-2 overflow-visible text-green-400 '
+            className='w-6 h-6 mx-2 my-1 overflow-visible text-green-400'
           />
         )}
       </div>
