@@ -93,6 +93,7 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
 
   useEffect(() => {
     if (data?.results?.length > 0) {
+      console.log('data', data)
       const results = data.results.map(
         ({ title, release_date, poster_path, id }: any) => {
           const year = release_date?.substring(0, 4)
@@ -101,13 +102,19 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
             id: id,
             element: (
               <div className='flex p-2'>
-                {poster_path && (
-                  <img
-                    alt={title}
-                    className='h-20'
-                    src={`https://image.tmdb.org/t/p/original/${poster_path}`}
-                  />
-                )}
+                <div
+                  className='relative bg-gray-500'
+                  style={{ minWidth: '53px', minHeight: '80px' }}
+                >
+                  {poster_path && (
+                    <img
+                      alt={title}
+                      className='h-20'
+                      src={`https://image.tmdb.org/t/p/original/${poster_path}`}
+                    />
+                  )}
+                </div>
+
                 <div className='ml-2'>{titleWithYear}</div>
               </div>
             ),
