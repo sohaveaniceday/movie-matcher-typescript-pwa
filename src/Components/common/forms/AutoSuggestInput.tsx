@@ -122,6 +122,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
     // suggestions
     if (event.keyCode === 13) {
       event.preventDefault()
+      if (!selectedItem) return
       allowFetch.current = false
       onChangeFunc && onChangeFunc(selectedItem.name, name, selectedItem.id)
       updateAutoSuggestState({

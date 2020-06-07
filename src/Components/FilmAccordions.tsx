@@ -16,6 +16,7 @@ import {
   getClassName,
 } from '../util'
 import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
+import { imageBaseUrl, genreMap } from './static'
 
 type FilmAccordionsProps = {
   user: 'user1' | 'user2'
@@ -90,7 +91,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                     <img
                       alt={title}
                       className='h-20'
-                      src={`https://image.tmdb.org/t/p/original/${poster_path}`}
+                      src={`${imageBaseUrl}${poster_path}`}
                     />
                   )}
                 </div>
@@ -111,7 +112,31 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   const onChange = (value: string, film: string, id?: string) => {
     handleChange(value, film)
     if (id) {
-      updateState({ [user]: { [film]: { name: value, id: id } } })
+      const {
+        title,
+        id: foundId,
+        release_date,
+        backdrop_path,
+        poster_path,
+        overview,
+        genre_ids,
+      } = data.results.find(({ id: filmId }: any) => parseInt(id) === filmId)
+      updateState({
+        [user]: {
+          [film]: {
+            name: title,
+            id: foundId,
+            releaseDate: release_date,
+            backgroundImage: `${imageBaseUrl}${backdrop_path}`,
+            packshot: `${imageBaseUrl}${poster_path}`,
+            summary: overview,
+            genres: genre_ids.map((genreId: number) => {
+              const foundGenre = genreMap.find(({ id }) => genreId === id)
+              return foundGenre?.name
+            }),
+          },
+        },
+      })
     } else if (!id && !!state[user][film].name) {
       updateState({ [user]: { [film]: { name: '', id: '' } } })
     }
@@ -123,14 +148,33 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   return (
     <div className='flex flex-col h-full min-h-full'>
+      <div className='flex w-full h-16 bg-blue-500'>
+        <div className='m-auto'>Navbar</div>
+      </div>
       {filmDataArray.map((filmData, index) => {
         const inputRef = createRef<HTMLInputElement>()
         const filmKey = `film${index + 1}`
-        const filmConfirmed = !!state[user][filmKey].id
+        const selectedFilm = state[user][filmKey]
+        const isFilmConfirmed = !!selectedFilm?.id
         const disabled = filmKey !== activeFilm || allFilmsConfirmed
 
+        console.log('selectedFilm', selectedFilm, isFilmConfirmed)
+
         const accordianContent = (
-          <div className='flex flex-col items-center h-full justify-evenly'>
+          <div
+            className='flex flex-col items-center h-full justify-evenly'
+            style={
+              isFilmConfirmed
+                ? {
+                    backgroundImage: `url("${selectedFilm.backgroundImage}")`,
+                    backgroundPosition: 'top',
+                    backgroundSize: 'contain',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundColor: 'black',
+                  }
+                : { backgroundColor: 'black' }
+            }
+          >
             <div className='relative w-64'>
               <AutoSuggest
                 allowFetch={allowFetch}
@@ -146,33 +190,51 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
               />
             </div>
             <div className='w-40 h-64'>
-              <Skeleton cssClasses={['w-40 h-64']} override />
+              {isFilmConfirmed ? (
+                <img className='h-64' src={selectedFilm.packshot} />
+              ) : (
+                <Skeleton cssClasses={['w-full', 'h-full']} override />
+              )}
             </div>
             <div className='w-64 h-10'>
-              <Skeleton
-                cssClasses={['w-full', 'h-full', 'rounded-full']}
-                override
-              />
+              {isFilmConfirmed ? (
+                <div className='text-2xl text-center text-white'>
+                  {selectedFilm.name}
+                </div>
+              ) : (
+                <Skeleton
+                  cssClasses={['w-full', 'h-full', 'rounded-full']}
+                  override
+                />
+              )}
             </div>
-            <div className='flex flex-col items-center w-64 h-32 justify-evenly'>
-              <div className='w-48 h-4 m-2'>
-                <Skeleton
-                  cssClasses={['w-full', 'h-full', 'rounded-full']}
-                  override
-                />
-              </div>
-              <div className='w-40 h-4 m-2'>
-                <Skeleton
-                  cssClasses={['w-full', 'h-full', 'rounded-full']}
-                  override
-                />
-              </div>
-              <div className='w-32 h-4 m-2'>
-                <Skeleton
-                  cssClasses={['w-full', 'h-full', 'rounded-full']}
-                  override
-                />
-              </div>
+            <div className='flex flex-col items-center w-64 h-24 justify-evenly'>
+              {isFilmConfirmed ? (
+                <div className='text-xs text-center text-white'>
+                  {selectedFilm.summary}
+                </div>
+              ) : (
+                <>
+                  <div className='w-48 h-4 m-1'>
+                    <Skeleton
+                      cssClasses={['w-full', 'h-full', 'rounded-full']}
+                      override
+                    />
+                  </div>
+                  <div className='w-40 h-4 m-1'>
+                    <Skeleton
+                      cssClasses={['w-full', 'h-full', 'rounded-full']}
+                      override
+                    />
+                  </div>
+                  <div className='w-32 h-4 m-1'>
+                    <Skeleton
+                      cssClasses={['w-full', 'h-full', 'rounded-full']}
+                      override
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )
@@ -189,6 +251,9 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           />
         )
       })}
+      <div className='flex w-full h-16 bg-blue-500'>
+        <div className='m-auto'>Submit</div>
+      </div>
     </div>
   )
 }
