@@ -1,14 +1,15 @@
 import React, { FC } from 'react'
-import { Tick } from '../../images/svgs'
+import { Tick, Edit } from '../../images/svgs'
 import { BaseTypes, getClassName } from '../../util'
 
 const svgMap: {
   [key: string]: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
 } = {
   tick: Tick,
+  edit: Edit,
 }
 
-export type IconName = 'tick'
+export type IconName = 'tick' | 'edit'
 
 type IconProps = {
   iconName: string

@@ -25,7 +25,7 @@ type AutoSuggestProps = {
   name: string
   isLoading: boolean
   allowFetch: MutableRefObject<boolean>
-  showIcon?: boolean
+  icon?: string
   autoFocus?: boolean
   onFocus?: (event: FocusEvent<HTMLInputElement>) => void
   onBlur?: (event: FocusEvent<HTMLInputElement>) => void
@@ -38,7 +38,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   name,
   // isLoading,
   allowFetch,
-  showIcon,
+  icon,
   onChange: onChangeFunc,
   autoFocus,
   onFocus,
@@ -121,6 +121,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
     // User pressed the enter key, update the input and close the
     // suggestions
     if (event.keyCode === 13) {
+      event.preventDefault()
       allowFetch.current = false
       onChangeFunc && onChangeFunc(selectedItem.name, name, selectedItem.id)
       updateAutoSuggestState({
@@ -212,9 +213,9 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
           disabled={disabled}
           forwardRef={forwardRef}
         />
-        {showIcon && (
+        {icon && (
           <Icon
-            iconName='tick'
+            iconName={icon}
             className='w-6 h-6 mx-2 my-1 overflow-visible text-green-400'
           />
         )}

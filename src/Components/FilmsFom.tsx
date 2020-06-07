@@ -38,11 +38,19 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
   )
 
   useEffect(() => {
-    if (state[user][`film${currentFilm}`]?.id && !allFilmsConfirmed) {
-      setCurrentFilm(currentFilm + 1)
-      inputRefs.current[currentFilm].current?.focus()
+    const isCurrentFilmConfirmed = state[user][`film${currentFilm}`]?.id
+    if (isCurrentFilmConfirmed && !allFilmsConfirmed) {
+      filmDataArray.some((filmObject, index) => {
+        // Set the current film to be the next unconfirmed film + put focus on it
+        if (!filmObject.id) {
+          setCurrentFilm(index + 1)
+          inputRefs.current[index].current?.focus()
+          // stops array method running when true returned
+          return true
+        }
+      })
     }
-  }, [currentFilm, state, user, allFilmsConfirmed])
+  }, [currentFilm, state, user, allFilmsConfirmed, filmDataArray])
 
   const {
     // values,
@@ -162,7 +170,7 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
                 suggestions={filmSuggestions}
                 name={filmKey}
                 onChange={onChange}
-                showIcon={filmConfirmed}
+                icon={filmConfirmed ? 'tick' : ''}
                 onBlur={handleBlur}
                 onFocus={handleFocus}
                 disabled={disabled}
