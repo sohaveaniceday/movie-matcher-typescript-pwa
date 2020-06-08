@@ -3,7 +3,7 @@ import { useRef, useEffect } from 'react'
 export const useEventListener = (
   eventName: KeyboardEvent['key'],
   handler: Function,
-  element = window
+  element: EventTarget = document
 ): void => {
   // Create a ref that stores handler
   const savedHandler = useRef<Function | null>(null)

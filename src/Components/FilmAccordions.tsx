@@ -15,6 +15,7 @@ import {
   useCustomForm,
   useDebounce,
   getClassName,
+  useEventListener,
 } from '../util'
 import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
 import { imageBaseUrl, genreMap, initialFilmData } from '../static'
@@ -26,9 +27,21 @@ type FilmAccordionsProps = {
 export const FilmAccordions: FC<FilmAccordionsProps> = ({
   user,
 }: FilmAccordionsProps) => {
-  const [activeFilm, setActiveFilm] = useState('film1')
+  const [activeFilmNumber, setActiveFilmNumber] = useState<number>(1)
   const [state, updateState] = useServiceState()
   const filmDataArray: FilmData[] = Object.values(state[user])
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    event.stopPropagation()
+    if (event.keyCode === 40 && activeFilmNumber < 3) {
+      setActiveFilmNumber(activeFilmNumber + 1)
+    }
+    if (event.keyCode === 38 && activeFilmNumber > 1) {
+      setActiveFilmNumber(activeFilmNumber - 1)
+    }
+  }
+
+  useEventListener('keydown', handleKeyDown, window)
 
   const allFilmsConfirmed = filmDataArray.every(({ id }: FilmData) => id)
 
@@ -149,20 +162,21 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   }
 
   return (
-    <div className='flex flex-col h-full min-h-full'>
+    <div className='flex flex-col h-full'>
       <div className='flex w-full h-16 bg-blue-500'>
         <div className='m-auto'>Navbar</div>
       </div>
       {filmDataArray.map((filmData, index) => {
         const inputRef = createRef<HTMLInputElement>()
-        const filmKey = `film${index + 1}`
+        const filmNumber = index + 1
+        const filmKey = `film${filmNumber}`
         const { name, id, backgroundImage, packshot, summary } = state[user][
           filmKey
         ]
 
         const accordianContent = (
           <div
-            className='flex flex-col items-center h-full justify-evenly'
+            className='flex flex-col items-center justify-start h-full'
             style={
               backgroundImage
                 ? {
@@ -176,7 +190,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 : { backgroundColor: 'black' }
             }
           >
-            <div className='relative w-64'>
+            <div className='w-64 m-5'>
               <AutoSuggest
                 allowFetch={allowFetch}
                 isLoading={isLoading}
@@ -188,10 +202,9 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 placeholder={'Search film'}
                 // disabled={disabled}
                 forwardRef={inputRef}
-                autoFocus={filmKey === 'film1'}
               />
             </div>
-            <div className=''>
+            {/* <div className=''>
               <div style={{ minWidth: '170px', minHeight: '256px' }}>
                 {packshot ? (
                   <img
@@ -252,7 +265,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   </>
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
         )
         return (
@@ -260,10 +273,10 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             key={filmKey}
             title={filmData.name || `Film ${index + 1}`}
             content={accordianContent}
-            active={activeFilm === filmKey}
+            active={activeFilmNumber === filmNumber}
             onClick={() => {
-              if (activeFilm !== filmKey) {
-                setActiveFilm(filmKey)
+              if (activeFilmNumber !== filmNumber) {
+                setActiveFilmNumber(filmNumber)
                 inputRef.current?.focus()
               }
             }}

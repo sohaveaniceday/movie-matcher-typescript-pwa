@@ -113,6 +113,10 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
 
   // Event fired when the user presses a key down
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    // Stops document's keydown event listener when displaying a list
+    if (showSuggestions && filteredSuggestions.length > 0)
+      event.stopPropagation()
+
     const selectedItem = filteredSuggestions[activeSuggestion]
     // User pressed the enter key, update the input and close the
     // suggestions
@@ -147,6 +151,12 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
           filteredSuggestions.length - 1
         ),
       })
+      // User pressed escape, exit list
+    } else if (event.keyCode === 27) {
+      updateAutoSuggestState({
+        activeSuggestion: 0,
+        showSuggestions: false,
+      })
     }
   }
 
@@ -166,32 +176,30 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
 
   const suggestionsListComponent =
     showSuggestions && userInput && filteredSuggestions.length > 0 ? (
-      <div className='absolute z-50 w-full h-64'>
-        <ul className='max-h-full overflow-y-scroll text-left bg-white border-2 '>
-          {filteredSuggestions.map(
-            ({ name, element, id }: SuggestionProps, index: number) => {
-              const isActiveSuggestion = activeSuggestion === index
+      <ul className='h-64 overflow-y-scroll text-left bg-white border-2'>
+        {filteredSuggestions.map(
+          ({ name, element, id }: SuggestionProps, index: number) => {
+            const isActiveSuggestion = activeSuggestion === index
 
-              return (
-                <li
-                  id={index.toString()}
-                  data-id={id}
-                  data-name={name}
-                  className={getClassName([
-                    [isActiveSuggestion, ['bg-blue-300', 'text-white']],
-                    'cursor-pointer',
-                    'w-full',
-                  ])}
-                  key={`${name}-${index}`}
-                  onClick={onClick}
-                >
-                  {element}
-                </li>
-              )
-            }
-          )}
-        </ul>
-      </div>
+            return (
+              <li
+                id={index.toString()}
+                data-id={id}
+                data-name={name}
+                className={getClassName([
+                  [isActiveSuggestion, ['bg-blue-300', 'text-white']],
+                  'cursor-pointer',
+                  'w-full',
+                ])}
+                key={`${name}-${index}`}
+                onClick={onClick}
+              >
+                {element}
+              </li>
+            )
+          }
+        )}
+      </ul>
     ) : (
       <></>
     )
