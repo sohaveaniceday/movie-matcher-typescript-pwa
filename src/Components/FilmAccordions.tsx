@@ -78,7 +78,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       const results = data.results.map(
         ({ title, release_date, poster_path, id }: any) => {
           const year = release_date?.substring(0, 4)
-          const titleWithYear = `${title}${year ? ` (${year})` : ''}`
           return {
             id: id,
             element: (
@@ -95,11 +94,13 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                     />
                   )}
                 </div>
-
-                <div className='ml-2'>{titleWithYear}</div>
+                <div className='flex flex-col'>
+                  <div className='ml-2 text-base line-clamp-2'>{title}</div>
+                  <div className='ml-2 text-sm'>{year}</div>
+                </div>
               </div>
             ),
-            name: titleWithYear,
+            name: title,
           }
         }
       )
@@ -154,19 +155,17 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       {filmDataArray.map((filmData, index) => {
         const inputRef = createRef<HTMLInputElement>()
         const filmKey = `film${index + 1}`
-        const selectedFilm = state[user][filmKey]
-        const isFilmConfirmed = !!selectedFilm?.id
-        const disabled = filmKey !== activeFilm || allFilmsConfirmed
-
-        console.log('selectedFilm', selectedFilm, isFilmConfirmed)
+        const { name, id, backgroundImage, packshot, summary } = state[user][
+          filmKey
+        ]
 
         const accordianContent = (
           <div
             className='flex flex-col items-center h-full justify-evenly'
             style={
-              isFilmConfirmed
+              id && backgroundImage
                 ? {
-                    backgroundImage: `url("${selectedFilm.backgroundImage}")`,
+                    backgroundImage: `url("${backgroundImage}")`,
                     backgroundPosition: 'top',
                     backgroundSize: 'contain',
                     backgroundRepeat: 'no-repeat',
@@ -184,23 +183,21 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 onChange={onChange}
                 onBlur={handleBlur}
                 onFocus={handleFocus}
-                disabled={disabled}
+                // disabled={disabled}
                 forwardRef={inputRef}
                 autoFocus={filmKey === 'film1'}
               />
             </div>
             <div className='w-40 h-64'>
-              {isFilmConfirmed ? (
-                <img className='h-64' src={selectedFilm.packshot} />
+              {id ? (
+                <img className='h-64' src={packshot} />
               ) : (
                 <Skeleton cssClasses={['w-full', 'h-full']} override />
               )}
             </div>
             <div className='w-64 h-10'>
-              {isFilmConfirmed ? (
-                <div className='text-2xl text-center text-white'>
-                  {selectedFilm.name}
-                </div>
+              {id ? (
+                <div className='text-2xl text-center text-white'>{name}</div>
               ) : (
                 <Skeleton
                   cssClasses={['w-full', 'h-full', 'rounded-full']}
@@ -209,10 +206,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
               )}
             </div>
             <div className='flex flex-col items-center w-64 h-24 justify-evenly'>
-              {isFilmConfirmed ? (
-                <div className='text-xs text-center text-white'>
-                  {selectedFilm.summary}
-                </div>
+              {id ? (
+                <div className='text-xs text-center text-white'>{summary}</div>
               ) : (
                 <>
                   <div className='w-48 h-4 m-1'>
@@ -245,8 +240,10 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             content={accordianContent}
             active={activeFilm === filmKey}
             onClick={() => {
-              setActiveFilm(filmKey)
-              inputRef.current?.focus()
+              if (activeFilm !== filmKey) {
+                setActiveFilm(filmKey)
+                inputRef.current?.focus()
+              }
             }}
           />
         )

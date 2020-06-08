@@ -104,7 +104,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   const onClick = ({ currentTarget }: MouseEvent<HTMLLIElement>) => {
     allowFetch.current = false
     const { innerText, dataset } = currentTarget
-    onChangeFunc && onChangeFunc(innerText, name, dataset.id)
+    onChangeFunc && onChangeFunc(dataset.name, name, dataset.id)
 
     // Update the user input and reset the rest of the state
     updateAutoSuggestState({
@@ -180,6 +180,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
                 <li
                   id={index.toString()}
                   data-id={id}
+                  data-name={name}
                   className={getClassName([
                     [isActiveSuggestion, ['bg-blue-300', 'text-white']],
                     'cursor-pointer',

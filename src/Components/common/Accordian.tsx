@@ -35,7 +35,7 @@ export const Accordion = ({
         style={{ transition: 'background-color 0.6s ease' }}
         onClick={onClick}
       >
-        <p className='font-serif text-sm font-semibold text-left truncate'>
+        <p className='pr-2 font-serif text-sm font-semibold text-left truncate'>
           {title}
         </p>
         <Icon
