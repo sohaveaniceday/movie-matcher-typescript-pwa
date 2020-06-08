@@ -109,7 +109,9 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   )}
                 </div>
                 <div className='flex flex-col'>
-                  <div className='ml-2 text-base line-clamp-2'>{title}</div>
+                  <div className='ml-2 text-base clamp line-clamp-2'>
+                    {title}
+                  </div>
                   <div className='ml-2 text-sm'>{year}</div>
                 </div>
               </div>
@@ -176,7 +178,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
         const accordianContent = (
           <div
-            className='flex flex-col items-center justify-start h-full'
+            className='flex flex-col items-center justify-around h-full'
             style={
               backgroundImage
                 ? {
@@ -190,7 +192,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 : { backgroundColor: 'black' }
             }
           >
-            <div className='w-64 m-5'>
+            <div className='w-64 mt-4'>
               <AutoSuggest
                 allowFetch={allowFetch}
                 isLoading={isLoading}
@@ -200,72 +202,40 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 onBlur={handleBlur}
                 onFocus={handleFocus}
                 placeholder={'Search film'}
-                // disabled={disabled}
                 forwardRef={inputRef}
               />
             </div>
-            {/* <div className=''>
-              <div style={{ minWidth: '170px', minHeight: '256px' }}>
-                {packshot ? (
-                  <img
-                    className='h-64'
-                    src={packshot}
-                    onError={(event) => {
-                      const target = event.target as HTMLImageElement
-                      target.className = 'w-40 h-64 bg-gray-700'
-                    }}
-                  />
-                ) : (
-                  <Skeleton
-                    cssClasses={['w-full', 'h-full']}
-                    override
-                    animation={!id}
-                  />
-                )}
-              </div>
-              <div className='w-64 h-10'>
-                {name ? (
-                  <div className='text-2xl text-center text-white'>{name}</div>
-                ) : (
-                  <Skeleton
-                    cssClasses={['w-full', 'h-full', 'rounded-full']}
-                    override
-                    animation={!id}
-                  />
-                )}
-              </div>
-              <div className='flex flex-col items-center w-64 h-24 justify-evenly'>
-                {summary ? (
-                  <div className='text-xs text-center text-white'>
-                    {summary}
-                  </div>
-                ) : (
-                  <>
-                    <div className='w-48 h-4 m-1'>
-                      <Skeleton
-                        cssClasses={['w-full', 'h-full', 'rounded-full']}
-                        override
-                        animation={!id}
-                      />
-                    </div>
-                    <div className='w-40 h-4 m-1'>
-                      <Skeleton
-                        cssClasses={['w-full', 'h-full', 'rounded-full']}
-                        override
-                        animation={!id}
-                      />
-                    </div>
-                    <div className='w-32 h-4 m-1'>
-                      <Skeleton
-                        cssClasses={['w-full', 'h-full', 'rounded-full']}
-                        override
-                        animation={!id}
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-            </div> */}
+            <div
+              className='my-2'
+              style={{ minWidth: '150px', minHeight: '224px' }}
+            >
+              {id && packshot ? (
+                <img
+                  className='h-56'
+                  src={packshot}
+                  onError={(event) => {
+                    const target = event.target as HTMLImageElement
+                    target.className = 'w-full h-full bg-gray-300'
+                  }}
+                />
+              ) : id && !packshot ? (
+                <div className='w-full h-full bg-gray-300' />
+              ) : null}
+            </div>
+            <div className='max-w-full mx-4 my-2'>
+              {name && (
+                <div className='text-2xl text-center text-white clamp line-clamp-2'>
+                  {name}
+                </div>
+              )}
+            </div>
+            <div className='max-w-full mx-4 mt-2 mb-4'>
+              {summary && (
+                <div className='text-xs text-center text-white clamp line-clamp-5'>
+                  {summary}
+                </div>
+              )}
+            </div>
           </div>
         )
         return (

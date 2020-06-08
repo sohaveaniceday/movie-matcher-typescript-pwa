@@ -176,7 +176,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
 
   const suggestionsListComponent =
     showSuggestions && userInput && filteredSuggestions.length > 0 ? (
-      <div className='h-56'>
+      <div className='absolute w-full h-64'>
         <ul className='max-h-full overflow-y-scroll text-left bg-white border-2'>
           {filteredSuggestions.map(
             ({ name, element, id }: SuggestionProps, index: number) => {
@@ -190,7 +190,6 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
                   className={getClassName([
                     [isActiveSuggestion, ['bg-blue-300', 'text-white']],
                     'cursor-pointer',
-                    'w-full',
                   ])}
                   key={`${name}-${index}`}
                   onClick={onClick}
@@ -207,7 +206,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
     )
 
   return (
-    <>
+    <div className='relative'>
       <div className='inline-flex min-w-full'>
         <TextInput
           name={name}
@@ -230,6 +229,6 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
         )}
       </div>
       {suggestionsListComponent}
-    </>
+    </div>
   )
 }
