@@ -53,6 +53,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   const allowFetch = useRef(true)
   const { data, isLoading, setUrl } = useFetch()
 
+  // refs to allow automatic focusing
+  const inputRefs = useRef<RefObject<HTMLInputElement>[]>(
+    filmDataArray.map(() => createRef<HTMLInputElement>())
+  )
+
   const {
     // values,
     // errors,
@@ -163,13 +168,16 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     handleSubmit(event)
   }
 
+  useEffect(() => {
+    inputRefs.current[activeFilmNumber - 1]?.current?.focus()
+  }, [activeFilmNumber])
+
   return (
     <div className='flex flex-col h-full'>
       <div className='flex w-full h-16 bg-blue-500'>
         <div className='m-auto'>Navbar</div>
       </div>
       {filmDataArray.map((filmData, index) => {
-        const inputRef = createRef<HTMLInputElement>()
         const filmNumber = index + 1
         const filmKey = `film${filmNumber}`
         const { name, id, backgroundImage, packshot, summary } = state[user][
@@ -202,7 +210,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 onBlur={handleBlur}
                 onFocus={handleFocus}
                 placeholder={'Search film'}
-                forwardRef={inputRef}
+                forwardRef={inputRefs.current[index]}
               />
             </div>
             <div
@@ -247,7 +255,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             onClick={() => {
               if (activeFilmNumber !== filmNumber) {
                 setActiveFilmNumber(filmNumber)
-                inputRef.current?.focus()
               }
             }}
           />
