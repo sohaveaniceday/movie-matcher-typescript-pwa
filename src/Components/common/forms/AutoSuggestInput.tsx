@@ -176,30 +176,32 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
 
   const suggestionsListComponent =
     showSuggestions && userInput && filteredSuggestions.length > 0 ? (
-      <ul className='h-64 overflow-y-scroll text-left bg-white border-2'>
-        {filteredSuggestions.map(
-          ({ name, element, id }: SuggestionProps, index: number) => {
-            const isActiveSuggestion = activeSuggestion === index
+      <div className='h-56'>
+        <ul className='max-h-full overflow-y-scroll text-left bg-white border-2'>
+          {filteredSuggestions.map(
+            ({ name, element, id }: SuggestionProps, index: number) => {
+              const isActiveSuggestion = activeSuggestion === index
 
-            return (
-              <li
-                id={index.toString()}
-                data-id={id}
-                data-name={name}
-                className={getClassName([
-                  [isActiveSuggestion, ['bg-blue-300', 'text-white']],
-                  'cursor-pointer',
-                  'w-full',
-                ])}
-                key={`${name}-${index}`}
-                onClick={onClick}
-              >
-                {element}
-              </li>
-            )
-          }
-        )}
-      </ul>
+              return (
+                <li
+                  id={index.toString()}
+                  data-id={id}
+                  data-name={name}
+                  className={getClassName([
+                    [isActiveSuggestion, ['bg-blue-300', 'text-white']],
+                    'cursor-pointer',
+                    'w-full',
+                  ])}
+                  key={`${name}-${index}`}
+                  onClick={onClick}
+                >
+                  {element}
+                </li>
+              )
+            }
+          )}
+        </ul>
+      </div>
     ) : (
       <></>
     )
