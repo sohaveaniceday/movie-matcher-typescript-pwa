@@ -9,7 +9,7 @@ import React, {
   FocusEvent,
   RefObject,
 } from 'react'
-import { useObjectState, getClassName } from '../../../util'
+import { useObjectState, getClassName, BaseTypes } from '../../../util'
 import { TextInput } from '..'
 import { Icon } from '../Icon'
 
@@ -21,17 +21,12 @@ export type SuggestionProps = {
 
 type AutoSuggestProps = {
   suggestions: SuggestionProps[]
-  onChange?: Function
-  name: string
+  onChangeFunc?: Function
   isLoading: boolean
   allowFetch: MutableRefObject<boolean>
   icon?: string
-  autoFocus?: boolean
-  onFocus?: (event: FocusEvent<HTMLInputElement>) => void
-  onBlur?: (event: FocusEvent<HTMLInputElement>) => void
-  disabled?: boolean
   forwardRef?: RefObject<HTMLInputElement>
-}
+} & BaseTypes<JSX.IntrinsicElements['input']>
 
 export const AutoSuggest: FC<AutoSuggestProps> = ({
   suggestions = [],
@@ -39,12 +34,13 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   // isLoading,
   allowFetch,
   icon,
-  onChange: onChangeFunc,
+  onChangeFunc,
   autoFocus,
   onFocus,
   onBlur,
   disabled,
   forwardRef,
+  placeholder,
 }: AutoSuggestProps) => {
   const initialAutoSuggestState = {
     // The active selection's index
@@ -103,7 +99,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   // Event fired when the user clicks on a suggestion
   const onClick = ({ currentTarget }: MouseEvent<HTMLLIElement>) => {
     allowFetch.current = false
-    const { innerText, dataset } = currentTarget
+    const { dataset } = currentTarget
     onChangeFunc && onChangeFunc(dataset.name, name, dataset.id)
 
     // Update the user input and reset the rest of the state
@@ -111,7 +107,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
       activeSuggestion: 0,
       filteredSuggestions: [],
       showSuggestions: false,
-      userInput: innerText,
+      userInput: dataset.name,
     })
   }
 
@@ -214,6 +210,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
           onFocus={onFocus}
           disabled={disabled}
           forwardRef={forwardRef}
+          placeholder={placeholder}
         />
         {icon && (
           <Icon

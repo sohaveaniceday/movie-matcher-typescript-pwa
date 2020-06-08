@@ -6,6 +6,7 @@ import React, {
   FormEvent,
   RefObject,
   createRef,
+  SyntheticEvent,
 } from 'react'
 import { Accordion, Skeleton } from './common'
 import {
@@ -16,7 +17,7 @@ import {
   getClassName,
 } from '../util'
 import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
-import { imageBaseUrl, genreMap } from './static'
+import { imageBaseUrl, genreMap, initialFilmData } from '../static'
 
 type FilmAccordionsProps = {
   user: 'user1' | 'user2'
@@ -128,8 +129,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             name: title,
             id: foundId,
             releaseDate: release_date,
-            backgroundImage: `${imageBaseUrl}${backdrop_path}`,
-            packshot: `${imageBaseUrl}${poster_path}`,
+            backgroundImage: backdrop_path && `${imageBaseUrl}${backdrop_path}`,
+            packshot: poster_path && `${imageBaseUrl}${poster_path}`,
             summary: overview,
             genres: genre_ids.map((genreId: number) => {
               const foundGenre = genreMap.find(({ id }) => genreId === id)
@@ -138,8 +139,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           },
         },
       })
-    } else if (!id && !!state[user][film].name) {
-      updateState({ [user]: { [film]: { name: '', id: '' } } })
+    } else if (!id && !!state[user][film].id) {
+      updateState({ [user]: { [film]: initialFilmData } })
     }
   }
 
@@ -163,13 +164,14 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           <div
             className='flex flex-col items-center h-full justify-evenly'
             style={
-              id && backgroundImage
+              backgroundImage
                 ? {
                     backgroundImage: `url("${backgroundImage}")`,
                     backgroundPosition: 'top',
-                    backgroundSize: 'contain',
-                    backgroundRepeat: 'no-repeat',
                     backgroundColor: 'black',
+                    backdropFilter: 'blur(5px)',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'contain',
                   }
                 : { backgroundColor: 'black' }
             }
@@ -180,56 +182,76 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 isLoading={isLoading}
                 suggestions={filmSuggestions}
                 name={filmKey}
-                onChange={onChange}
+                onChangeFunc={onChange}
                 onBlur={handleBlur}
                 onFocus={handleFocus}
+                placeholder={'Search film'}
                 // disabled={disabled}
                 forwardRef={inputRef}
                 autoFocus={filmKey === 'film1'}
               />
             </div>
-            <div className='w-40 h-64'>
-              {id ? (
-                <img className='h-64' src={packshot} />
-              ) : (
-                <Skeleton cssClasses={['w-full', 'h-full']} override />
-              )}
-            </div>
-            <div className='w-64 h-10'>
-              {id ? (
-                <div className='text-2xl text-center text-white'>{name}</div>
-              ) : (
-                <Skeleton
-                  cssClasses={['w-full', 'h-full', 'rounded-full']}
-                  override
-                />
-              )}
-            </div>
-            <div className='flex flex-col items-center w-64 h-24 justify-evenly'>
-              {id ? (
-                <div className='text-xs text-center text-white'>{summary}</div>
-              ) : (
-                <>
-                  <div className='w-48 h-4 m-1'>
-                    <Skeleton
-                      cssClasses={['w-full', 'h-full', 'rounded-full']}
-                      override
-                    />
+            <div className=''>
+              <div style={{ minWidth: '170px', minHeight: '256px' }}>
+                {packshot ? (
+                  <img
+                    className='h-64'
+                    src={packshot}
+                    onError={(event) => {
+                      const target = event.target as HTMLImageElement
+                      target.className = 'w-40 h-64 bg-gray-700'
+                    }}
+                  />
+                ) : (
+                  <Skeleton
+                    cssClasses={['w-full', 'h-full']}
+                    override
+                    animation={!id}
+                  />
+                )}
+              </div>
+              <div className='w-64 h-10'>
+                {name ? (
+                  <div className='text-2xl text-center text-white'>{name}</div>
+                ) : (
+                  <Skeleton
+                    cssClasses={['w-full', 'h-full', 'rounded-full']}
+                    override
+                    animation={!id}
+                  />
+                )}
+              </div>
+              <div className='flex flex-col items-center w-64 h-24 justify-evenly'>
+                {summary ? (
+                  <div className='text-xs text-center text-white'>
+                    {summary}
                   </div>
-                  <div className='w-40 h-4 m-1'>
-                    <Skeleton
-                      cssClasses={['w-full', 'h-full', 'rounded-full']}
-                      override
-                    />
-                  </div>
-                  <div className='w-32 h-4 m-1'>
-                    <Skeleton
-                      cssClasses={['w-full', 'h-full', 'rounded-full']}
-                      override
-                    />
-                  </div>
-                </>
-              )}
+                ) : (
+                  <>
+                    <div className='w-48 h-4 m-1'>
+                      <Skeleton
+                        cssClasses={['w-full', 'h-full', 'rounded-full']}
+                        override
+                        animation={!id}
+                      />
+                    </div>
+                    <div className='w-40 h-4 m-1'>
+                      <Skeleton
+                        cssClasses={['w-full', 'h-full', 'rounded-full']}
+                        override
+                        animation={!id}
+                      />
+                    </div>
+                    <div className='w-32 h-4 m-1'>
+                      <Skeleton
+                        cssClasses={['w-full', 'h-full', 'rounded-full']}
+                        override
+                        animation={!id}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )

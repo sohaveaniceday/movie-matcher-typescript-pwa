@@ -25,6 +25,7 @@ type SkeletonProps = {
   size?: SizeProp
   cssClasses?: string[]
   override?: boolean
+  animation?: boolean
 } & BaseTypes<JSX.IntrinsicElements['div']>
 
 export const Skeleton: React.FC<SkeletonProps> = ({
@@ -34,12 +35,14 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   cssClasses = [],
   children,
   override,
+  animation = true,
   ...skeletonProps
 }: SkeletonProps) => {
+  const animationClass = animation ? ['shimmer-animation'] : ['bg-gray-300']
   if (children || override)
     return (
       <div
-        className={getClassName([...cssClasses, 'shimmer-animation'])}
+        className={getClassName([...cssClasses, ...animationClass])}
         {...skeletonProps}
       >
         {children}
@@ -117,7 +120,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   const elementClassName = getClassName([
     ...conditionalElementClassName,
     ...cssClasses,
-    'shimmer-animation',
+    ...animationClass,
   ])
 
   const shapeWrapperClassName = getClassName(getShapeSizeClassNames(size))

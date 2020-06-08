@@ -14345,10 +14345,19 @@ video {
 
 .line-clamp-2 {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  background-color: aqua;
+}
+
+.blur-image {
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+}
+
+.background-image {
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 @media (min-width: 640px) {

@@ -1,24 +1,10 @@
-import React, {
-  KeyboardEvent,
-  ChangeEvent,
-  FC,
-  FocusEvent,
-  RefObject,
-} from 'react'
-import { getClassName } from '../../../util'
+import React, { FC, RefObject } from 'react'
+import { getClassName, BaseTypes } from '../../../util'
 
 type TextInputProps = {
-  name: string
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void
   cssClasses?: string[]
-  value: string
-  onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void
-  onBlur?: (event: FocusEvent<HTMLInputElement>) => void
-  onFocus?: (event: FocusEvent<HTMLInputElement>) => void
-  autoFocus?: boolean
-  disabled?: boolean
   forwardRef?: RefObject<HTMLInputElement>
-}
+} & BaseTypes<JSX.IntrinsicElements['input']>
 
 export const TextInput: FC<TextInputProps> = ({
   name,

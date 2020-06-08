@@ -176,7 +176,7 @@ export const FilmInputs: FC<FilmInputsProps> = ({ user }: FilmInputsProps) => {
                 isLoading={isLoading}
                 suggestions={filmSuggestions}
                 name={filmKey}
-                onChange={onChange}
+                onChangeFunc={onChange}
                 icon={filmConfirmed ? 'tick' : ''}
                 onBlur={handleBlur}
                 onFocus={handleFocus}
