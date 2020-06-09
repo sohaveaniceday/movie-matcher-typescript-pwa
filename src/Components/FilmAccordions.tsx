@@ -176,7 +176,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   return (
     <div className='flex flex-col h-full'>
       <div className='flex w-full h-16 bg-blue-500'>
-        <div className='m-auto'>Navbar</div>
+        <div className='m-auto'>Movie Matcher</div>
       </div>
       {filmDataArray.map((filmData, index) => {
         const filmNumber = index + 1
@@ -267,7 +267,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
         )
       })}
       <div className='flex w-full h-16 bg-blue-500'>
-        <div className='m-auto'>Submit</div>
+        <div className='m-auto'>Next</div>
       </div>
     </div>
   )
