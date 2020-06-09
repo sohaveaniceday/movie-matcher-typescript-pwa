@@ -192,19 +192,16 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
         } = state[user][filmKey]
 
         const accordianContent = (
-          <div className='relative w-full h-full'>
-            <div
-              className='absolute w-full h-full'
-              style={{
-                backgroundImage: `url(${backgroundImage})`,
-                backgroundSize: 'contain',
-                backgroundColor: 'black',
-                backgroundRepeat: 'no-repeat',
-                filter: 'blur(5px)',
-                WebkitFilter: 'blur(5px)',
-              }}
-            />
+          <div className='relative w-full h-full bg-black'>
             <div className='relative flex flex-col items-center h-full overflow-auto'>
+              <img
+                className='absolute w-full md:hidden'
+                src={backgroundImage}
+                style={{
+                  filter: 'blur(4px)',
+                  WebkitFilter: 'blur(4px)',
+                }}
+              />
               <AutoSuggest
                 allowFetch={allowFetch}
                 isLoading={isLoading}
@@ -217,35 +214,39 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 placeholder={'Search film'}
                 forwardRef={inputRefs.current[index]}
               />
-              {id && packshot ? (
-                <img
-                  className='h-64 mb-5 border-4 border-white border-rounded'
-                  src={packshot}
-                  onError={(event) => {
-                    const target = event.target as HTMLImageElement
-                    target.className = 'w-40 h-64 mb-5 bg-gray-300'
-                  }}
-                />
-              ) : id && !packshot ? (
-                <div className='w-40 h-64 mb-5 bg-gray-300' />
-              ) : null}
-              <div className='text-center text-white'>
-                {name && <div className='mb-1 text-2xl'>{name}</div>}
-                {releaseDate && (
-                  <div className='mb-4 text-sm'>
-                    {releaseDate.substring(0, 4)}
-                  </div>
-                )}
-                {genres.length > 0 && (
-                  <div className='flex flex-wrap justify-center mb-4 flex-inline'>
-                    {genres.map((genre: string) => (
-                      <div key={genre} className='py-1 mx-1'>
-                        <Badge size='xs' content={genre} />
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {summary && <div className='px-2 mb-5 text-xs'>{summary}</div>}
+              <div className='z-10'>
+                {id && packshot ? (
+                  <img
+                    className='h-64 mx-auto mb-5 border-4 border-white border-rounded'
+                    src={packshot}
+                    onError={(event) => {
+                      const target = event.target as HTMLImageElement
+                      target.className = 'w-40 h-64 mb-5 bg-gray-300'
+                    }}
+                  />
+                ) : id && !packshot ? (
+                  <div className='w-40 h-64 mb-5 bg-gray-300' />
+                ) : null}
+                <div className='text-center text-white'>
+                  {name && <div className='mb-1 text-2xl'>{name}</div>}
+                  {releaseDate && (
+                    <div className='mb-4 text-sm'>
+                      {releaseDate.substring(0, 4)}
+                    </div>
+                  )}
+                  {genres.length > 0 && (
+                    <div className='flex flex-wrap justify-center mb-4 flex-inline'>
+                      {genres.map((genre: string) => (
+                        <div key={genre} className='py-1 mx-1'>
+                          <Badge size='xs' content={genre} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {summary && (
+                    <div className='px-2 mb-5 text-xs'>{summary}</div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
