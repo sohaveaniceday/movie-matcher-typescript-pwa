@@ -32,6 +32,7 @@ export const TextInput: FC<TextInputProps> = ({
         'border-4',
       ],
     ],
+    'w-full',
     'px-4',
     'py-2',
     'leading-tight',
@@ -40,9 +41,7 @@ export const TextInput: FC<TextInputProps> = ({
   ])
 
   return (
-    <div
-      className={getClassName([[disabled, 'cursor-not-allowed'], 'min-w-full'])}
-    >
+    <div className={getClassName([[disabled, 'cursor-not-allowed'], 'w-full'])}>
       <input
         ref={forwardRef}
         className={inputClassName}

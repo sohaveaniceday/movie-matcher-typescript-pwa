@@ -14353,14 +14353,6 @@ video {
   -webkit-line-clamp: 2;
 }
 
-.line-clamp-3 {
-  -webkit-line-clamp: 3;
-}
-
-.line-clamp-5 {
-  -webkit-line-clamp: 5;
-}
-
 @media (min-width: 640px) {
   .sm\:space-y-0 > :not(template) ~ :not(template) {
     --space-y-reverse: 0;

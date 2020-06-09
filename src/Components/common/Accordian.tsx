@@ -16,7 +16,13 @@ export const Accordion = ({
   onClick,
 }: AccordianProps) => {
   return (
-    <div className={getClassName(['flex', 'flex-col', [active, ['flex-1']]])}>
+    <div
+      className={getClassName([
+        'flex',
+        'flex-col',
+        [active, ['flex-1', 'overflow-y-scroll']],
+      ])}
+    >
       <button
         className={getClassName([
           'bg-gray-500',
@@ -48,13 +54,7 @@ export const Accordion = ({
         />
       </button>
       <div
-        className={getClassName([
-          'overflow-auto',
-          'bg-white',
-          'flex',
-          'flex-col',
-          [active, 'h-full', 'h-0'],
-        ])}
+        className={getClassName(['overflow-auto', [active, 'h-full', 'h-0']])}
       >
         {content}
       </div>

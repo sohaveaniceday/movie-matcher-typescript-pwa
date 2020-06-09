@@ -26,6 +26,7 @@ type AutoSuggestProps = {
   allowFetch: MutableRefObject<boolean>
   icon?: string
   forwardRef?: RefObject<HTMLInputElement>
+  cssClasses?: string[]
 } & BaseTypes<JSX.IntrinsicElements['input']>
 
 export const AutoSuggest: FC<AutoSuggestProps> = ({
@@ -41,6 +42,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   disabled,
   forwardRef,
   placeholder,
+  cssClasses = [],
 }: AutoSuggestProps) => {
   const initialAutoSuggestState = {
     // The active selection's index
@@ -205,30 +207,33 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
       <></>
     )
 
+  const autoSuggestClassName = getClassName([...cssClasses])
+
   return (
-    <div className='relative'>
-      <div className='inline-flex min-w-full'>
-        <TextInput
-          name={name}
-          onChange={onChange}
-          value={userInput}
-          onKeyDown={onKeyDown}
-          cssClasses={['min-w-full']}
-          onBlur={onBlur}
-          autoFocus={autoFocus}
-          onFocus={onFocus}
-          disabled={disabled}
-          forwardRef={forwardRef}
-          placeholder={placeholder}
-        />
-        {icon && (
-          <Icon
-            iconName={icon}
-            className='w-6 h-6 mx-2 my-1 overflow-visible text-green-400'
+    <div className={autoSuggestClassName}>
+      <div className='relative'>
+        <div className='inline-flex w-full'>
+          <TextInput
+            name={name}
+            onChange={onChange}
+            value={userInput}
+            onKeyDown={onKeyDown}
+            onBlur={onBlur}
+            autoFocus={autoFocus}
+            onFocus={onFocus}
+            disabled={disabled}
+            forwardRef={forwardRef}
+            placeholder={placeholder}
           />
-        )}
+          {icon && (
+            <Icon
+              iconName={icon}
+              className='w-6 h-6 mx-2 my-1 overflow-visible text-green-400'
+            />
+          )}
+        </div>
+        {suggestionsListComponent}
       </div>
-      {suggestionsListComponent}
     </div>
   )
 }
