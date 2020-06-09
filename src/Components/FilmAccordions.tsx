@@ -8,7 +8,7 @@ import React, {
   createRef,
   SyntheticEvent,
 } from 'react'
-import { Accordion, Skeleton } from './common'
+import { Accordion, Badge } from './common'
 import {
   useServiceState,
   useFetch,
@@ -19,6 +19,7 @@ import {
 } from '../util'
 import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
 import { imageBaseUrl, genreMap, initialFilmData } from '../static'
+import { generateKeyPairSync } from 'crypto'
 
 type FilmAccordionsProps = {
   user: 'user1' | 'user2'
@@ -180,53 +181,72 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       {filmDataArray.map((filmData, index) => {
         const filmNumber = index + 1
         const filmKey = `film${filmNumber}`
-        const { name, id, backgroundImage, packshot, summary } = state[user][
-          filmKey
-        ]
+        const {
+          name,
+          id,
+          backgroundImage,
+          packshot,
+          summary,
+          genres,
+          releaseDate,
+        } = state[user][filmKey]
 
         const accordianContent = (
-          <div
-            className='flex flex-col items-center h-full overflow-auto'
-            style={
-              backgroundImage
-                ? {
-                    backgroundImage: `url("${backgroundImage}")`,
-                    backgroundPosition: 'top',
-                    backgroundColor: 'black',
-                    backdropFilter: 'blur(5px)',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundSize: 'contain',
-                  }
-                : { backgroundColor: 'black' }
-            }
-          >
-            <AutoSuggest
-              allowFetch={allowFetch}
-              isLoading={isLoading}
-              suggestions={filmSuggestions}
-              name={filmKey}
-              onChangeFunc={onChange}
-              onBlur={handleBlur}
-              onFocus={handleFocus}
-              cssClasses={['w-2/3', 'my-5']}
-              placeholder={'Search film'}
-              forwardRef={inputRefs.current[index]}
+          <div className='relative w-full h-full'>
+            <div
+              className='absolute w-full h-full'
+              style={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: 'contain',
+                backgroundColor: 'black',
+                backgroundRepeat: 'no-repeat',
+                filter: 'blur(5px)',
+                WebkitFilter: 'blur(5px)',
+              }}
             />
-            {id && packshot ? (
-              <img
-                className='h-64 mb-5'
-                src={packshot}
-                onError={(event) => {
-                  const target = event.target as HTMLImageElement
-                  target.className = 'w-40 h-64 mb-5 bg-gray-300'
-                }}
+            <div className='relative flex flex-col items-center h-full overflow-auto'>
+              <AutoSuggest
+                allowFetch={allowFetch}
+                isLoading={isLoading}
+                suggestions={filmSuggestions}
+                name={filmKey}
+                onChangeFunc={onChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                cssClasses={['w-2/3', 'my-5']}
+                placeholder={'Search film'}
+                forwardRef={inputRefs.current[index]}
               />
-            ) : id && !packshot ? (
-              <div className='w-40 h-64 mb-5 bg-gray-300' />
-            ) : null}
-            <div className='mx-4 text-center text-white'>
-              {name && <div className='mb-5 text-2xl'>{name}</div>}
-              {summary && <div className='mb-5 text-xs'>{summary}</div>}
+              {id && packshot ? (
+                <img
+                  className='h-64 mb-5 border-4 border-white border-rounded'
+                  src={packshot}
+                  onError={(event) => {
+                    const target = event.target as HTMLImageElement
+                    target.className = 'w-40 h-64 mb-5 bg-gray-300'
+                  }}
+                />
+              ) : id && !packshot ? (
+                <div className='w-40 h-64 mb-5 bg-gray-300' />
+              ) : null}
+              <div className='text-center text-white'>
+                {name && <div className='mb-1 text-2xl'>{name}</div>}
+                {releaseDate && (
+                  <div className='mb-4 text-sm'>
+                    {releaseDate.substring(0, 4)}
+                  </div>
+                )}
+                {genres.length > 0 && (
+                  <div className='flex flex-wrap justify-center mb-4 flex-inline'>
+                    {genres.map((genre: string) => (
+                      <div key={genre} className='py-1 mx-1'>
+                        <Badge size='xs' content={genre} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {summary && <div className='px-2 mb-5 text-xs'>{summary}</div>}
+              </div>
             </div>
           </div>
         )

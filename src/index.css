@@ -14353,6 +14353,26 @@ video {
   -webkit-line-clamp: 2;
 }
 
+.module {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-image: url(https://images.unsplash.com/photo-1494645009625-cc17363a5f20?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ&s=bd502af39c922553e5a13624d4f44f40);
+}
+
+.module::before {
+  content: '';
+  /* top: 0;
+  left: 0; */
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-size: contain;
+  background-color: black;
+  background-repeat: no-repeat;
+  filter: blur(5px);
+}
+
 @media (min-width: 640px) {
   .sm\:space-y-0 > :not(template) ~ :not(template) {
     --space-y-reverse: 0;

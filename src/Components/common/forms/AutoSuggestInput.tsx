@@ -116,7 +116,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   // Event fired when the user presses a key down
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     // Stops document's keydown event listener when displaying a list
-    if (showSuggestions && filteredSuggestions.length > 0)
+    if (showSuggestions && filteredSuggestions.length > 0 && userInput)
       event.stopPropagation()
 
     const selectedItem = filteredSuggestions[activeSuggestion]
