@@ -4,6 +4,8 @@ import { getClassName, BaseTypes } from '../../../util'
 type TextInputProps = {
   cssClasses?: string[]
   forwardRef?: RefObject<HTMLInputElement>
+  rounded?: boolean
+  roundedTop?: boolean
 } & BaseTypes<JSX.IntrinsicElements['input']>
 
 export const TextInput: FC<TextInputProps> = ({
@@ -15,6 +17,8 @@ export const TextInput: FC<TextInputProps> = ({
   onBlur,
   onFocus,
   autoFocus,
+  rounded = false,
+  roundedTop = true,
   disabled = false,
   forwardRef,
   ...TextInputProps
@@ -32,6 +36,8 @@ export const TextInput: FC<TextInputProps> = ({
         'border-4',
       ],
     ],
+    [rounded, 'rounded-full'],
+    [roundedTop, 'rounded-t-full'],
     'w-full',
     'px-4',
     'py-2',

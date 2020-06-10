@@ -145,7 +145,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
         genre_ids,
       } = data.results.find(({ id: filmId }: any) => parseInt(id) === filmId)
       const packshot = poster_path && `${imageBaseUrl}${poster_path}`
-      const pallette = packshot && (await getPalette(packshot))
+      const palette = packshot && (await getPalette(packshot))
+
       updateState({
         [user]: {
           [film]: {
@@ -155,7 +156,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             backgroundImage: backdrop_path && `${imageBaseUrl}${backdrop_path}`,
             packshot: packshot,
             summary: overview,
-            pallette: pallette,
+            palette: palette,
             genres: genre_ids.map((genreId: number) => {
               const foundGenre = genreMap.find(({ id }) => genreId === id)
               return foundGenre?.name
@@ -163,6 +164,12 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           },
         },
       })
+      // const palette = packshot && (await getPalette(packshot))
+      // updateState({
+      //   [user]: {
+      //     [film]: { palette: palette },
+      //   },
+      // })
     } else if (!id && !!state[user][film].id) {
       updateState({ [user]: { [film]: initialFilmData } })
     }
@@ -192,18 +199,29 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           summary,
           genres,
           releaseDate,
-          pallette,
+          palette,
         } = state[user][filmKey]
 
+        console.log('palette', palette)
+
         const accordianContent = (
-          <div className='relative w-full h-full bg-black'>
+          <div
+            className='relative w-full h-full'
+            style={{
+              backgroundColor: `rgba(${
+                palette ? palette.DarkVibrant.rgb.join(',') : '0,0,0'
+              }`,
+            }}
+          >
             <div className='relative flex flex-col items-center h-full overflow-auto'>
               <div
                 className='absolute w-full h-full'
                 style={{
                   backgroundImage: `linear-gradient(rgba(${
-                    pallette ? pallette.Vibrant.rgb.join(',') : '0,0,0'
-                  }), black)`,
+                    palette ? palette.LightVibrant.rgb.join(',') : '0,0,0'
+                  }), rgba(${
+                    palette ? palette.DarkVibrant.rgb.join(',') : '0,0,0'
+                  })`,
                 }}
               />
               <AutoSuggest
@@ -217,6 +235,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 cssClasses={['w-2/3', 'my-5']}
                 placeholder={'Search film'}
                 forwardRef={inputRefs.current[index]}
+                rounded
               />
               <div className='z-10'>
                 {id && packshot ? (
@@ -225,11 +244,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                     src={packshot}
                     onError={(event) => {
                       const target = event.target as HTMLImageElement
-                      target.className = 'w-40 h-64 mb-5 bg-gray-300'
+                      target.className = 'w-40 h-64 mx-auto mb-5 bg-gray-300'
                     }}
                   />
                 ) : id && !packshot ? (
-                  <div className='w-40 h-64 mb-5 bg-gray-300' />
+                  <div className='w-40 h-64 mx-auto mb-5 bg-gray-300' />
                 ) : null}
                 <div className='text-center text-white'>
                   {name && <div className='mb-1 text-2xl'>{name}</div>}

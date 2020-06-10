@@ -6,7 +6,6 @@ import React, {
   MutableRefObject,
   FC,
   ReactNode,
-  FocusEvent,
   RefObject,
 } from 'react'
 import { useObjectState, getClassName, BaseTypes } from '../../../util'
@@ -27,6 +26,7 @@ type AutoSuggestProps = {
   icon?: string
   forwardRef?: RefObject<HTMLInputElement>
   cssClasses?: string[]
+  rounded?: boolean
 } & BaseTypes<JSX.IntrinsicElements['input']>
 
 export const AutoSuggest: FC<AutoSuggestProps> = ({
@@ -42,6 +42,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   disabled,
   forwardRef,
   placeholder,
+  rounded,
   cssClasses = [],
 }: AutoSuggestProps) => {
   const initialAutoSuggestState = {
@@ -58,6 +59,9 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
     { showSuggestions, activeSuggestion, filteredSuggestions, userInput },
     updateAutoSuggestState,
   ] = useObjectState(initialAutoSuggestState)
+
+  const isDisplayingSuggestions: boolean =
+    showSuggestions && filteredSuggestions.length > 0 && userInput
 
   useEffect(() => {
     // Filter our suggestions that don't contain the user's input
@@ -116,8 +120,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   // Event fired when the user presses a key down
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     // Stops document's keydown event listener when displaying a list
-    if (showSuggestions && filteredSuggestions.length > 0 && userInput)
-      event.stopPropagation()
+    if (isDisplayingSuggestions) event.stopPropagation()
 
     const selectedItem = filteredSuggestions[activeSuggestion]
     // User pressed the enter key, update the input and close the
@@ -176,36 +179,35 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
     })
   }, [activeSuggestion])
 
-  const suggestionsListComponent =
-    showSuggestions && userInput && filteredSuggestions.length > 0 ? (
-      <div className='absolute w-full h-64'>
-        <ul className='max-h-full overflow-y-scroll text-left bg-white border-2'>
-          {filteredSuggestions.map(
-            ({ name, element, id }: SuggestionProps, index: number) => {
-              const isActiveSuggestion = activeSuggestion === index
+  const suggestionsListComponent = isDisplayingSuggestions ? (
+    <div className='absolute w-full h-64'>
+      <ul className='max-h-full overflow-y-scroll text-left bg-white border-2'>
+        {filteredSuggestions.map(
+          ({ name, element, id }: SuggestionProps, index: number) => {
+            const isActiveSuggestion = activeSuggestion === index
 
-              return (
-                <li
-                  id={index.toString()}
-                  data-id={id}
-                  data-name={name}
-                  className={getClassName([
-                    [isActiveSuggestion, ['bg-blue-300', 'text-white']],
-                    'cursor-pointer',
-                  ])}
-                  key={`${name}-${index}`}
-                  onClick={onClick}
-                >
-                  {element}
-                </li>
-              )
-            }
-          )}
-        </ul>
-      </div>
-    ) : (
-      <></>
-    )
+            return (
+              <li
+                id={index.toString()}
+                data-id={id}
+                data-name={name}
+                className={getClassName([
+                  [isActiveSuggestion, ['bg-blue-300', 'text-white']],
+                  'cursor-pointer',
+                ])}
+                key={`${name}-${index}`}
+                onClick={onClick}
+              >
+                {element}
+              </li>
+            )
+          }
+        )}
+      </ul>
+    </div>
+  ) : (
+    <></>
+  )
 
   const autoSuggestClassName = getClassName([...cssClasses])
 
@@ -224,6 +226,8 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
             disabled={disabled}
             forwardRef={forwardRef}
             placeholder={placeholder}
+            rounded={rounded && !isDisplayingSuggestions}
+            roundedTop={rounded && isDisplayingSuggestions}
           />
           {icon && (
             <Icon
