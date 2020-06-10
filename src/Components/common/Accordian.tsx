@@ -1,6 +1,7 @@
 import React, { ReactNode, MouseEvent } from 'react'
 import { Icon } from './Icon'
 import { BaseTypes, getClassName } from '../../util'
+import { colorScheme } from '../../static'
 
 type AccordianProps = {
   title: string
@@ -22,11 +23,12 @@ export const Accordion = ({
         'flex-col',
         [active, ['flex-1', 'overflow-y-scroll']],
       ])}
+      style={{ backgroundColor: `#${colorScheme.dark}` }}
     >
       <button
         className={getClassName([
-          'bg-gray-500',
-          'lg:hover:bg-gray-700',
+          'rounded-t-lg',
+          // 'lg:hover:bg-gray-700',
           'cursor-pointer',
           'px-5',
           'h-16',
@@ -36,9 +38,13 @@ export const Accordion = ({
           'focus:border-none',
           'outline-none',
           'focus:outline-none',
-          [active, 'bg-gray-700'],
         ])}
-        style={{ transition: 'background-color 0.6s ease' }}
+        style={{
+          transition: 'background-color 0.6s ease',
+          backgroundColor: active
+            ? `#${colorScheme.medium}`
+            : `#${colorScheme.lightDark}`,
+        }}
         onClick={onClick}
       >
         <p className='pr-2 font-serif text-sm font-semibold text-left truncate'>

@@ -31,9 +31,9 @@ export const TextInput: FC<TextInputProps> = ({
       [
         'outline-none',
         'bg-gray-100',
-        'border-gray-600',
-        'border-solid',
-        'border-4',
+        // 'border-gray-600',
+        // 'border-solid',
+        // 'border-4',
       ],
     ],
     [rounded, 'rounded-full'],

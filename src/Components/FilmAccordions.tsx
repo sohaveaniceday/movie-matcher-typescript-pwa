@@ -19,7 +19,7 @@ import {
   getPalette,
 } from '../util'
 import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
-import { imageBaseUrl, genreMap, initialFilmData } from '../static'
+import { imageBaseUrl, genreMap, initialFilmData, colorScheme } from '../static'
 
 type FilmAccordionsProps = {
   user: 'user1' | 'user2'
@@ -145,7 +145,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
         genre_ids,
       } = data.results.find(({ id: filmId }: any) => parseInt(id) === filmId)
       const packshot = poster_path && `${imageBaseUrl}${poster_path}`
-      const palette = packshot && (await getPalette(packshot))
+      // const palette = packshot && (await getPalette(packshot))
 
       updateState({
         [user]: {
@@ -156,7 +156,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             backgroundImage: backdrop_path && `${imageBaseUrl}${backdrop_path}`,
             packshot: packshot,
             summary: overview,
-            palette: palette,
+            // palette: packshot && (await getPalette(packshot)),
             genres: genre_ids.map((genreId: number) => {
               const foundGenre = genreMap.find(({ id }) => genreId === id)
               return foundGenre?.name
@@ -164,6 +164,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           },
         },
       })
+
       // const palette = packshot && (await getPalette(packshot))
       // updateState({
       //   [user]: {
@@ -185,8 +186,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   return (
     <div className='flex flex-col h-full'>
-      <div className='flex w-full h-16 bg-blue-500'>
-        <div className='m-auto'>Movie Matcher</div>
+      <div
+        className='flex w-full h-16'
+        style={{ backgroundColor: `#${colorScheme.darkLight}` }}
+      >
+        <div className='m-auto text-white'>Movie Matcher</div>
       </div>
       {filmDataArray.map((filmData, index) => {
         const filmNumber = index + 1
@@ -202,26 +206,18 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           palette,
         } = state[user][filmKey]
 
-        console.log('palette', palette)
-
         const accordianContent = (
           <div
             className='relative w-full h-full'
             style={{
-              backgroundColor: `rgba(${
-                palette ? palette.DarkVibrant.rgb.join(',') : '0,0,0'
-              }`,
+              backgroundColor: `#3d405b`,
             }}
           >
             <div className='relative flex flex-col items-center h-full overflow-auto'>
               <div
                 className='absolute w-full h-full'
                 style={{
-                  backgroundImage: `linear-gradient(rgba(${
-                    palette ? palette.LightVibrant.rgb.join(',') : '0,0,0'
-                  }), rgba(${
-                    palette ? palette.DarkVibrant.rgb.join(',') : '0,0,0'
-                  })`,
+                  backgroundImage: `linear-gradient(#77798C,#3d405b)`,
                 }}
               />
               <AutoSuggest
@@ -232,7 +228,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 onChangeFunc={onChange}
                 onBlur={handleBlur}
                 onFocus={handleFocus}
-                cssClasses={['w-2/3', 'my-5']}
+                cssClasses={['w-4/5', 'my-6']}
                 placeholder={'Search film'}
                 forwardRef={inputRefs.current[index]}
                 rounded
@@ -267,7 +263,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                     </div>
                   )}
                   {summary && (
-                    <div className='px-2 mb-5 text-xs'>{summary}</div>
+                    <div className='px-4 mb-5 text-xs'>{summary}</div>
                   )}
                 </div>
               </div>
@@ -289,8 +285,15 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           />
         )
       })}
-      <div className='flex w-full h-16 bg-blue-500'>
-        <div className='m-auto'>Next</div>
+      <div
+        className='flex w-full h-16'
+        style={{
+          backgroundColor: `#${
+            allFilmsConfirmed ? colorScheme.light : 'f08890'
+          }`,
+        }}
+      >
+        <div className='m-auto text-white'>Next</div>
       </div>
     </div>
   )

@@ -42,7 +42,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   disabled,
   forwardRef,
   placeholder,
-  rounded,
+  rounded = false,
   cssClasses = [],
 }: AutoSuggestProps) => {
   const initialAutoSuggestState = {
@@ -180,12 +180,20 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   }, [activeSuggestion])
 
   const suggestionsListComponent = isDisplayingSuggestions ? (
-    <div className='absolute w-full h-64'>
-      <ul className='max-h-full overflow-y-scroll text-left bg-white border-2'>
+    <div className='absolute z-20 w-full h-64'>
+      <ul
+        className={getClassName([
+          'max-h-full',
+          'overflow-y-scroll',
+          'text-left',
+          'bg-white',
+          'border-2',
+          [rounded, 'rounded-b-lg'],
+        ])}
+      >
         {filteredSuggestions.map(
           ({ name, element, id }: SuggestionProps, index: number) => {
             const isActiveSuggestion = activeSuggestion === index
-
             return (
               <li
                 id={index.toString()}

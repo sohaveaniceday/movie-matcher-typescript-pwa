@@ -1,6 +1,5 @@
 import Vibrant from 'node-vibrant'
 
 export const getPalette = async (imageUrl: string) => {
-  const vibrant = new Vibrant(imageUrl)
-  return await vibrant.getPalette()
+  return Vibrant.from(imageUrl).getPalette((err, palette) => palette)
 }

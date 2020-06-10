@@ -20,6 +20,18 @@ export const initialObjectServiceState: State = {
   user2: initialUserData,
 }
 
+export const colorScheme = {
+  dark: '1d3557',
+  // darkMedium: '04052e',
+  darkLight: '457b9d',
+  // mediumDark: '5390d9',
+  medium: 'a8dadc',
+  // mediumLight: '48bfe3',
+  // lightMedium: '56cfe1',
+  lightDark: 'f1faee',
+  light: 'e63946',
+}
+
 export const imageBaseUrl = 'https://image.tmdb.org/t/p/original'
 
 export const genreMap = [
