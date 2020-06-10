@@ -16,10 +16,10 @@ import {
   useDebounce,
   getClassName,
   useEventListener,
+  getPalette,
 } from '../util'
 import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
 import { imageBaseUrl, genreMap, initialFilmData } from '../static'
-import { generateKeyPairSync } from 'crypto'
 
 type FilmAccordionsProps = {
   user: 'user1' | 'user2'
@@ -132,7 +132,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     }
   }, [data])
 
-  const onChange = (value: string, film: string, id?: string) => {
+  const onChange = async (value: string, film: string, id?: string) => {
     handleChange(value, film)
     if (id) {
       const {
@@ -144,6 +144,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
         overview,
         genre_ids,
       } = data.results.find(({ id: filmId }: any) => parseInt(id) === filmId)
+      const packshot = poster_path && `${imageBaseUrl}${poster_path}`
+      const pallette = packshot && (await getPalette(packshot))
       updateState({
         [user]: {
           [film]: {
@@ -151,8 +153,9 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             id: foundId,
             releaseDate: release_date,
             backgroundImage: backdrop_path && `${imageBaseUrl}${backdrop_path}`,
-            packshot: poster_path && `${imageBaseUrl}${poster_path}`,
+            packshot: packshot,
             summary: overview,
+            pallette: pallette,
             genres: genre_ids.map((genreId: number) => {
               const foundGenre = genreMap.find(({ id }) => genreId === id)
               return foundGenre?.name
@@ -189,17 +192,18 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           summary,
           genres,
           releaseDate,
+          pallette,
         } = state[user][filmKey]
 
         const accordianContent = (
           <div className='relative w-full h-full bg-black'>
             <div className='relative flex flex-col items-center h-full overflow-auto'>
-              <img
-                className='absolute w-full md:hidden'
-                src={backgroundImage}
+              <div
+                className='absolute w-full h-full'
                 style={{
-                  filter: 'blur(4px)',
-                  WebkitFilter: 'blur(4px)',
+                  backgroundImage: `linear-gradient(rgba(${
+                    pallette ? pallette.Vibrant.rgb.join(',') : '0,0,0'
+                  }), black)`,
                 }}
               />
               <AutoSuggest

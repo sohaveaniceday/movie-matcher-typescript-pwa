@@ -9,6 +9,7 @@ type FilmData = {
   foreignRating: FilmRating
   backgroundImage: string
   packshot: string
+  pallette: any
   summary: string
   genres: string[]
 }
