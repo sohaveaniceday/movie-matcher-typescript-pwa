@@ -30,6 +30,7 @@ export const colorScheme = {
   // lightMedium: '56cfe1',
   lightDark: 'f1faee',
   light: 'e63946',
+  lightAlternate: '5472C0',
 }
 
 export const imageBaseUrl = 'https://image.tmdb.org/t/p/original'

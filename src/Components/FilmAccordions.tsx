@@ -6,31 +6,41 @@ import React, {
   FormEvent,
   RefObject,
   createRef,
-  SyntheticEvent,
+  Dispatch,
 } from 'react'
 import { Accordion, Badge } from './common'
 import {
   useServiceState,
   useFetch,
-  useCustomForm,
   useDebounce,
   getClassName,
   useEventListener,
-  getPalette,
+  useObjectState,
 } from '../util'
 import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
 import { imageBaseUrl, genreMap, initialFilmData, colorScheme } from '../static'
 
 type FilmAccordionsProps = {
-  user: 'user1' | 'user2'
+  activeUserNumber: 1 | 2
+  setActiveUserNumber: Dispatch<React.SetStateAction<1 | 2>>
 }
 
 export const FilmAccordions: FC<FilmAccordionsProps> = ({
-  user,
+  activeUserNumber,
+  setActiveUserNumber,
 }: FilmAccordionsProps) => {
   const [activeFilmNumber, setActiveFilmNumber] = useState<number>(1)
   const [state, updateState] = useServiceState()
-  const filmDataArray: FilmData[] = Object.values(state[user])
+  const initialInputValues = {
+    film1: '',
+    film2: '',
+    film3: '',
+  }
+  const [values, updateValues] = useObjectState(initialInputValues)
+
+  const currentFilmKey = `film${activeFilmNumber}`
+  const currentUserKey = `user${activeUserNumber}`
+  const filmDataArray: FilmData[] = Object.values(state[currentUserKey])
 
   const handleKeyDown = (event: KeyboardEvent) => {
     event.stopPropagation()
@@ -46,7 +56,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   const allFilmsConfirmed = filmDataArray.every(({ id }: FilmData) => id)
 
-  const initialValues = { film1: '', film2: '', film3: '' }
+  // const initialValues = { film1: '', film2: '', film3: '' }
 
   const [filmSuggestions, setFilmSuggestions] = useState<SuggestionProps[]>([])
 
@@ -59,22 +69,23 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     filmDataArray.map(() => createRef<HTMLInputElement>())
   )
 
-  const {
-    // values,
-    // errors,
-    // touched,
-    handleChange,
-    handleSubmit,
-    handleBlur,
-    handleFocus,
-    currentValue,
-  } = useCustomForm({
-    initialValues,
-    onSubmit: ({ values: formValues }: any) => console.log(formValues),
-    initialInput: 'film1',
-  })
+  // const {
+  //   values,
+  //   // errors,
+  //   // touched,
+  //   clearValues,
+  //   handleChange,
+  //   handleSubmit,
+  //   handleBlur,
+  //   handleFocus,
+  //   currentValue,
+  // } = useCustomForm({
+  //   initialValues,
+  //   onSubmit: ({ values: formValues }: any) => console.log(formValues),
+  //   initialInput: 'film1',
+  // })
 
-  const debouncedSearchTerm = useDebounce(currentValue || '', 400)
+  const debouncedSearchTerm = useDebounce(values[currentFilmKey] || '', 400)
 
   useEffect(() => {
     // Make sure we have a value (user has entered something in input)
@@ -132,8 +143,10 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     }
   }, [data])
 
-  const onChange = async (value: string, film: string, id?: string) => {
-    handleChange(value, film)
+  const onChange = async (value: string, filmKey: string, id?: string) => {
+    // handleChange(value, filmkey)
+    updateValues({ [filmKey]: value })
+
     if (id) {
       const {
         title,
@@ -148,8 +161,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       // const palette = packshot && (await getPalette(packshot))
 
       updateState({
-        [user]: {
-          [film]: {
+        [currentUserKey]: {
+          [filmKey]: {
             name: title,
             id: foundId,
             releaseDate: release_date,
@@ -171,13 +184,17 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       //     [film]: { palette: palette },
       //   },
       // })
-    } else if (!id && !!state[user][film].id) {
-      updateState({ [user]: { [film]: initialFilmData } })
+    } else if (!id && !!state[currentUserKey][filmKey].id) {
+      updateState({ [currentUserKey]: { [filmKey]: initialFilmData } })
     }
   }
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    handleSubmit(event)
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (allFilmsConfirmed && activeUserNumber === 1) {
+      updateValues(initialInputValues)
+      setActiveUserNumber(2)
+    }
   }
 
   useEffect(() => {
@@ -192,109 +209,127 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       >
         <div className='m-auto text-white'>Movie Matcher</div>
       </div>
-      {filmDataArray.map((filmData, index) => {
-        const filmNumber = index + 1
-        const filmKey = `film${filmNumber}`
-        const {
-          name,
-          id,
-          backgroundImage,
-          packshot,
-          summary,
-          genres,
-          releaseDate,
-          palette,
-        } = state[user][filmKey]
+      <form
+        className='flex flex-col flex-1 h-full overflow-auto'
+        onSubmit={onSubmit}
+      >
+        {filmDataArray.map((filmData, index) => {
+          const filmNumber = index + 1
+          const filmKey = `film${filmNumber}`
+          const {
+            name,
+            id,
+            backgroundImage,
+            packshot,
+            summary,
+            genres,
+            releaseDate,
+            palette,
+          } = state[currentUserKey][filmKey]
 
-        const accordianContent = (
-          <div
-            className='relative w-full h-full'
-            style={{
-              backgroundColor: `#3d405b`,
-            }}
-          >
-            <div className='relative flex flex-col items-center h-full overflow-auto'>
-              <div
-                className='absolute w-full h-full'
-                style={{
-                  backgroundImage: `linear-gradient(#77798C,#3d405b)`,
-                }}
-              />
-              <AutoSuggest
-                allowFetch={allowFetch}
-                isLoading={isLoading}
-                suggestions={filmSuggestions}
-                name={filmKey}
-                onChangeFunc={onChange}
-                onBlur={handleBlur}
-                onFocus={handleFocus}
-                cssClasses={['w-4/5', 'my-6']}
-                placeholder={'Search film'}
-                forwardRef={inputRefs.current[index]}
-                rounded
-              />
-              <div className='z-10'>
-                {id && packshot ? (
-                  <img
-                    className='h-64 mx-auto mb-5 border-4 border-white border-rounded'
-                    src={packshot}
-                    onError={(event) => {
-                      const target = event.target as HTMLImageElement
-                      target.className = 'w-40 h-64 mx-auto mb-5 bg-gray-300'
-                    }}
-                  />
-                ) : id && !packshot ? (
-                  <div className='w-40 h-64 mx-auto mb-5 bg-gray-300' />
-                ) : null}
-                <div className='text-center text-white'>
-                  {name && <div className='mb-1 text-2xl'>{name}</div>}
-                  {releaseDate && (
-                    <div className='mb-4 text-sm'>
-                      {releaseDate.substring(0, 4)}
-                    </div>
-                  )}
-                  {genres.length > 0 && (
-                    <div className='flex flex-wrap justify-center mb-4 flex-inline'>
-                      {genres.map((genre: string) => (
-                        <div key={genre} className='py-1 mx-1'>
-                          <Badge size='xs' content={genre} />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {summary && (
-                    <div className='px-4 mb-5 text-xs'>{summary}</div>
-                  )}
+          const accordianContent = (
+            <div
+              className='relative w-full h-full'
+              style={{
+                backgroundColor: `#3d405b`,
+              }}
+            >
+              <div className='relative flex flex-col items-center h-full overflow-auto'>
+                <div
+                  className='absolute w-full h-full'
+                  style={{
+                    backgroundImage: `linear-gradient(#77798C,#3d405b)`,
+                  }}
+                />
+                <AutoSuggest
+                  allowFetch={allowFetch}
+                  isLoading={isLoading}
+                  suggestions={filmSuggestions}
+                  name={filmKey}
+                  onChangeFunc={onChange}
+                  // onBlur={handleBlur}
+                  // onFocus={handleFocus}
+                  cssClasses={['w-4/5', 'my-6']}
+                  placeholder='Search film'
+                  forwardRef={inputRefs.current[index]}
+                  rounded
+                  value={values[currentFilmKey]}
+                />
+                <div className='z-10'>
+                  {id && packshot ? (
+                    <img
+                      className='h-64 mx-auto mb-5 border-4 border-white border-rounded'
+                      src={packshot}
+                      onError={(event) => {
+                        const target = event.target as HTMLImageElement
+                        target.className = 'w-40 h-64 mx-auto mb-5 bg-gray-300'
+                      }}
+                    />
+                  ) : id && !packshot ? (
+                    <div className='w-40 h-64 mx-auto mb-5 bg-gray-300' />
+                  ) : null}
+                  <div className='text-center text-white'>
+                    {name && <div className='mb-1 text-2xl'>{name}</div>}
+                    {releaseDate && (
+                      <div className='mb-4 text-sm'>
+                        {releaseDate.substring(0, 4)}
+                      </div>
+                    )}
+                    {genres.length > 0 && (
+                      <div className='flex flex-wrap justify-center mb-4 flex-inline'>
+                        {genres.map((genre: string) => (
+                          <div key={genre} className='py-1 mx-1'>
+                            <Badge size='xs' content={genre} />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {summary && (
+                      <div className='px-4 mb-5 text-xs'>{summary}</div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )
+          )
 
-        return (
-          <Accordion
-            key={filmKey}
-            title={filmData.name || `Film ${index + 1}`}
-            content={accordianContent}
-            active={activeFilmNumber === filmNumber}
-            onClick={() => {
-              if (activeFilmNumber !== filmNumber) {
-                setActiveFilmNumber(filmNumber)
-              }
-            }}
-          />
-        )
-      })}
-      <div
-        className='flex w-full h-16'
-        style={{
-          backgroundColor: `#${
-            allFilmsConfirmed ? colorScheme.light : 'f08890'
-          }`,
-        }}
-      >
-        <div className='m-auto text-white'>Next</div>
-      </div>
+          return (
+            <Accordion
+              key={filmKey}
+              title={filmData.name || `Film ${index + 1}`}
+              content={accordianContent}
+              active={activeFilmNumber === filmNumber}
+              onClick={() => {
+                if (activeFilmNumber !== filmNumber) {
+                  setActiveFilmNumber(filmNumber)
+                }
+              }}
+            />
+          )
+        })}
+        <input
+          type='submit'
+          className={getClassName([
+            'flex',
+            'w-full',
+            'h-16',
+            'text-white',
+            'align-center',
+            [allFilmsConfirmed, 'cursor-pointer', 'cursor-not-allowed'],
+          ])}
+          style={{
+            backgroundColor: `#${
+              allFilmsConfirmed ? colorScheme.light : colorScheme.lightAlternate
+            }`,
+          }}
+          disabled={!allFilmsConfirmed}
+          value={
+            allFilmsConfirmed
+              ? 'Next'
+              : `User ${activeUserNumber} - Enter your films`
+          }
+        />
+      </form>
     </div>
   )
 }

@@ -27,6 +27,7 @@ type AutoSuggestProps = {
   forwardRef?: RefObject<HTMLInputElement>
   cssClasses?: string[]
   rounded?: boolean
+  value: string
 } & BaseTypes<JSX.IntrinsicElements['input']>
 
 export const AutoSuggest: FC<AutoSuggestProps> = ({
@@ -44,6 +45,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   placeholder,
   rounded = false,
   cssClasses = [],
+  value: inputValue,
 }: AutoSuggestProps) => {
   const initialAutoSuggestState = {
     // The active selection's index
@@ -53,15 +55,14 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
     // Whether or not the suggestion list is shown
     showSuggestions: false,
     // What the user has entered
-    userInput: '',
   }
   const [
-    { showSuggestions, activeSuggestion, filteredSuggestions, userInput },
+    { showSuggestions, activeSuggestion, filteredSuggestions },
     updateAutoSuggestState,
   ] = useObjectState(initialAutoSuggestState)
 
   const isDisplayingSuggestions: boolean =
-    showSuggestions && filteredSuggestions.length > 0 && userInput
+    showSuggestions && filteredSuggestions.length > 0 && !!inputValue
 
   useEffect(() => {
     // Filter our suggestions that don't contain the user's input
@@ -72,7 +73,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
           current: SuggestionProps
         ): SuggestionProps[] => {
           const { name } = current
-          return name.toLowerCase().indexOf(userInput.toLowerCase()) > -1
+          return name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
             ? [...acc, current]
             : acc
         },
@@ -87,7 +88,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
         showSuggestions: true,
       })
     }
-  }, [suggestions, updateAutoSuggestState, userInput, allowFetch, disabled])
+  }, [suggestions, updateAutoSuggestState, inputValue, allowFetch, disabled])
 
   // Event fired when the input value is changed
   const onChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -97,9 +98,6 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
       event.persist()
       onChangeFunc && onChangeFunc(value, name)
     }
-    updateAutoSuggestState({
-      userInput: value,
-    })
   }
 
   // Event fired when the user clicks on a suggestion
@@ -113,7 +111,6 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
       activeSuggestion: 0,
       filteredSuggestions: [],
       showSuggestions: false,
-      userInput: dataset.name,
     })
   }
 
@@ -133,7 +130,6 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
       updateAutoSuggestState({
         activeSuggestion: 0,
         showSuggestions: false,
-        userInput: selectedItem.name,
       })
     }
     // User pressed the up arrow, decrement the index
@@ -226,7 +222,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
           <TextInput
             name={name}
             onChange={onChange}
-            value={userInput}
+            value={inputValue}
             onKeyDown={onKeyDown}
             onBlur={onBlur}
             autoFocus={autoFocus}

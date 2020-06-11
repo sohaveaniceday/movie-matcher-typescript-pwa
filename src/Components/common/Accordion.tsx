@@ -25,7 +25,7 @@ export const Accordion = ({
       ])}
       style={{ backgroundColor: `#${colorScheme.dark}` }}
     >
-      <button
+      <div
         className={getClassName([
           'rounded-t-lg',
           // 'lg:hover:bg-gray-700',
@@ -58,7 +58,7 @@ export const Accordion = ({
             ...(active ? { transform: 'rotate(90deg)' } : {}),
           }}
         />
-      </button>
+      </div>
       <div
         className={getClassName(['overflow-auto', [active, 'h-full', 'h-0']])}
       >

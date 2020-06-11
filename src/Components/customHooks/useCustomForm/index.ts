@@ -2,7 +2,7 @@ import { useState, FormEvent, ChangeEvent, FocusEvent } from 'react'
 
 type useCustomFormProps = {
   initialValues: any
-  onSubmit: Function
+  onSubmit: Function | undefined
   initialInput?: string
 }
 
@@ -43,14 +43,21 @@ export const useCustomForm = ({
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    if (event) event.preventDefault()
-    setErrors({ ...errors })
-    setCurrentValue(undefined)
-    setCurrentInput(undefined)
-    onSubmit({ values, errors })
+    if (onSubmit) {
+      if (event) event.preventDefault()
+      setErrors({ ...errors })
+      setCurrentValue(undefined)
+      setCurrentInput(undefined)
+      onSubmit({ values, errors })
+    }
+  }
+
+  const clearValues = () => {
+    setValues(initialValues || {})
   }
 
   return {
+    clearValues,
     values,
     errors,
     touched,

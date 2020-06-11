@@ -21,6 +21,7 @@ export const TextInput: FC<TextInputProps> = ({
   roundedTop = true,
   disabled = false,
   forwardRef,
+  type = 'text',
   ...TextInputProps
 }: TextInputProps) => {
   const inputClassName = getClassName([
@@ -38,6 +39,7 @@ export const TextInput: FC<TextInputProps> = ({
     ],
     [rounded, 'rounded-full'],
     [roundedTop, 'rounded-t-full'],
+    'text-gray-600',
     'w-full',
     'px-4',
     'py-2',
@@ -51,7 +53,7 @@ export const TextInput: FC<TextInputProps> = ({
       <input
         ref={forwardRef}
         className={inputClassName}
-        type='text'
+        type={type}
         name={name}
         value={value}
         onChange={onChange}
