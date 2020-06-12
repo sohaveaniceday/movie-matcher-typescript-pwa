@@ -3,47 +3,46 @@ import React, {
   useEffect,
   FC,
   useRef,
-  FormEvent,
   RefObject,
   createRef,
   Dispatch,
 } from 'react'
-import { Accordion, Badge, Icon } from './common'
+import { Accordion, Badge } from './common'
 import {
   useServiceState,
   useFetch,
   useDebounce,
-  getClassName,
   useEventListener,
-  useObjectState,
 } from '../util'
 import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
-import { imageBaseUrl, genreMap, initialFilmData, colorScheme } from '../static'
+import { imageBaseUrl, genreMap, initialFilmData } from '../static'
 
 type FilmAccordionsProps = {
   activeUserNumber: 1 | 2
   setActiveUserNumber: Dispatch<React.SetStateAction<1 | 2>>
+  activeFilmNumber: number
+  setActiveFilmNumber: Dispatch<React.SetStateAction<number>>
+  isRating: boolean
+  setIsRating: Dispatch<React.SetStateAction<boolean>>
+  values: any
+  updateValues: Dispatch<any>
 }
 
 export const FilmAccordions: FC<FilmAccordionsProps> = ({
   activeUserNumber,
-  setActiveUserNumber,
+  activeFilmNumber,
+  setActiveFilmNumber,
+  values,
+  updateValues,
 }: FilmAccordionsProps) => {
   // State + Refs
-  const [activeFilmNumber, setActiveFilmNumber] = useState<number>(1)
   const [state, updateState] = useServiceState()
-  const initialInputValues = {
-    film1: '',
-    film2: '',
-    film3: '',
-  }
-  const [values, updateValues] = useObjectState(initialInputValues)
+
   const [filmSuggestions, setFilmSuggestions] = useState<SuggestionProps[]>([])
 
   const currentFilmKey = `film${activeFilmNumber}`
   const currentUserKey = `user${activeUserNumber}`
   const filmDataArray: FilmData[] = Object.values(state[currentUserKey])
-  const allFilmsConfirmed = filmDataArray.every(({ id }: FilmData) => id)
 
   // Ref to help stop unnecessary fetches
   const allowFetch = useRef(false)
@@ -176,147 +175,93 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     updateValues({ [filmKey]: value })
   }
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (allFilmsConfirmed && activeUserNumber === 1) {
-      updateValues(initialInputValues)
-      setActiveUserNumber(2)
-      setActiveFilmNumber(1)
-    }
-  }
-
   return (
-    <div className='flex flex-col h-full'>
-      <div
-        className='flex w-full h-16'
-        style={{ backgroundColor: `#${colorScheme.darkLight}` }}
-      >
-        <div
-          className='m-auto text-2xl text-white'
-          style={{ fontFamily: 'DAYPBL' }}
-        >
-          <div className='flex flex-inline'>
-            Movie <Icon iconName='movie' className='w-8 h-8 mx-2 my-auto' />
-            Matcher
-          </div>
-        </div>
-      </div>
-      <form
-        className='flex flex-col flex-1 h-full overflow-auto'
-        onSubmit={onSubmit}
-      >
-        {filmDataArray.map((filmData, index) => {
-          const filmNumber = index + 1
-          const filmKey = `film${filmNumber}`
-          const { name, id, packshot, summary, genres, releaseDate } = state[
-            currentUserKey
-          ][filmKey]
+    <>
+      {filmDataArray.map((filmData, index) => {
+        const filmNumber = index + 1
+        const filmKey = `film${filmNumber}`
+        const { name, id, packshot, summary, genres, releaseDate } = state[
+          currentUserKey
+        ][filmKey]
 
-          const accordianContent = (
-            <div
-              className='relative w-full h-full'
-              style={{
-                backgroundColor: `#3d405b`,
-              }}
-            >
-              <div className='relative flex flex-col items-center h-full overflow-auto'>
-                <div
-                  className='absolute w-full h-full'
-                  style={{
-                    backgroundImage: `linear-gradient(#77798C,#3d405b)`,
-                  }}
-                />
-                <AutoSuggest
-                  isLoading={isLoading}
-                  suggestions={filmSuggestions}
-                  name={filmKey}
-                  onChangeFunc={onChange}
-                  cssClasses={['w-4/5', 'my-6']}
-                  placeholder='Search film'
-                  forwardRef={inputRefs.current[index]}
-                  rounded
-                  value={values[currentFilmKey]}
-                />
-                <div className='z-10'>
-                  {id && packshot ? (
-                    <img
-                      className='h-64 mx-auto mb-5 border-4 border-white border-rounded'
-                      alt={name}
-                      src={packshot}
-                      onError={(event) => {
-                        const target = event.target as HTMLImageElement
-                        target.className = 'w-40 h-64 mx-auto mb-5 bg-gray-300'
-                      }}
-                    />
-                  ) : id && !packshot ? (
-                    <div className='w-40 h-64 mx-auto mb-5 bg-gray-300' />
-                  ) : null}
-                  <div className='text-center text-white'>
-                    {name && <div className='px-2 mb-1 text-3xl'>{name}</div>}
-                    {releaseDate && (
-                      <div className='mb-4 text-base'>
-                        {releaseDate.substring(0, 4)}
-                      </div>
-                    )}
-                    {genres.length > 0 && (
-                      <div className='flex flex-wrap justify-center mb-4 flex-inline'>
-                        {genres.map((genre: string) => (
-                          <div key={genre} className='py-1 mx-1'>
-                            <Badge size='xs' content={genre} />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {summary && (
-                      <div className='px-4 mb-5 text-sm'>{summary}</div>
-                    )}
-                  </div>
+        const accordianContent = (
+          <div
+            className='relative w-full h-full'
+            style={{
+              backgroundColor: `#3d405b`,
+            }}
+          >
+            <div className='relative flex flex-col items-center h-full overflow-auto'>
+              <div
+                className='absolute w-full h-full'
+                style={{
+                  backgroundImage: `linear-gradient(#77798C,#3d405b)`,
+                }}
+              />
+              <AutoSuggest
+                isLoading={isLoading}
+                suggestions={filmSuggestions}
+                name={filmKey}
+                onChangeFunc={onChange}
+                cssClasses={['w-4/5', 'my-6']}
+                placeholder='Search film'
+                forwardRef={inputRefs.current[index]}
+                rounded
+                value={values[currentFilmKey]}
+              />
+              <div className='z-10'>
+                {id && packshot ? (
+                  <img
+                    className='h-64 mx-auto mb-5 border-4 border-white border-rounded'
+                    alt={name}
+                    src={packshot}
+                    onError={(event) => {
+                      const target = event.target as HTMLImageElement
+                      target.className = 'w-40 h-64 mx-auto mb-5 bg-gray-300'
+                    }}
+                  />
+                ) : id && !packshot ? (
+                  <div className='w-40 h-64 mx-auto mb-5 bg-gray-300' />
+                ) : null}
+                <div className='text-center text-white'>
+                  {name && <div className='px-2 mb-1 text-3xl'>{name}</div>}
+                  {releaseDate && (
+                    <div className='mb-4 text-base'>
+                      {releaseDate.substring(0, 4)}
+                    </div>
+                  )}
+                  {genres.length > 0 && (
+                    <div className='flex flex-wrap justify-center mb-4 flex-inline'>
+                      {genres.map((genre: string) => (
+                        <div key={genre} className='py-1 mx-1'>
+                          <Badge size='xs' content={genre} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {summary && (
+                    <div className='px-4 mb-5 text-sm'>{summary}</div>
+                  )}
                 </div>
               </div>
             </div>
-          )
+          </div>
+        )
 
-          return (
-            <Accordion
-              key={filmKey}
-              title={filmData.name || `Film ${index + 1}`}
-              content={accordianContent}
-              active={activeFilmNumber === filmNumber}
-              onClick={() => {
-                if (activeFilmNumber !== filmNumber) {
-                  setActiveFilmNumber(filmNumber)
-                }
-              }}
-            />
-          )
-        })}
-        <div className='text-center'>
-          <input
-            type='submit'
-            className={getClassName([
-              'flex',
-              'w-full',
-              'h-16',
-              'text-white',
-              'text-2xl',
-              'justify-center',
-              [allFilmsConfirmed, 'cursor-pointer', 'cursor-not-allowed'],
-            ])}
-            style={{
-              backgroundColor: `#${
-                allFilmsConfirmed ? colorScheme.light : colorScheme.darkLight
-              }`,
-              fontFamily: 'Bebas',
+        return (
+          <Accordion
+            key={filmKey}
+            title={filmData.name || `Film ${index + 1}`}
+            content={accordianContent}
+            active={activeFilmNumber === filmNumber}
+            onClick={() => {
+              if (activeFilmNumber !== filmNumber) {
+                setActiveFilmNumber(filmNumber)
+              }
             }}
-            disabled={!allFilmsConfirmed}
-            value={
-              allFilmsConfirmed
-                ? 'Next'
-                : `User ${activeUserNumber} - Enter your films`
-            }
           />
-        </div>
-      </form>
-    </div>
+        )
+      })}
+    </>
   )
 }
