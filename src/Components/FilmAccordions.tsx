@@ -8,7 +8,7 @@ import React, {
   createRef,
   Dispatch,
 } from 'react'
-import { Accordion, Badge } from './common'
+import { Accordion, Badge, Icon } from './common'
 import {
   useServiceState,
   useFetch,
@@ -172,8 +172,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       updateState({ [currentUserKey]: { [filmKey]: initialFilmData } })
     } else if (!id && !currentFilmId) {
       allowFetch.current = true
-      updateValues({ [filmKey]: value })
     }
+    updateValues({ [filmKey]: value })
   }
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -195,7 +195,10 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           className='m-auto text-2xl text-white'
           style={{ fontFamily: 'DAYPBL' }}
         >
-          Movie Matcher
+          <div className='flex flex-inline'>
+            Movie <Icon iconName='movie' className='w-8 h-8 mx-2 my-auto' />
+            Matcher
+          </div>
         </div>
       </div>
       <form
@@ -301,9 +304,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             ])}
             style={{
               backgroundColor: `#${
-                allFilmsConfirmed
-                  ? colorScheme.light
-                  : colorScheme.lightAlternate
+                allFilmsConfirmed ? colorScheme.light : colorScheme.darkLight
               }`,
               fontFamily: 'Bebas',
             }}
