@@ -1,5 +1,4 @@
 export * from './forms'
 export * from './Icon'
 export * from './Accordion'
-export * from './skeleton'
 export * from './Badge'

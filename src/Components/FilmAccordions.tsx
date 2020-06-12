@@ -29,6 +29,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   activeUserNumber,
   setActiveUserNumber,
 }: FilmAccordionsProps) => {
+  // State + Refs
   const [activeFilmNumber, setActiveFilmNumber] = useState<number>(1)
   const [state, updateState] = useServiceState()
   const initialInputValues = {
@@ -37,10 +38,23 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     film3: '',
   }
   const [values, updateValues] = useObjectState(initialInputValues)
+  const [filmSuggestions, setFilmSuggestions] = useState<SuggestionProps[]>([])
 
   const currentFilmKey = `film${activeFilmNumber}`
   const currentUserKey = `user${activeUserNumber}`
   const filmDataArray: FilmData[] = Object.values(state[currentUserKey])
+  const allFilmsConfirmed = filmDataArray.every(({ id }: FilmData) => id)
+
+  // Ref to help stop unnecessary fetches
+  const allowFetch = useRef(true)
+  const { data, isLoading, setUrl } = useFetch()
+
+  // refs to allow automatic focusing
+  const inputRefs = useRef<RefObject<HTMLInputElement>[]>(
+    filmDataArray.map(() => createRef<HTMLInputElement>())
+  )
+
+  // Event handlers
 
   const handleKeyDown = (event: KeyboardEvent) => {
     event.stopPropagation()
@@ -54,36 +68,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   useEventListener('keydown', handleKeyDown, window)
 
-  const allFilmsConfirmed = filmDataArray.every(({ id }: FilmData) => id)
+  useEffect(() => {
+    inputRefs.current[activeFilmNumber - 1]?.current?.focus()
+  }, [activeFilmNumber])
 
-  // const initialValues = { film1: '', film2: '', film3: '' }
-
-  const [filmSuggestions, setFilmSuggestions] = useState<SuggestionProps[]>([])
-
-  // Ref to help stop unnecessary fetches
-  const allowFetch = useRef(true)
-  const { data, isLoading, setUrl } = useFetch()
-
-  // refs to allow automatic focusing
-  const inputRefs = useRef<RefObject<HTMLInputElement>[]>(
-    filmDataArray.map(() => createRef<HTMLInputElement>())
-  )
-
-  // const {
-  //   values,
-  //   // errors,
-  //   // touched,
-  //   clearValues,
-  //   handleChange,
-  //   handleSubmit,
-  //   handleBlur,
-  //   handleFocus,
-  //   currentValue,
-  // } = useCustomForm({
-  //   initialValues,
-  //   onSubmit: ({ values: formValues }: any) => console.log(formValues),
-  //   initialInput: 'film1',
-  // })
+  // Suggestions Fetch
 
   const debouncedSearchTerm = useDebounce(values[currentFilmKey] || '', 400)
 
@@ -105,7 +94,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   useEffect(() => {
     if (data?.results?.length > 0) {
-      console.log('data', data)
       const results = data.results.map(
         ({ title, release_date, poster_path, id }: any) => {
           const year = release_date?.substring(0, 4)
@@ -143,8 +131,9 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     }
   }, [data])
 
+  // Form functions
+
   const onChange = async (value: string, filmKey: string, id?: string) => {
-    // handleChange(value, filmkey)
     updateValues({ [filmKey]: value })
 
     if (id) {
@@ -158,7 +147,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
         genre_ids,
       } = data.results.find(({ id: filmId }: any) => parseInt(id) === filmId)
       const packshot = poster_path && `${imageBaseUrl}${poster_path}`
-      // const palette = packshot && (await getPalette(packshot))
 
       updateState({
         [currentUserKey]: {
@@ -169,7 +157,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             backgroundImage: backdrop_path && `${imageBaseUrl}${backdrop_path}`,
             packshot: packshot,
             summary: overview,
-            // palette: packshot && (await getPalette(packshot)),
             genres: genre_ids.map((genreId: number) => {
               const foundGenre = genreMap.find(({ id }) => genreId === id)
               return foundGenre?.name
@@ -177,13 +164,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           },
         },
       })
-
-      // const palette = packshot && (await getPalette(packshot))
-      // updateState({
-      //   [user]: {
-      //     [film]: { palette: palette },
-      //   },
-      // })
     } else if (!id && !!state[currentUserKey][filmKey].id) {
       updateState({ [currentUserKey]: { [filmKey]: initialFilmData } })
     }
@@ -196,10 +176,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       setActiveUserNumber(2)
     }
   }
-
-  useEffect(() => {
-    inputRefs.current[activeFilmNumber - 1]?.current?.focus()
-  }, [activeFilmNumber])
 
   return (
     <div className='flex flex-col h-full'>
@@ -216,16 +192,9 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
         {filmDataArray.map((filmData, index) => {
           const filmNumber = index + 1
           const filmKey = `film${filmNumber}`
-          const {
-            name,
-            id,
-            backgroundImage,
-            packshot,
-            summary,
-            genres,
-            releaseDate,
-            palette,
-          } = state[currentUserKey][filmKey]
+          const { name, id, packshot, summary, genres, releaseDate } = state[
+            currentUserKey
+          ][filmKey]
 
           const accordianContent = (
             <div
@@ -247,8 +216,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   suggestions={filmSuggestions}
                   name={filmKey}
                   onChangeFunc={onChange}
-                  // onBlur={handleBlur}
-                  // onFocus={handleFocus}
                   cssClasses={['w-4/5', 'my-6']}
                   placeholder='Search film'
                   forwardRef={inputRefs.current[index]}
@@ -259,6 +226,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   {id && packshot ? (
                     <img
                       className='h-64 mx-auto mb-5 border-4 border-white border-rounded'
+                      alt={name}
                       src={packshot}
                       onError={(event) => {
                         const target = event.target as HTMLImageElement

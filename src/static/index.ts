@@ -6,7 +6,6 @@ export const initialFilmData: FilmData = {
   foreignRating: 0,
   backgroundImage: '',
   packshot: '',
-  palette: null,
   summary: '',
   genres: [],
 }
