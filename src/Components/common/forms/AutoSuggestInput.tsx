@@ -6,11 +6,9 @@ import React, {
   FC,
   ReactNode,
   RefObject,
-  MutableRefObject,
 } from 'react'
 import { useObjectState, getClassName, BaseTypes } from '../../../util'
 import { TextInput } from '..'
-import { Icon } from '../Icon'
 
 export type SuggestionProps = {
   name: string
@@ -22,20 +20,15 @@ type AutoSuggestProps = {
   suggestions: SuggestionProps[]
   onChangeFunc?: Function
   isLoading: boolean
-  icon?: string
   forwardRef?: RefObject<HTMLInputElement>
   cssClasses?: string[]
   rounded?: boolean
   value: string
-  allowFetch: MutableRefObject<boolean>
 } & BaseTypes<JSX.IntrinsicElements['input']>
 
 export const AutoSuggest: FC<AutoSuggestProps> = ({
   suggestions = [],
   name,
-  // isLoading,
-  // allowFetch,
-  icon,
   onChangeFunc,
   autoFocus,
   onFocus,
@@ -45,7 +38,6 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   placeholder,
   rounded = false,
   cssClasses = [],
-  allowFetch,
   value: inputValue,
 }: AutoSuggestProps) => {
   const initialAutoSuggestState = {
@@ -55,7 +47,6 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
     filteredSuggestions: [],
     // Whether or not the suggestion list is shown
     showSuggestions: false,
-    // What the user has entered
   }
   const [
     { showSuggestions, activeSuggestion, filteredSuggestions },
@@ -63,11 +54,16 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   ] = useObjectState(initialAutoSuggestState)
 
   const isDisplayingSuggestions: boolean =
-    showSuggestions && filteredSuggestions.length > 0 && !!inputValue
+    showSuggestions &&
+    filteredSuggestions.length > 0 &&
+    !!inputValue &&
+    !disabled
+
+  console.log('suggestions', suggestions)
 
   useEffect(() => {
-    // Filter our suggestions that don't contain the user's input
-    if (!disabled && allowFetch.current) {
+    if (!disabled) {
+      // Filter our suggestions that don't contain the user's input
       const newFilteredSuggestions = suggestions.reduce(
         (
           acc: SuggestionProps[],
@@ -89,72 +85,60 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
         showSuggestions: true,
       })
     }
-  }, [suggestions, updateAutoSuggestState, inputValue, disabled, allowFetch])
+  }, [disabled, inputValue, suggestions, updateAutoSuggestState])
 
   useEffect(() => {
-    if (suggestions.length < 1 || !allowFetch.current) {
-      updateAutoSuggestState({
-        activeSuggestion: 0,
-        filteredSuggestions: [],
-        showSuggestions: false,
-      })
+    if (isDisplayingSuggestions && suggestions.length < 1) {
+      updateAutoSuggestState(initialAutoSuggestState)
     }
-  }, [suggestions.length, updateAutoSuggestState, allowFetch])
+  }, [
+    initialAutoSuggestState,
+    suggestions.length,
+    updateAutoSuggestState,
+    isDisplayingSuggestions,
+  ])
 
   // Event fired when the input value is changed
   const onChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    allowFetch.current = true
-    const { value, name } = event.target
     if (onChangeFunc) {
       event.persist()
-      onChangeFunc && onChangeFunc(value, name)
+      const { value, name } = event.target
+      onChangeFunc(value, name)
     }
   }
 
   // Event fired when the user clicks on a suggestion
   const onClick = ({ currentTarget }: MouseEvent<HTMLLIElement>) => {
     // Update the user input and reset the rest of the state
-    updateAutoSuggestState({
-      activeSuggestion: 0,
-      filteredSuggestions: [],
-      showSuggestions: false,
-    })
-    allowFetch.current = false
     const { dataset } = currentTarget
     onChangeFunc && onChangeFunc(dataset.name, name, dataset.id)
+    updateAutoSuggestState(initialAutoSuggestState)
   }
 
   // Event fired when the user presses a key down
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    // Stops document's keydown event listener when displaying a list
-    if (isDisplayingSuggestions) event.stopPropagation()
-
     const selectedItem = filteredSuggestions[activeSuggestion]
+
+    if (!isDisplayingSuggestions || !selectedItem) return
+    // Stops document's keydown event listener when displaying a list
+    event.stopPropagation()
+
     // User pressed the enter key, update the input and close the
     // suggestions
     if (event.keyCode === 13) {
       event.preventDefault()
-      if (!selectedItem) return
-      allowFetch.current = false
-      updateAutoSuggestState({
-        activeSuggestion: 0,
-        showSuggestions: false,
-      })
       onChangeFunc && onChangeFunc(selectedItem.name, name, selectedItem.id)
+      updateAutoSuggestState(initialAutoSuggestState)
     }
     // User pressed the up arrow, decrement the index
     else if (event.keyCode === 38) {
-      if (activeSuggestion === 0) {
-        return
-      }
+      if (activeSuggestion === 0) return
 
       updateAutoSuggestState({ activeSuggestion: activeSuggestion - 1 })
     }
     // User pressed the down arrow, increment the index
     else if (event.keyCode === 40) {
-      if (activeSuggestion - 1 === filteredSuggestions.length) {
-        return
-      }
+      if (activeSuggestion - 1 === filteredSuggestions.length) return
 
       updateAutoSuggestState({
         activeSuggestion: Math.min(
@@ -164,23 +148,20 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
       })
       // User pressed escape, exit list
     } else if (event.keyCode === 27) {
-      updateAutoSuggestState({
-        activeSuggestion: 0,
-        showSuggestions: false,
-      })
+      console.log('exit')
+      updateAutoSuggestState(initialAutoSuggestState)
     }
   }
 
   useEffect(() => {
-    const activeSuggestionId = filteredSuggestions[activeSuggestion]?.id
-    // console.log(
-    //   'document.getElementById(activeSuggestionId)',
-    //   filteredSuggestions[activeSuggestion]
-    // )
-    // document.getElementById(activeSuggestionId)?.scrollIntoView({
-    //   behavior: 'smooth',
-    // })
-  }, [activeSuggestion, filteredSuggestions])
+    if (isDisplayingSuggestions) {
+      const activeSuggestionId = filteredSuggestions[activeSuggestion].id
+      console.log('activeSuggestionId', activeSuggestionId)
+      document.getElementById(activeSuggestionId)?.scrollIntoView({
+        behavior: 'smooth',
+      })
+    }
+  }, [activeSuggestion, filteredSuggestions, isDisplayingSuggestions])
 
   const suggestionsListComponent = isDisplayingSuggestions ? (
     <div className='absolute z-20 w-full h-64'>
@@ -240,12 +221,6 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
             rounded={rounded && !isDisplayingSuggestions}
             roundedTop={rounded && isDisplayingSuggestions}
           />
-          {icon && (
-            <Icon
-              iconName={icon}
-              className='w-6 h-6 mx-2 my-1 overflow-visible text-green-400'
-            />
-          )}
         </div>
         {suggestionsListComponent}
       </div>

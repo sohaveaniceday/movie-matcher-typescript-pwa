@@ -69,6 +69,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   useEventListener('keydown', handleKeyDown, window)
 
   useEffect(() => {
+    allowFetch.current = false
+    setFilmSuggestions([])
     inputRefs.current[activeFilmNumber - 1]?.current?.focus()
   }, [activeFilmNumber])
 
@@ -135,7 +137,9 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   // Form functions
 
   const onChange = async (value: string, filmKey: string, id?: string) => {
+    const currentFilmId = state[currentUserKey][filmKey].id
     if (id) {
+      allowFetch.current = false
       setFilmSuggestions([])
       const {
         title,
@@ -164,10 +168,12 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           },
         },
       })
-    } else if (!id && !!state[currentUserKey][filmKey].id) {
+    } else if (!id && !!currentFilmId) {
       updateState({ [currentUserKey]: { [filmKey]: initialFilmData } })
+    } else if (!id && !currentFilmId) {
+      allowFetch.current = true
+      updateValues({ [filmKey]: value })
     }
-    updateValues({ [filmKey]: value })
   }
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -227,7 +233,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   forwardRef={inputRefs.current[index]}
                   rounded
                   value={values[currentFilmKey]}
-                  allowFetch={allowFetch}
                 />
                 <div className='z-10'>
                   {id && packshot ? (
