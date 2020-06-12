@@ -13,3 +13,16 @@
 .line-clamp-2 {
   -webkit-line-clamp: 2;
 }
+
+@font-face {
+  font-family: 'GREALN';
+  src: url(./fonts/GREALN.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'DAYPBL';
+  src: url(./fonts/DAYPBL.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Bebas';
+  src: url(./fonts/Bebas-Regular.ttf) format('truetype');
+}

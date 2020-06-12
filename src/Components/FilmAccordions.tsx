@@ -46,7 +46,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   const allFilmsConfirmed = filmDataArray.every(({ id }: FilmData) => id)
 
   // Ref to help stop unnecessary fetches
-  const allowFetch = useRef(true)
+  const allowFetch = useRef(false)
   const { data, isLoading, setUrl } = useFetch()
 
   // refs to allow automatic focusing
@@ -93,6 +93,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   }, [debouncedSearchTerm, setUrl])
 
   useEffect(() => {
+    console.log('data', data)
     if (data?.results?.length > 0) {
       const results = data.results.map(
         ({ title, release_date, poster_path, id }: any) => {
@@ -134,9 +135,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   // Form functions
 
   const onChange = async (value: string, filmKey: string, id?: string) => {
-    updateValues({ [filmKey]: value })
-
     if (id) {
+      setFilmSuggestions([])
       const {
         title,
         id: foundId,
@@ -167,6 +167,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     } else if (!id && !!state[currentUserKey][filmKey].id) {
       updateState({ [currentUserKey]: { [filmKey]: initialFilmData } })
     }
+    updateValues({ [filmKey]: value })
   }
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -174,6 +175,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     if (allFilmsConfirmed && activeUserNumber === 1) {
       updateValues(initialInputValues)
       setActiveUserNumber(2)
+      setActiveFilmNumber(1)
     }
   }
 
@@ -183,7 +185,12 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
         className='flex w-full h-16'
         style={{ backgroundColor: `#${colorScheme.darkLight}` }}
       >
-        <div className='m-auto text-white'>Movie Matcher</div>
+        <div
+          className='m-auto text-2xl text-white'
+          style={{ fontFamily: 'DAYPBL' }}
+        >
+          Movie Matcher
+        </div>
       </div>
       <form
         className='flex flex-col flex-1 h-full overflow-auto'
@@ -211,7 +218,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   }}
                 />
                 <AutoSuggest
-                  allowFetch={allowFetch}
                   isLoading={isLoading}
                   suggestions={filmSuggestions}
                   name={filmKey}
@@ -221,6 +227,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   forwardRef={inputRefs.current[index]}
                   rounded
                   value={values[currentFilmKey]}
+                  allowFetch={allowFetch}
                 />
                 <div className='z-10'>
                   {id && packshot ? (
@@ -237,9 +244,9 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                     <div className='w-40 h-64 mx-auto mb-5 bg-gray-300' />
                   ) : null}
                   <div className='text-center text-white'>
-                    {name && <div className='mb-1 text-2xl'>{name}</div>}
+                    {name && <div className='px-2 mb-1 text-3xl'>{name}</div>}
                     {releaseDate && (
-                      <div className='mb-4 text-sm'>
+                      <div className='mb-4 text-base'>
                         {releaseDate.substring(0, 4)}
                       </div>
                     )}
@@ -253,7 +260,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                       </div>
                     )}
                     {summary && (
-                      <div className='px-4 mb-5 text-xs'>{summary}</div>
+                      <div className='px-4 mb-5 text-sm'>{summary}</div>
                     )}
                   </div>
                 </div>
@@ -275,28 +282,34 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             />
           )
         })}
-        <input
-          type='submit'
-          className={getClassName([
-            'flex',
-            'w-full',
-            'h-16',
-            'text-white',
-            'align-center',
-            [allFilmsConfirmed, 'cursor-pointer', 'cursor-not-allowed'],
-          ])}
-          style={{
-            backgroundColor: `#${
-              allFilmsConfirmed ? colorScheme.light : colorScheme.lightAlternate
-            }`,
-          }}
-          disabled={!allFilmsConfirmed}
-          value={
-            allFilmsConfirmed
-              ? 'Next'
-              : `User ${activeUserNumber} - Enter your films`
-          }
-        />
+        <div className='text-center'>
+          <input
+            type='submit'
+            className={getClassName([
+              'flex',
+              'w-full',
+              'h-16',
+              'text-white',
+              'text-2xl',
+              'justify-center',
+              [allFilmsConfirmed, 'cursor-pointer', 'cursor-not-allowed'],
+            ])}
+            style={{
+              backgroundColor: `#${
+                allFilmsConfirmed
+                  ? colorScheme.light
+                  : colorScheme.lightAlternate
+              }`,
+              fontFamily: 'Bebas',
+            }}
+            disabled={!allFilmsConfirmed}
+            value={
+              allFilmsConfirmed
+                ? 'Next'
+                : `User ${activeUserNumber} - Enter your films`
+            }
+          />
+        </div>
       </form>
     </div>
   )

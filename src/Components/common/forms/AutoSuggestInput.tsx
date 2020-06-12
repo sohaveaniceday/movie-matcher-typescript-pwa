@@ -3,10 +3,10 @@ import React, {
   KeyboardEvent,
   ChangeEvent,
   useEffect,
-  MutableRefObject,
   FC,
   ReactNode,
   RefObject,
+  MutableRefObject,
 } from 'react'
 import { useObjectState, getClassName, BaseTypes } from '../../../util'
 import { TextInput } from '..'
@@ -22,19 +22,19 @@ type AutoSuggestProps = {
   suggestions: SuggestionProps[]
   onChangeFunc?: Function
   isLoading: boolean
-  allowFetch: MutableRefObject<boolean>
   icon?: string
   forwardRef?: RefObject<HTMLInputElement>
   cssClasses?: string[]
   rounded?: boolean
   value: string
+  allowFetch: MutableRefObject<boolean>
 } & BaseTypes<JSX.IntrinsicElements['input']>
 
 export const AutoSuggest: FC<AutoSuggestProps> = ({
   suggestions = [],
   name,
   // isLoading,
-  allowFetch,
+  // allowFetch,
   icon,
   onChangeFunc,
   autoFocus,
@@ -45,6 +45,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   placeholder,
   rounded = false,
   cssClasses = [],
+  allowFetch,
   value: inputValue,
 }: AutoSuggestProps) => {
   const initialAutoSuggestState = {
@@ -88,7 +89,17 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
         showSuggestions: true,
       })
     }
-  }, [suggestions, updateAutoSuggestState, inputValue, allowFetch, disabled])
+  }, [suggestions, updateAutoSuggestState, inputValue, disabled, allowFetch])
+
+  useEffect(() => {
+    if (suggestions.length < 1 || !allowFetch.current) {
+      updateAutoSuggestState({
+        activeSuggestion: 0,
+        filteredSuggestions: [],
+        showSuggestions: false,
+      })
+    }
+  }, [suggestions.length, updateAutoSuggestState, allowFetch])
 
   // Event fired when the input value is changed
   const onChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -102,16 +113,15 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
 
   // Event fired when the user clicks on a suggestion
   const onClick = ({ currentTarget }: MouseEvent<HTMLLIElement>) => {
-    allowFetch.current = false
-    const { dataset } = currentTarget
-    onChangeFunc && onChangeFunc(dataset.name, name, dataset.id)
-
     // Update the user input and reset the rest of the state
     updateAutoSuggestState({
       activeSuggestion: 0,
       filteredSuggestions: [],
       showSuggestions: false,
     })
+    allowFetch.current = false
+    const { dataset } = currentTarget
+    onChangeFunc && onChangeFunc(dataset.name, name, dataset.id)
   }
 
   // Event fired when the user presses a key down
@@ -126,11 +136,11 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
       event.preventDefault()
       if (!selectedItem) return
       allowFetch.current = false
-      onChangeFunc && onChangeFunc(selectedItem.name, name, selectedItem.id)
       updateAutoSuggestState({
         activeSuggestion: 0,
         showSuggestions: false,
       })
+      onChangeFunc && onChangeFunc(selectedItem.name, name, selectedItem.id)
     }
     // User pressed the up arrow, decrement the index
     else if (event.keyCode === 38) {
@@ -161,19 +171,16 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
     }
   }
 
-  // const onBlur = () => {
-  //   updateAutoSuggestState({
-  //     filteredSuggestions: [],
-  //     showSuggestions: false,
-  //     activeSuggestion: 0,
-  //   })
-  // }
-
   useEffect(() => {
-    document.getElementById(activeSuggestion)?.scrollIntoView({
-      behavior: 'smooth',
-    })
-  }, [activeSuggestion])
+    const activeSuggestionId = filteredSuggestions[activeSuggestion]?.id
+    // console.log(
+    //   'document.getElementById(activeSuggestionId)',
+    //   filteredSuggestions[activeSuggestion]
+    // )
+    // document.getElementById(activeSuggestionId)?.scrollIntoView({
+    //   behavior: 'smooth',
+    // })
+  }, [activeSuggestion, filteredSuggestions])
 
   const suggestionsListComponent = isDisplayingSuggestions ? (
     <div className='absolute z-20 w-full h-64'>
@@ -192,7 +199,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
             const isActiveSuggestion = activeSuggestion === index
             return (
               <li
-                id={index.toString()}
+                id={id}
                 data-id={id}
                 data-name={name}
                 className={getClassName([

@@ -40,19 +40,19 @@ export const Accordion = ({
           'focus:outline-none',
         ])}
         style={{
-          transition: 'background-color 0.6s ease',
+          transition: 'background-color 0.6s ease ',
           backgroundColor: active
             ? `#${colorScheme.medium}`
             : `#${colorScheme.lightDark}`,
         }}
         onClick={onClick}
       >
-        <p className='pr-2 font-serif text-sm font-semibold text-left truncate'>
+        <p className='pr-2 font-sans text-lg font-bold text-left text-gray-700 truncate'>
           {title}
         </p>
         <Icon
           iconName='chevron'
-          className={getClassName(['ml-auto', 'm-5', 'h-5'])}
+          className={getClassName(['ml-auto', 'm-5', 'h-5', 'text-gray-700'])}
           style={{
             transition: '0.6s ease',
             ...(active ? { transform: 'rotate(90deg)' } : {}),
