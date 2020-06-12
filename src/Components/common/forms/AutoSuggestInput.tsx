@@ -59,8 +59,6 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
     !!inputValue &&
     !disabled
 
-  console.log('suggestions', suggestions)
-
   useEffect(() => {
     if (!disabled) {
       // Filter our suggestions that don't contain the user's input
@@ -148,20 +146,20 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
       })
       // User pressed escape, exit list
     } else if (event.keyCode === 27) {
-      console.log('exit')
       updateAutoSuggestState(initialAutoSuggestState)
     }
   }
 
-  useEffect(() => {
-    if (isDisplayingSuggestions) {
-      const activeSuggestionId = filteredSuggestions[activeSuggestion].id
-      console.log('activeSuggestionId', activeSuggestionId)
-      document.getElementById(activeSuggestionId)?.scrollIntoView({
-        behavior: 'smooth',
-      })
-    }
-  }, [activeSuggestion, filteredSuggestions, isDisplayingSuggestions])
+  //TO DO - reimplement automatic scrolling for desktop
+  // useEffect(() => {
+  //   if (isDisplayingSuggestions) {
+  //     const activeSuggestionId = filteredSuggestions[activeSuggestion].id
+  //     console.log('activeSuggestionId', activeSuggestionId)
+  //     document.getElementById(activeSuggestionId)?.scrollIntoView({
+  //       behavior: 'smooth',
+  //     })
+  //   }
+  // }, [activeSuggestion, filteredSuggestions, isDisplayingSuggestions])
 
   const suggestionsListComponent = isDisplayingSuggestions ? (
     <div className='absolute z-20 w-full h-64'>
