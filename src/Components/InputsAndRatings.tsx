@@ -8,6 +8,7 @@ export const InputsAndRatings = () => {
   const [state] = useServiceState()
 
   const [isRating, setIsRating] = useState<boolean>(false)
+  const [allFilmsRated, setAllFilmsRated] = useState<boolean>(false)
   const [activeUserNumber, setActiveUserNumber] = useState<1 | 2>(1)
   const [activeFilmNumber, setActiveFilmNumber] = useState<number>(1)
 
@@ -57,7 +58,7 @@ export const InputsAndRatings = () => {
         <Slider
           range={[2, 99]}
           defaultValues={[33, 66]}
-          cssClasses={['my-auto w-full px-5']}
+          cssClasses={['my-auto', 'w-full', 'px-5']}
           onChange={(e) => console.log('e', e)}
         />
       </div>
@@ -94,7 +95,7 @@ export const InputsAndRatings = () => {
             }}
             disabled={!allFilmsConfirmed}
             value={
-              allFilmsConfirmed
+              allFilmsConfirmed || allFilmsRated
                 ? 'Next'
                 : `User ${activeUserNumber} - Enter your films`
             }
