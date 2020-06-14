@@ -7,14 +7,13 @@ import React, {
   createRef,
   Dispatch,
 } from 'react'
-import { Accordion, Badge } from './common'
+import { Accordion, Badge, AutoSuggest, SuggestionProps } from './common'
 import {
   useServiceState,
   useFetch,
   useDebounce,
   useEventListener,
 } from '../util'
-import { AutoSuggest, SuggestionProps } from './common/forms/AutoSuggestInput'
 import { imageBaseUrl, genreMap, initialFilmData } from '../static'
 
 type FilmAccordionsProps = {
@@ -23,7 +22,6 @@ type FilmAccordionsProps = {
   activeFilmNumber: number
   setActiveFilmNumber: Dispatch<React.SetStateAction<number>>
   isRating: boolean
-  setIsRating: Dispatch<React.SetStateAction<boolean>>
   values: any
   updateValues: Dispatch<any>
 }
@@ -34,6 +32,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   setActiveFilmNumber,
   values,
   updateValues,
+  isRating,
 }: FilmAccordionsProps) => {
   // State + Refs
   const [state, updateState] = useServiceState()
@@ -42,7 +41,9 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   const currentFilmKey = `film${activeFilmNumber}`
   const currentUserKey = `user${activeUserNumber}`
-  const filmDataArray: FilmData[] = Object.values(state[currentUserKey])
+  const filmDataArray: FilmData[] = Object.keys(state[currentUserKey])
+    .sort()
+    .map((e) => state[currentUserKey][e])
 
   // Ref to help stop unnecessary fetches
   const allowFetch = useRef(false)
@@ -94,7 +95,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   }, [debouncedSearchTerm, setUrl])
 
   useEffect(() => {
-    console.log('data', data)
+    // console.log('data', data)
     if (data?.results?.length > 0) {
       const results = data.results.map(
         ({ title, release_date, poster_path, id }: any) => {
@@ -136,9 +137,9 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   // Form functions
 
   const onChange = async (value: string, filmKey: string, id?: string) => {
-    const currentFilmId = state[currentUserKey][filmKey].id
     if (id) {
       allowFetch.current = false
+      updateValues({ [filmKey]: '' })
       setFilmSuggestions([])
       const {
         title,
@@ -167,12 +168,15 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           },
         },
       })
-    } else if (!id && !!currentFilmId) {
-      updateState({ [currentUserKey]: { [filmKey]: initialFilmData } })
-    } else if (!id && !currentFilmId) {
+    } else {
+      updateValues({ [filmKey]: value })
       allowFetch.current = true
+
+      const currentFilmId = state[currentUserKey][filmKey].id
+      if (!!currentFilmId) {
+        updateState({ [currentUserKey]: { [filmKey]: initialFilmData } })
+      }
     }
-    updateValues({ [filmKey]: value })
   }
 
   return (

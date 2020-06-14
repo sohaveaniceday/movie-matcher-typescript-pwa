@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Tick, Edit, Chevron, Movie } from '../../images/svgs'
+import { Tick, Edit, Chevron, Movie, Thumb } from '../../images/svgs'
 import { BaseTypes, getClassName } from '../../util'
 
 const svgMap: {
@@ -9,9 +9,10 @@ const svgMap: {
   edit: Edit,
   chevron: Chevron,
   movie: Movie,
+  thumb: Thumb,
 }
 
-export type IconName = 'tick' | 'edit' | 'chevron' | 'movie'
+export type IconName = 'tick' | 'edit' | 'chevron' | 'movie' | 'thumb'
 
 type IconProps = {
   iconName: string

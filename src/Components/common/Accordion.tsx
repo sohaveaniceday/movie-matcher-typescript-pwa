@@ -35,7 +35,7 @@ export const Accordion = ({
           'flex',
           'items-center',
           'border-none',
-          'focus:border-none',
+          // 'focus:border-none',
           'outline-none',
           'focus:outline-none',
         ])}

@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from 'react'
 import { FilmAccordions } from './FilmAccordions'
 import { colorScheme } from '../static'
-import { Icon } from './common'
+import { Icon, Slider } from './common'
 import { getClassName, useServiceState, useObjectState } from '../util'
 
 export const InputsAndRatings = () => {
@@ -48,6 +48,19 @@ export const InputsAndRatings = () => {
           </div>
         </div>
       </div>
+      <div
+        className='flex w-full h-16'
+        style={{
+          backgroundColor: `#77798C`,
+        }}
+      >
+        <Slider
+          range={[2, 99]}
+          defaultValues={[33, 66]}
+          cssClasses={['my-auto w-full px-5']}
+          onChange={(e) => console.log('e', e)}
+        />
+      </div>
       <form
         className='flex flex-col flex-1 h-full overflow-auto'
         onSubmit={onSubmit}
@@ -58,7 +71,6 @@ export const InputsAndRatings = () => {
           activeFilmNumber={activeFilmNumber}
           setActiveFilmNumber={setActiveFilmNumber}
           isRating={isRating}
-          setIsRating={setIsRating}
           values={values}
           updateValues={updateValues}
         />
@@ -72,7 +84,7 @@ export const InputsAndRatings = () => {
               'text-white',
               'text-2xl',
               'justify-center',
-              [allFilmsConfirmed, 'cursor-pointer', 'cursor-not-allowed'],
+              [allFilmsConfirmed, 'cursor-pointer'],
             ])}
             style={{
               backgroundColor: `#${
