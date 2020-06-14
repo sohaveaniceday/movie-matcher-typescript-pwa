@@ -16,6 +16,8 @@ type SliderProps = {
   displayTracks?: boolean
   onChange?: (values: readonly number[]) => void
   onUpdate?: (values: readonly number[]) => void
+  handleColor?: string
+  trackColor?: string
 }
 
 export const Slider: FC<SliderProps> = ({
@@ -26,6 +28,8 @@ export const Slider: FC<SliderProps> = ({
   displayTracks = false,
   onUpdate,
   onChange,
+  handleColor = 'blue',
+  trackColor = 'white',
 }: SliderProps) => {
   const SliderClassName = getClassName([...cssClasses])
   return (
@@ -63,7 +67,7 @@ export const Slider: FC<SliderProps> = ({
                   transform: 'translate(0%, -50%)',
                   borderRadius: 7,
                   pointerEvents: 'none',
-                  backgroundColor: 'rgb(155,155,155)',
+                  backgroundColor: trackColor,
                 }}
               />
             </>
@@ -92,7 +96,7 @@ export const Slider: FC<SliderProps> = ({
                     aria-valuemin={min}
                     aria-valuemax={max}
                     aria-valuenow={value}
-                    className='absolute bg-blue-500'
+                    className='absolute'
                     style={{
                       left: `${percent}%`,
                       transform: 'translate(-50%, -50%)',
@@ -101,6 +105,7 @@ export const Slider: FC<SliderProps> = ({
                       height: 24,
                       borderRadius: '50%',
                       boxShadow: '1px 1px 1px 1px rgba(0, 0, 0, 0.3)',
+                      backgroundColor: handleColor,
                     }}
                   />
                 </div>

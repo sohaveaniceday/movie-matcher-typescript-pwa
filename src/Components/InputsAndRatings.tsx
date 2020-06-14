@@ -20,14 +20,21 @@ export const InputsAndRatings = () => {
     film2: '',
     film3: '',
   }
-  const [values, updateValues] = useObjectState(initialInputValues)
+  const [inputValues, setUpdateValues] = useObjectState(initialInputValues)
+  const initialRatingValues = {
+    film1: 34,
+    film2: 33,
+    film3: 33,
+  }
+
+  const [ratings, setRatings] = useObjectState(initialRatingValues)
 
   const allFilmsConfirmed = filmDataArray.every(({ id }: FilmData) => id)
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (allFilmsConfirmed && activeUserNumber === 1) {
-      updateValues(initialInputValues)
+      setUpdateValues(initialInputValues)
       setActiveUserNumber(2)
       setActiveFilmNumber(1)
     }
@@ -35,6 +42,7 @@ export const InputsAndRatings = () => {
 
   return (
     <div className='flex flex-col h-full'>
+      {console.log('ratings,', ratings)}
       <div
         className='flex w-full h-16'
         style={{ backgroundColor: `#${colorScheme.darkLight}` }}
@@ -56,10 +64,21 @@ export const InputsAndRatings = () => {
         }}
       >
         <Slider
-          range={[2, 99]}
-          defaultValues={[33, 66]}
+          range={[1, 99]}
+          defaultValues={[
+            ratings['film1'],
+            ratings['film1'] + ratings['film2'],
+          ]}
           cssClasses={['my-auto', 'w-full', 'px-5']}
-          onChange={(e) => console.log('e', e)}
+          onChange={(values) =>
+            setRatings({
+              film1: values[0],
+              film2: values[1] - values[0],
+              film3: 100 - values[1],
+            })
+          }
+          handleColor={`#${colorScheme.darkLight}`}
+          trackColor={`#${colorScheme.lightDark}`}
         />
       </div>
       <form
@@ -72,8 +91,8 @@ export const InputsAndRatings = () => {
           activeFilmNumber={activeFilmNumber}
           setActiveFilmNumber={setActiveFilmNumber}
           isRating={isRating}
-          values={values}
-          updateValues={updateValues}
+          values={inputValues}
+          updateValues={setUpdateValues}
         />
         <div className='text-center'>
           <input
