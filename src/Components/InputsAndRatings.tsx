@@ -38,6 +38,11 @@ export const InputsAndRatings = () => {
       setActiveUserNumber(2)
       setActiveFilmNumber(1)
     }
+    if (allFilmsConfirmed && activeUserNumber === 2) {
+      setIsRating(true)
+      setActiveUserNumber(1)
+      setActiveFilmNumber(1)
+    }
   }
 
   return (
@@ -57,30 +62,32 @@ export const InputsAndRatings = () => {
           </div>
         </div>
       </div>
-      <div
-        className='flex w-full h-16'
-        style={{
-          backgroundColor: `#77798C`,
-        }}
-      >
-        <Slider
-          range={[1, 99]}
-          defaultValues={[
-            ratings['film1'],
-            ratings['film1'] + ratings['film2'],
-          ]}
-          cssClasses={['my-auto', 'w-full', 'px-5']}
-          onChange={(values) =>
-            setRatings({
-              film1: values[0],
-              film2: values[1] - values[0],
-              film3: 100 - values[1],
-            })
-          }
-          handleColor={`#${colorScheme.darkLight}`}
-          trackColor={`#${colorScheme.lightDark}`}
-        />
-      </div>
+      {isRating && (
+        <div
+          className='flex w-full h-16'
+          style={{
+            backgroundColor: `#77798C`,
+          }}
+        >
+          <Slider
+            range={[1, 99]}
+            defaultValues={[
+              ratings['film1'],
+              ratings['film1'] + ratings['film2'],
+            ]}
+            cssClasses={['my-auto', 'w-full', 'px-5']}
+            onChange={(values) =>
+              setRatings({
+                film1: values[0],
+                film2: values[1] - values[0],
+                film3: 100 - values[1],
+              })
+            }
+            handleColor={`#${colorScheme.darkLight}`}
+            trackColor={`#${colorScheme.lightDark}`}
+          />
+        </div>
+      )}
       <form
         className='flex flex-col flex-1 h-full overflow-auto'
         onSubmit={onSubmit}

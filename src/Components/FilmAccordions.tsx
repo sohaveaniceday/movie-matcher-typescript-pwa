@@ -202,21 +202,23 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   backgroundImage: `linear-gradient(#77798C,#3d405b)`,
                 }}
               />
-              <AutoSuggest
-                isLoading={isLoading}
-                suggestions={filmSuggestions}
-                name={filmKey}
-                onChangeFunc={onChange}
-                cssClasses={['w-4/5', 'my-6']}
-                placeholder='Search film'
-                forwardRef={inputRefs.current[index]}
-                rounded
-                value={values[currentFilmKey]}
-              />
+              {!isRating && (
+                <AutoSuggest
+                  isLoading={isLoading}
+                  suggestions={filmSuggestions}
+                  name={filmKey}
+                  onChangeFunc={onChange}
+                  cssClasses={['w-4/5', 'mt-6']}
+                  placeholder='Search film'
+                  forwardRef={inputRefs.current[index]}
+                  rounded
+                  value={values[currentFilmKey]}
+                />
+              )}
               <div className='z-10'>
                 {id && packshot ? (
                   <img
-                    className='h-64 mx-auto mb-5 border-4 border-white border-rounded'
+                    className='h-64 mx-auto my-5 border-4 border-white border-rounded'
                     alt={name}
                     src={packshot}
                     onError={(event) => {
