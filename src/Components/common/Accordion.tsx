@@ -52,7 +52,13 @@ export const Accordion = ({
         </p>
         <Icon
           iconName='chevron'
-          className={getClassName(['ml-auto', 'm-5', 'h-5', 'text-gray-700'])}
+          className={getClassName([
+            'ml-auto',
+            'm-5',
+            'h-5',
+            'w-5',
+            'text-gray-700',
+          ])}
           style={{
             transition: '0.6s ease',
             ...(active ? { transform: 'rotate(90deg)' } : {}),

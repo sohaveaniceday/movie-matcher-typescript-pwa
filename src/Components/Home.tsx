@@ -27,6 +27,7 @@ export const Home = () => {
 
   return (
     <>
+      <div className='hidden md:block'>Only available on mobile</div>
       <div
         className='h-screen md:hidden'
         style={{ height: 'calc(var(--vh, 1vh) * 100)' }}

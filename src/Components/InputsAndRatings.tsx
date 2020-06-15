@@ -5,29 +5,27 @@ import { Icon, Slider } from './common'
 import { getClassName, useServiceState, useObjectState } from '../util'
 
 export const InputsAndRatings = () => {
-  const [state] = useServiceState()
+  const [state, updateState] = useServiceState()
 
-  const [isRating, setIsRating] = useState<boolean>(false)
+  const [isRating, setIsRating] = useState<boolean>(true)
   const [allFilmsRated, setAllFilmsRated] = useState<boolean>(false)
   const [activeUserNumber, setActiveUserNumber] = useState<1 | 2>(1)
-  const [activeFilmNumber, setActiveFilmNumber] = useState<number>(1)
+  const [activeFilmNumber, setActiveFilmNumber] = useState<number>(
+    isRating ? 0 : 1
+  )
 
   const currentUserKey = `user${activeUserNumber}`
 
-  const filmDataArray: FilmData[] = Object.values(state[currentUserKey])
+  const filmDataArray: FilmData[] = Object.keys(state[currentUserKey])
+    .sort()
+    .map((e) => state[currentUserKey][e])
+
   const initialInputValues = {
     film1: '',
     film2: '',
     film3: '',
   }
   const [inputValues, setUpdateValues] = useObjectState(initialInputValues)
-  const initialRatingValues = {
-    film1: 34,
-    film2: 33,
-    film3: 33,
-  }
-
-  const [ratings, setRatings] = useObjectState(initialRatingValues)
 
   const allFilmsConfirmed = filmDataArray.every(({ id }: FilmData) => id)
 
@@ -47,7 +45,6 @@ export const InputsAndRatings = () => {
 
   return (
     <div className='flex flex-col h-full'>
-      {console.log('ratings,', ratings)}
       <div
         className='flex w-full h-16'
         style={{ backgroundColor: `#${colorScheme.darkLight}` }}
@@ -62,32 +59,57 @@ export const InputsAndRatings = () => {
           </div>
         </div>
       </div>
-      {isRating && (
-        <div
-          className='flex w-full h-16'
-          style={{
-            backgroundColor: `#77798C`,
-          }}
-        >
-          <Slider
-            range={[1, 99]}
-            defaultValues={[
-              ratings['film1'],
-              ratings['film1'] + ratings['film2'],
-            ]}
-            cssClasses={['my-auto', 'w-full', 'px-5']}
-            onChange={(values) =>
-              setRatings({
-                film1: values[0],
-                film2: values[1] - values[0],
-                film3: 100 - values[1],
-              })
-            }
-            handleColor={`#${colorScheme.darkLight}`}
-            trackColor={`#${colorScheme.lightDark}`}
-          />
-        </div>
-      )}
+      {/* {isRating && (
+        <>
+          <div
+            className='flex w-full h-16'
+            style={{
+              backgroundColor: `#77798C`,
+            }}
+          >
+            <Slider
+              range={[1, 99]}
+              defaultValues={[
+                ratings['film1'],
+                ratings['film1'] + ratings['film2'],
+              ]}
+              cssClasses={['my-auto', 'w-full', 'px-5']}
+              onChange={(values) =>
+                setRatings({
+                  film1: values[0],
+                  film2: values[1] - values[0],
+                  film3: 100 - values[1],
+                })
+              }
+              handleColor={`#${colorScheme.darkLight}`}
+              trackColor={`#${colorScheme.lightDark}`}
+            />
+          </div>
+          <div className='flex w-full h-64'>
+            <div className='flex w-full max-h-full mx-5 my-2 bg-gray-700'>
+              <div className='flex w-full h-full flex-inline'>
+                <div className='flex flex-col w-1/3 max-h-full m-2 bg-red-500'>
+                  <div className='h-48 max-w-full m-2 bg-blue-500'></div>
+                  <div className='h-16 max-w-full mx-2 mt-1 mb-2 bg-blue-500'></div>
+                </div>
+                <div className='flex flex-col w-1/3 max-h-full m-2 bg-red-500'>
+                  <div className='h-48 max-w-full m-2 bg-blue-500'></div>
+                  <div className='h-16 max-w-full mx-2 mt-1 mb-2 bg-blue-500'></div>
+                </div>
+                <div className='flex flex-col w-1/3 max-h-full m-2 bg-red-500'>
+                  <div className='flex h-48 max-w-full m-2 bg-blue-500'>
+                    <div
+                      className='w-full mt-auto bg-blue-200'
+                      style={{ height: '75%' }}
+                    />
+                  </div>
+                  <div className='h-16 max-w-full mx-2 mt-1 mb-2 bg-blue-500'></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )} */}
       <form
         className='flex flex-col flex-1 h-full overflow-auto'
         onSubmit={onSubmit}

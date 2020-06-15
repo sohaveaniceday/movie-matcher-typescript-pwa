@@ -15,6 +15,7 @@ import {
   useEventListener,
 } from '../util'
 import { imageBaseUrl, genreMap, initialFilmData } from '../static'
+import { Ratings } from './Ratings'
 
 type FilmAccordionsProps = {
   activeUserNumber: 1 | 2
@@ -181,6 +182,18 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   return (
     <>
+      {isRating && (
+        <Accordion
+          title={`Rating`}
+          content={<Ratings filmDataArray={filmDataArray} />}
+          active={activeFilmNumber === 0}
+          onClick={() => {
+            if (activeFilmNumber !== 0) {
+              setActiveFilmNumber(0)
+            }
+          }}
+        />
+      )}
       {filmDataArray.map((filmData, index) => {
         const filmNumber = index + 1
         const filmKey = `film${filmNumber}`
