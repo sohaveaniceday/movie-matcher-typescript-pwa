@@ -228,7 +228,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   value={values[currentFilmKey]}
                 />
               )}
-              <div className='z-10'>
+              <div className='z-10 w-full'>
                 {id && packshot ? (
                   <img
                     className='h-64 mx-auto my-5 border-4 border-white border-rounded'
@@ -242,8 +242,12 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 ) : id && !packshot ? (
                   <div className='w-40 h-64 mx-auto mb-5 bg-gray-300' />
                 ) : null}
-                <div className='text-center text-white'>
-                  {name && <div className='px-2 mb-1 text-3xl'>{name}</div>}
+                <div className='w-full text-center text-white'>
+                  {name && (
+                    <div className='w-full px-2 mb-1 text-3xl clamp line-clamp-2'>
+                      {name}
+                    </div>
+                  )}
                   {releaseDate && (
                     <div className='mb-4 text-base'>
                       {releaseDate.substring(0, 4)}
