@@ -50,7 +50,7 @@ export const Slider: FC<SliderProps> = ({
           {({ getRailProps }) => (
             <>
               <div
-                className='w-full cursor-pointer '
+                className='absolute w-full cursor-pointer'
                 style={{
                   height: 42,
                   transform: 'translate(0%, -50%)',

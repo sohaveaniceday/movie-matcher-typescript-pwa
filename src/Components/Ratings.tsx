@@ -45,7 +45,7 @@ export const Ratings = ({ filmDataArray }: { filmDataArray: FilmData[] }) => {
             trackColor={`#${colorScheme.lightDark}`}
           />
         </div>
-        <div className='z-10 flex flex-1 w-full p-4'>
+        <div className='z-10 flex flex-1 w-full px-4 pb-4'>
           <div className='flex w-full max-h-full'>
             <div className='flex w-full h-full flex-inline'>
               {/* <div className='flex flex-col w-1/3 max-h-full m-2 bg-red-500'>
@@ -60,10 +60,10 @@ export const Ratings = ({ filmDataArray }: { filmDataArray: FilmData[] }) => {
                 const rating = ratings[`film${index + 1}`]
 
                 return (
-                  <div key={id} className='flex flex-col w-1/3 max-h-full my-2'>
+                  <div key={id} className='flex flex-col w-1/3 max-h-full'>
                     <div
-                      className='flex flex-col justify-end h-full max-w-full m-4'
-                      // style={{ maxHeight: '75%', height: '75%' }}
+                      className='flex flex-col justify-end h-full max-w-full mx-4 my-2'
+                      style={{ minHeight: '4rem' }}
                     >
                       {rating <= 50 && (
                         <div className='text-center text-white'>{`${rating}%`}</div>
