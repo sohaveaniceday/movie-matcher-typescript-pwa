@@ -23,10 +23,13 @@ type FilmAccordionsProps = {
   activeFilmNumber: number
   setActiveFilmNumber: Dispatch<React.SetStateAction<number>>
   isRating: boolean
+  isDomesticRating: boolean
   values: any
-  updateValues: Dispatch<any>
+  updateValues: Dispatch<React.SetStateAction<any>>
   allFilmsRated: boolean
   setAllFilmsRated: Dispatch<React.SetStateAction<boolean>>
+  ratings: any
+  setRatings: Dispatch<React.SetStateAction<any>>
 }
 
 export const FilmAccordions: FC<FilmAccordionsProps> = ({
@@ -36,8 +39,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   values,
   updateValues,
   isRating,
+  isDomesticRating,
   allFilmsRated,
   setAllFilmsRated,
+  ratings,
+  setRatings,
 }: FilmAccordionsProps) => {
   // State + Refs
   const [state, updateState] = useServiceState()
@@ -46,9 +52,16 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   const currentFilmKey = `film${activeFilmNumber}`
   const currentUserKey = `user${activeUserNumber}`
-  const filmDataArray: FilmData[] = Object.keys(state[currentUserKey])
+  const currentFilmDataUserKey = `user${
+    isRating && !isDomesticRating
+      ? activeUserNumber === 1
+        ? 2
+        : 1
+      : activeUserNumber
+  }`
+  const filmDataArray: FilmData[] = Object.keys(state[currentFilmDataUserKey])
     .sort()
-    .map((e) => state[currentUserKey][e])
+    .map((e) => state[currentFilmDataUserKey][e])
 
   // Ref to help stop unnecessary fetches
   const allowFetch = useRef(false)
@@ -194,6 +207,10 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
               filmDataArray={filmDataArray}
               allFilmsRated={allFilmsRated}
               setAllFilmsRated={setAllFilmsRated}
+              isDomesticRating={isDomesticRating}
+              currentUserKey={currentUserKey}
+              ratings={ratings}
+              setRatings={setRatings}
             />
           }
           active={activeFilmNumber === 0}
@@ -246,11 +263,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                     src={packshot}
                     onError={(event) => {
                       const target = event.target as HTMLImageElement
-                      target.className = 'w-40 h-64 mx-auto mb-5 bg-gray-300'
+                      target.className = 'w-40 h-64 mx-auto my-5 bg-gray-300'
                     }}
                   />
                 ) : id && !packshot ? (
-                  <div className='w-40 h-64 mx-auto mb-5 bg-gray-300' />
+                  <div className='w-40 h-64 mx-auto my-5 bg-gray-300' />
                 ) : null}
                 <div className='w-full text-center text-white'>
                   {name && (

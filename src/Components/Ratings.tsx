@@ -1,26 +1,28 @@
 import React, { FC, Dispatch } from 'react'
 import { Slider } from './common'
 import { colorScheme } from '../static'
-import { useObjectState, getClassName } from '../util'
+import { getClassName, useServiceState } from '../util'
 
 type RatingsProps = {
   filmDataArray: FilmData[]
   allFilmsRated: boolean
+  isDomesticRating: boolean
   setAllFilmsRated: Dispatch<React.SetStateAction<boolean>>
+  currentUserKey: string
+  ratings: any
+  setRatings: Dispatch<React.SetStateAction<any>>
 }
 
 export const Ratings: FC<RatingsProps> = ({
   filmDataArray,
   allFilmsRated,
   setAllFilmsRated,
+  isDomesticRating,
+  currentUserKey,
+  ratings,
+  setRatings,
 }: RatingsProps) => {
-  const initialRatingValues = {
-    film1: 34,
-    film2: 33,
-    film3: 33,
-  }
-
-  const [ratings, setRatings] = useObjectState(initialRatingValues)
+  const [, updateState] = useServiceState()
 
   const onUpdate = (values: readonly number[]) => {
     setRatings({
@@ -32,6 +34,18 @@ export const Ratings: FC<RatingsProps> = ({
 
   const onChange = () => {
     if (!allFilmsRated) setAllFilmsRated(true)
+    updateState({
+      [currentUserKey]: Object.keys(ratings)
+        .sort()
+        .reduce((acc, currentFilmKey) => {
+          return {
+            ...acc,
+            [currentFilmKey]: isDomesticRating
+              ? { domesticRating: ratings[currentFilmKey] }
+              : { foreignRating: ratings[currentFilmKey] },
+          }
+        }, {}),
+    })
   }
 
   return (

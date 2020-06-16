@@ -6,7 +6,8 @@ import { getClassName, useServiceState, useObjectState } from '../util'
 
 export const InputsAndRatings = () => {
   const [state] = useServiceState()
-  const [isRating, setIsRating] = useState<boolean>(true)
+  const [isRating, setIsRating] = useState<boolean>(false)
+  const [isDomesticRating, setIsDomesticRating] = useState<boolean>(true)
   const [allFilmsRated, setAllFilmsRated] = useState<boolean>(false)
   const [activeUserNumber, setActiveUserNumber] = useState<1 | 2>(1)
   const [activeFilmNumber, setActiveFilmNumber] = useState<number>(
@@ -24,21 +25,45 @@ export const InputsAndRatings = () => {
     film2: '',
     film3: '',
   }
-  const [inputValues, setUpdateValues] = useObjectState(initialInputValues)
+  const [inputValues, updateInputValues] = useObjectState(initialInputValues)
+  const initialRatingValues = {
+    film1: 34,
+    film2: 33,
+    film3: 33,
+  }
+
+  const [ratings, setRatings] = useObjectState(initialRatingValues)
 
   const allFilmsConfirmed = filmDataArray.every(({ id }: FilmData) => id)
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (allFilmsConfirmed && activeUserNumber === 1) {
-      setUpdateValues(initialInputValues)
-      setActiveUserNumber(2)
-      setActiveFilmNumber(1)
-    }
-    if (allFilmsConfirmed && activeUserNumber === 2) {
-      setIsRating(true)
-      setActiveUserNumber(1)
-      setActiveFilmNumber(1)
+    if (allFilmsConfirmed && !isRating) {
+      if (activeUserNumber === 1) {
+        updateInputValues(initialInputValues)
+      } else {
+        setIsRating(true)
+      }
+      setActiveFilmNumber(activeUserNumber === 1 ? 1 : 0)
+      setActiveUserNumber(activeUserNumber === 1 ? 2 : 1)
+    } else if (allFilmsRated && isRating) {
+      if (activeUserNumber === 1) {
+        if (isDomesticRating) {
+          setIsDomesticRating(false)
+        } else {
+          setActiveUserNumber(2)
+          setIsDomesticRating(true)
+        }
+      } else {
+        if (isDomesticRating) {
+          setIsDomesticRating(false)
+        } else {
+          console.log('trigger final fetch', state)
+        }
+      }
+      setRatings(initialRatingValues)
+      setAllFilmsRated(false)
+      setActiveFilmNumber(0)
     }
   }
 
@@ -68,10 +93,13 @@ export const InputsAndRatings = () => {
           activeFilmNumber={activeFilmNumber}
           setActiveFilmNumber={setActiveFilmNumber}
           isRating={isRating}
+          isDomesticRating={isDomesticRating}
           values={inputValues}
-          updateValues={setUpdateValues}
+          updateValues={updateInputValues}
           allFilmsRated={allFilmsRated}
           setAllFilmsRated={setAllFilmsRated}
+          ratings={ratings}
+          setRatings={setRatings}
         />
         <div className='text-center'>
           <input
@@ -98,7 +126,9 @@ export const InputsAndRatings = () => {
               !allFilmsConfirmed && !isRating
                 ? `User ${activeUserNumber} - Enter your films`
                 : isRating && !allFilmsRated
-                ? `User ${activeUserNumber} - Score films`
+                ? `User ${activeUserNumber} - Score ${
+                    isDomesticRating ? 'your' : 'their'
+                  } films`
                 : 'Next'
             }
           />

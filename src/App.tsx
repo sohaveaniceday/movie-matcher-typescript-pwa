@@ -5,7 +5,7 @@ import { initialObjectServiceState, exampleData } from './static'
 
 function App() {
   return (
-    <ObjectStateProvider initialState={exampleData}>
+    <ObjectStateProvider initialState={initialObjectServiceState}>
       <Home />
     </ObjectStateProvider>
   )
