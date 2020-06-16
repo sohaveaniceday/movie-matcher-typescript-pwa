@@ -28,7 +28,7 @@ export const Home = () => {
 
   useEventListener('resize', handleResize, window)
 
-  const [displayResult, setDisplayResult] = useState<boolean>(true)
+  const [displayResult, setDisplayResult] = useState<boolean>(false)
 
   return (
     <div style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>

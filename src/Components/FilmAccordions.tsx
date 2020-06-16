@@ -65,7 +65,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   // Ref to help stop unnecessary fetches
   const allowFetch = useRef(false)
-  const { data, isLoading, setUrl } = useFetch()
+  const { data, isLoading, setParams } = useFetch()
 
   // refs to allow automatic focusing
   const inputRefs = useRef<RefObject<HTMLInputElement>[]>(
@@ -104,13 +104,14 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       debouncedSearchTerm.length > 1
     ) {
       // Fire off our API call
-      setUrl(
+      setParams([
         `https://api.themoviedb.org/3/search/movie?api_key=${
           process.env.REACT_APP_TMDB_API_KEY
-        }&query=${encodeURIComponent(debouncedSearchTerm)}`
-      )
+        }&query=${encodeURIComponent(debouncedSearchTerm)}`,
+        {},
+      ])
     }
-  }, [debouncedSearchTerm, setUrl])
+  }, [debouncedSearchTerm, setParams])
 
   useEffect(() => {
     // console.log('data', data)
