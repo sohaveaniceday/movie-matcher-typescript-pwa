@@ -1,10 +1,16 @@
-import React, { useState, FormEvent } from 'react'
+import React, { useState, FormEvent, Dispatch, FC } from 'react'
 import { FilmAccordions } from './FilmAccordions'
 import { colorScheme } from '../static'
 import { Icon } from './common'
 import { getClassName, useServiceState, useObjectState } from '../util'
 
-export const InputsAndRatings = () => {
+type InputsAndRatingsProps = {
+  setDisplayResult: Dispatch<React.SetStateAction<boolean>>
+}
+
+export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
+  setDisplayResult,
+}: InputsAndRatingsProps) => {
   const [state] = useServiceState()
   const [isRating, setIsRating] = useState<boolean>(false)
   const [isDomesticRating, setIsDomesticRating] = useState<boolean>(true)
@@ -58,7 +64,7 @@ export const InputsAndRatings = () => {
         if (isDomesticRating) {
           setIsDomesticRating(false)
         } else {
-          console.log('trigger final fetch', state)
+          setDisplayResult(true)
         }
       }
       setRatings(initialRatingValues)

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { InputsAndRatings } from './InputsAndRatings'
+import { Result } from './Result'
 import { useEventListener, useDebounce } from '../util'
+import { colorScheme } from '../static'
+import { Icon } from './common'
 
 export const Home = () => {
   // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
@@ -25,15 +28,34 @@ export const Home = () => {
 
   useEventListener('resize', handleResize, window)
 
+  const [displayResult, setDisplayResult] = useState<boolean>(true)
+
   return (
-    <>
-      <div className='hidden md:block'>Only available on mobile</div>
-      <div
-        className='h-screen md:hidden'
-        style={{ height: 'calc(var(--vh, 1vh) * 100)' }}
-      >
-        <InputsAndRatings />
+    <div style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
+      <div className='hidden h-screen md:block'>Only available on mobile</div>
+      <div className='h-screen md:hidden'>
+        <div className='flex flex-col h-full'>
+          <div
+            className='flex w-full h-16'
+            style={{ backgroundColor: `#${colorScheme.darkLight}` }}
+          >
+            <div
+              className='m-auto text-2xl text-white'
+              style={{ fontFamily: 'DAYPBL' }}
+            >
+              <div className='flex flex-inline'>
+                Movie <Icon iconName='movie' className='w-8 h-8 mx-2 my-auto' />
+                Matcher
+              </div>
+            </div>
+          </div>
+          {displayResult ? (
+            <Result />
+          ) : (
+            <InputsAndRatings setDisplayResult={setDisplayResult} />
+          )}
+        </div>
       </div>
-    </>
+    </div>
   )
 }
