@@ -1,11 +1,3 @@
-## Palette
-
-eaac8b
-e56b6f
-b56576
-6d597a
-355070
-
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

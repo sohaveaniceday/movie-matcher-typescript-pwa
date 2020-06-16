@@ -1,7 +1,6 @@
 import React, { useState, FormEvent, Dispatch, FC } from 'react'
 import { FilmAccordions } from './FilmAccordions'
 import { colorScheme } from '../static'
-import { Icon } from './common'
 import { getClassName, useServiceState, useObjectState } from '../util'
 
 type InputsAndRatingsProps = {
@@ -74,72 +73,56 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
   }
 
   return (
-    <div className='flex flex-col h-full'>
-      <div
-        className='flex w-full h-16'
-        style={{ backgroundColor: `#${colorScheme.darkLight}` }}
-      >
-        <div
-          className='m-auto text-2xl text-white'
-          style={{ fontFamily: 'DAYPBL' }}
-        >
-          <div className='flex flex-inline'>
-            Movie <Icon iconName='movie' className='w-8 h-8 mx-2 my-auto' />
-            Matcher
-          </div>
-        </div>
-      </div>
-      <form
-        className='flex flex-col flex-1 h-full overflow-auto'
-        onSubmit={onSubmit}
-      >
-        <FilmAccordions
-          activeUserNumber={activeUserNumber}
-          setActiveUserNumber={setActiveUserNumber}
-          activeFilmNumber={activeFilmNumber}
-          setActiveFilmNumber={setActiveFilmNumber}
-          isRating={isRating}
-          isDomesticRating={isDomesticRating}
-          values={inputValues}
-          updateValues={updateInputValues}
-          allFilmsRated={allFilmsRated}
-          setAllFilmsRated={setAllFilmsRated}
-          ratings={ratings}
-          setRatings={setRatings}
+    <form
+      className='flex flex-col flex-1 h-full overflow-auto'
+      onSubmit={onSubmit}
+    >
+      <FilmAccordions
+        activeUserNumber={activeUserNumber}
+        setActiveUserNumber={setActiveUserNumber}
+        activeFilmNumber={activeFilmNumber}
+        setActiveFilmNumber={setActiveFilmNumber}
+        isRating={isRating}
+        isDomesticRating={isDomesticRating}
+        values={inputValues}
+        updateValues={updateInputValues}
+        allFilmsRated={allFilmsRated}
+        setAllFilmsRated={setAllFilmsRated}
+        ratings={ratings}
+        setRatings={setRatings}
+      />
+      <div className='text-center'>
+        <input
+          type='submit'
+          className={getClassName([
+            'flex',
+            'w-full',
+            'h-16',
+            'text-white',
+            'text-2xl',
+            'justify-center',
+            [allFilmsConfirmed, 'cursor-pointer'],
+          ])}
+          style={{
+            backgroundColor: `#${
+              (allFilmsConfirmed && !isRating) || allFilmsRated
+                ? colorScheme.light
+                : colorScheme.darkLight
+            }`,
+            fontFamily: 'Bebas',
+          }}
+          disabled={!allFilmsConfirmed}
+          value={
+            !allFilmsConfirmed && !isRating
+              ? `User ${activeUserNumber} - Enter your films`
+              : isRating && !allFilmsRated
+              ? `User ${activeUserNumber} - Score ${
+                  isDomesticRating ? 'your' : 'their'
+                } films`
+              : 'Next'
+          }
         />
-        <div className='text-center'>
-          <input
-            type='submit'
-            className={getClassName([
-              'flex',
-              'w-full',
-              'h-16',
-              'text-white',
-              'text-2xl',
-              'justify-center',
-              [allFilmsConfirmed, 'cursor-pointer'],
-            ])}
-            style={{
-              backgroundColor: `#${
-                (allFilmsConfirmed && !isRating) || allFilmsRated
-                  ? colorScheme.light
-                  : colorScheme.darkLight
-              }`,
-              fontFamily: 'Bebas',
-            }}
-            disabled={!allFilmsConfirmed}
-            value={
-              !allFilmsConfirmed && !isRating
-                ? `User ${activeUserNumber} - Enter your films`
-                : isRating && !allFilmsRated
-                ? `User ${activeUserNumber} - Score ${
-                    isDomesticRating ? 'your' : 'their'
-                  } films`
-                : 'Next'
-            }
-          />
-        </div>
-      </form>
-    </div>
+      </div>
+    </form>
   )
 }
