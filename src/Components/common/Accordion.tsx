@@ -23,7 +23,6 @@ export const Accordion = ({
         'flex-col',
         [active, ['flex-1', 'overflow-y-scroll']],
       ])}
-      style={{ backgroundColor: `#${colorScheme.dark}` }}
     >
       <div
         className={getClassName([

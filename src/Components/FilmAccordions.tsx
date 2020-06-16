@@ -25,6 +25,8 @@ type FilmAccordionsProps = {
   isRating: boolean
   values: any
   updateValues: Dispatch<any>
+  allFilmsRated: boolean
+  setAllFilmsRated: Dispatch<React.SetStateAction<boolean>>
 }
 
 export const FilmAccordions: FC<FilmAccordionsProps> = ({
@@ -34,6 +36,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   values,
   updateValues,
   isRating,
+  allFilmsRated,
+  setAllFilmsRated,
 }: FilmAccordionsProps) => {
   // State + Refs
   const [state, updateState] = useServiceState()
@@ -184,8 +188,14 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     <>
       {isRating && (
         <Accordion
-          title={`Rating`}
-          content={<Ratings filmDataArray={filmDataArray} />}
+          title='Ratings'
+          content={
+            <Ratings
+              filmDataArray={filmDataArray}
+              allFilmsRated={allFilmsRated}
+              setAllFilmsRated={setAllFilmsRated}
+            />
+          }
           active={activeFilmNumber === 0}
           onClick={() => {
             if (activeFilmNumber !== 0) {

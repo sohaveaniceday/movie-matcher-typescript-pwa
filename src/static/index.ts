@@ -116,7 +116,7 @@ export const genreMap = [
 export const exampleData = {
   user1: {
     film1: {
-      name: 'Die Hard: passion of the christ yo ndsncdncnlcdlnsncjdnscnbncdsnl',
+      name: 'Lord of the Rings: Fellowship of the Ring',
       id: 562,
       releaseDate: '1988-07-15',
       domesticRating: 0,
