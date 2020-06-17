@@ -14,12 +14,14 @@ import {
   AutoSuggest,
   SuggestionProps,
   Button,
+  Skeleton,
 } from './common'
 import {
   useServiceState,
   useFetch,
   useDebounce,
   useEventListener,
+  getClassName,
 } from '../util'
 import { imageBaseUrl, genreMap, initialFilmData, colorScheme } from '../static'
 import { Ratings } from './Ratings'
@@ -58,6 +60,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   const [filmSuggestions, setFilmSuggestions] = useState<SuggestionProps[]>([])
 
   const [randomizeKeys, setRandomizeKeys] = useState<string[]>(['', ''])
+
+  const [packshotLoaded, setPackshotLoaded] = useState<boolean>(false)
 
   const currentFilmKey = `film${activeFilmNumber}`
   const currentUserKey = `user${activeUserNumber}`
@@ -210,6 +214,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       allowFetch.current = false
       updateValues({ [filmKey]: '' })
       setFilmSuggestions([])
+      if (packshotLoaded) setPackshotLoaded(false)
       const selectedFilm = filmSuggestionData.results.find(
         ({ id: filmId }: any) => parseInt(id) === filmId
       )
@@ -237,6 +242,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   }
 
   const randomizeOnClick = () => {
+    if (packshotLoaded) setPackshotLoaded(false)
+    updateState({ [currentUserKey]: { [currentFilmKey]: initialFilmData } })
     setRandomizeKeys([currentUserKey, currentFilmKey])
     setRadomizeParams([
       `https://api.themoviedb.org/3/discover/movie?api_key=e6b5e279f56d84d84b98848cf0928b53&language=en-US&region=us&sort_by=vote_average.desc&include_adult=false&include_video=false&page=${getRandomInt(
@@ -329,19 +336,38 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
               </>
             )}
             <div className='z-10 w-full'>
-              {id && packshot ? (
-                <img
-                  className='h-64 mx-auto my-5 border-4 border-white border-rounded'
-                  alt={name}
-                  src={packshot}
-                  onError={(event) => {
-                    const target = event.target as HTMLImageElement
-                    target.className = 'w-40 h-64 mx-auto my-5 bg-gray-300'
-                  }}
-                />
-              ) : id && !packshot ? (
-                <div className='w-40 h-64 mx-auto my-5 bg-gray-300' />
-              ) : null}
+              <div className='h-64 my-5'>
+                {id && packshot ? (
+                  <>
+                    <div className={getClassName([[packshotLoaded, 'hidden']])}>
+                      <Skeleton
+                        override
+                        cssClasses={['w-40', 'h-64', 'mx-auto']}
+                      />
+                    </div>
+                    <img
+                      className={getClassName([
+                        'mx-auto',
+                        'h-full',
+                        [
+                          packshotLoaded,
+                          ['border-4', 'border-white', 'border-rounded'],
+                          'hidden',
+                        ],
+                      ])}
+                      onLoad={() => setPackshotLoaded(true)}
+                      alt={name}
+                      src={packshot}
+                      onError={(event) => {
+                        const target = event.target as HTMLImageElement
+                        target.className = 'w-40 h-64 mx-auto bg-gray-300'
+                      }}
+                    />
+                  </>
+                ) : id && !packshot ? (
+                  <div className='w-40 h-64 mx-auto bg-gray-300' />
+                ) : null}
+              </div>
               <div className='w-full text-center text-white'>
                 {name && (
                   <div className='w-full px-2 mb-1 text-3xl clamp line-clamp-2'>

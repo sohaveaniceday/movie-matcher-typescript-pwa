@@ -17,6 +17,7 @@ export const Result = () => {
   const [isReady, setIsReady] = useState<boolean>(false)
   const [locations, setLocations] = useState<Location[]>([])
   const [packshotPalette, setPackshotPalette] = useState<any>(null)
+  const [packshotLoaded, setPackshotLoaded] = useState<boolean>(false)
 
   const [resultUserKey, resultFilmKey] = Object.entries(state).reduce(
     (acc: string[], [currentUserKey, currentUserValue]: any[]): string[] => {
@@ -113,15 +114,30 @@ export const Result = () => {
               Your movie match:
             </div>
             {id && packshot ? (
-              <img
-                className='h-64 mx-auto my-5 border-4 border-white border-rounded'
-                alt={name}
-                src={packshot}
-                onError={(event) => {
-                  const target = event.target as HTMLImageElement
-                  target.className = 'w-40 h-64 mx-auto my-5 bg-gray-300'
-                }}
-              />
+              <>
+                <div className={getClassName([[packshotLoaded, 'hidden']])}>
+                  <Skeleton override cssClasses={['w-40', 'h-64', 'mx-auto']} />
+                </div>
+                <img
+                  className={getClassName([
+                    'h-64',
+                    'mx-auto',
+                    'my-5',
+                    [
+                      packshotLoaded,
+                      ['border-4', 'border-white', 'border-rounded'],
+                      'hidden',
+                    ],
+                  ])}
+                  onLoad={() => setPackshotLoaded(true)}
+                  alt={name}
+                  src={packshot}
+                  onError={(event) => {
+                    const target = event.target as HTMLImageElement
+                    target.className = 'w-40 h-64 mx-auto my-5 bg-gray-300'
+                  }}
+                />
+              </>
             ) : id && !packshot ? (
               <div className='w-40 h-64 mx-auto my-5 bg-gray-300' />
             ) : null}
@@ -172,7 +188,7 @@ export const Result = () => {
             </div>
           </>
         ) : (
-          <div className='mx-auto my-6'>
+          <div className='mx-auto my-10'>
             <Skeleton override cssClasses={['w-40', 'h-64']} />
             <div
               className='text-2xl text-center text-white'
