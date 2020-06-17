@@ -309,7 +309,9 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             <div
               className='absolute w-full h-full'
               style={{
-                backgroundImage: `linear-gradient(#77798C,#3d405b)`,
+                backgroundImage: `linear-gradient(#${
+                  activeUserNumber === 1 ? '77798C' : '7ca268'
+                },#${activeUserNumber === 1 ? '3d405b' : 'c6ff95'})`,
               }}
             />
             {!isRating && (
