@@ -32,7 +32,9 @@ export const Home = () => {
 
   return (
     <div style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
-      <div className='hidden h-full md:block'>Only available on mobile</div>
+      <div className='hidden h-full m-5 text-center md:block'>
+        Movie Matcher is currently only available on mobile
+      </div>
       <div className='h-full md:hidden'>
         <div className='flex flex-col h-full'>
           <div
