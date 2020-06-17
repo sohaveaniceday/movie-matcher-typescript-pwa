@@ -1,7 +1,7 @@
 import React from 'react'
 import { Home } from './Components'
 import { ObjectStateProvider } from './util'
-import { initialObjectServiceState, exampleData } from './static'
+import { initialObjectServiceState } from './static'
 
 function App() {
   return (

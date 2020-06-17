@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useFetch } from '../Components/customHooks'
 import { useServiceState, getClassName } from '../util'
 import { Skeleton, Badge } from './common'
-import { colorScheme, exampleLocationData } from '../static'
+import { colorScheme } from '../static'
 import Vibrant from 'node-vibrant'
 
 type Location = {
@@ -12,7 +12,7 @@ type Location = {
 }
 
 export const Result = () => {
-  const { data, setParams } = useFetch()
+  const { data, setParams, error } = useFetch()
   const [state] = useServiceState()
   const [isReady, setIsReady] = useState<boolean>(false)
   const [locations, setLocations] = useState<Location[]>([])
@@ -87,29 +87,31 @@ export const Result = () => {
       })
       setLocations(locationData)
       setIsReady(true)
+    } else if (error) {
+      setIsReady(true)
     }
-  }, [data])
+  }, [data, error])
 
   return (
     <div
       className='flex flex-col flex-1 h-full overflow-auto'
       style={{
         backgroundImage: `linear-gradient(${
-          packshotPalette
+          packshotPalette && isReady
             ? `${packshotPalette.LightVibrant.hex},${packshotPalette.DarkVibrant.hex}`
             : `#77798C,#3d405b`
         })`,
       }}
     >
       <div className='flex flex-col flex-1 overflow-y-scroll'>
-        <div
-          className='mt-5 text-3xl text-center'
-          style={{ fontFamily: 'Bebas', color: `#${colorScheme.dark}` }}
-        >
-          Your movie match:
-        </div>
         {isReady ? (
           <>
+            <div
+              className='mt-5 text-3xl text-center'
+              style={{ fontFamily: 'Bebas', color: `#${colorScheme.dark}` }}
+            >
+              Your movie match:
+            </div>
             {id && packshot ? (
               <img
                 className='h-64 mx-auto my-5 border-4 border-white border-rounded'
@@ -144,7 +146,7 @@ export const Result = () => {
                         href={url}
                         className='py-1 mx-1'
                         target='_blank'
-                        rel='noreferrer'
+                        rel='noopener noreferrer'
                       >
                         <img
                           alt={name}
@@ -170,7 +172,7 @@ export const Result = () => {
             </div>
           </>
         ) : (
-          <div className='m-6'>
+          <div className='mx-auto my-6'>
             <Skeleton override cssClasses={['w-40', 'h-64']} />
             <div
               className='text-2xl text-center text-white'

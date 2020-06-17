@@ -6,15 +6,22 @@ import React, {
   RefObject,
   createRef,
   Dispatch,
+  useCallback,
 } from 'react'
-import { Accordion, Badge, AutoSuggest, SuggestionProps } from './common'
+import {
+  Accordion,
+  Badge,
+  AutoSuggest,
+  SuggestionProps,
+  Button,
+} from './common'
 import {
   useServiceState,
   useFetch,
   useDebounce,
   useEventListener,
 } from '../util'
-import { imageBaseUrl, genreMap, initialFilmData } from '../static'
+import { imageBaseUrl, genreMap, initialFilmData, colorScheme } from '../static'
 import { Ratings } from './Ratings'
 
 type FilmAccordionsProps = {
@@ -50,6 +57,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   const [filmSuggestions, setFilmSuggestions] = useState<SuggestionProps[]>([])
 
+  const [randomizeKeys, setRandomizeKeys] = useState<string[]>(['', ''])
+
   const currentFilmKey = `film${activeFilmNumber}`
   const currentUserKey = `user${activeUserNumber}`
   const currentFilmDataUserKey = `user${
@@ -65,7 +74,16 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   // Ref to help stop unnecessary fetches
   const allowFetch = useRef(false)
-  const { data, isLoading, setParams } = useFetch()
+  const {
+    data: filmSuggestionData,
+    isLoading: isLoadingFilmSuggestions,
+    setParams: setFilmSuggestionParams,
+  } = useFetch()
+  const {
+    data: radomizeData,
+    setParams: setRadomizeParams,
+    clearData: clearRandomizeData,
+  } = useFetch()
 
   // refs to allow automatic focusing
   const inputRefs = useRef<RefObject<HTMLInputElement>[]>(
@@ -92,6 +110,39 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     inputRefs.current[activeFilmNumber - 1]?.current?.focus()
   }, [activeFilmNumber])
 
+  // Utils
+
+  const formatFilmData = useCallback(
+    (data: any, userKey: string, filmKey: string) => {
+      const {
+        title,
+        id: foundId,
+        release_date,
+        backdrop_path,
+        poster_path,
+        overview,
+        genre_ids,
+      } = data
+      return {
+        [userKey]: {
+          [filmKey]: {
+            name: title,
+            id: foundId,
+            releaseDate: release_date,
+            backgroundImage: backdrop_path && `${imageBaseUrl}${backdrop_path}`,
+            packshot: poster_path && `${imageBaseUrl}${poster_path}`,
+            summary: overview,
+            genres: genre_ids.map((genreId: number) => {
+              const foundGenre = genreMap.find(({ id }) => genreId === id)
+              return foundGenre?.name
+            }),
+          },
+        },
+      }
+    },
+    []
+  )
+
   // Suggestions Fetch
 
   const debouncedSearchTerm = useDebounce(values[currentFilmKey] || '', 400)
@@ -104,18 +155,18 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       debouncedSearchTerm.length > 1
     ) {
       // Fire off our API call
-      setParams([
+      setFilmSuggestionParams([
         `https://api.themoviedb.org/3/search/movie?api_key=${
           process.env.REACT_APP_TMDB_API_KEY
         }&query=${encodeURIComponent(debouncedSearchTerm)}`,
         {},
       ])
     }
-  }, [debouncedSearchTerm, setParams])
+  }, [debouncedSearchTerm, setFilmSuggestionParams])
 
   useEffect(() => {
-    if (data?.results?.length > 0) {
-      const results = data.results.map(
+    if (filmSuggestionData?.results?.length > 0) {
+      const results = filmSuggestionData.results.map(
         ({ title, release_date, poster_path, id }: any) => {
           const year = release_date?.substring(0, 4)
           return {
@@ -150,7 +201,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     } else {
       setFilmSuggestions([])
     }
-  }, [data])
+  }, [filmSuggestionData])
 
   // Form functions
 
@@ -159,33 +210,17 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       allowFetch.current = false
       updateValues({ [filmKey]: '' })
       setFilmSuggestions([])
-      const {
-        title,
-        id: foundId,
-        release_date,
-        backdrop_path,
-        poster_path,
-        overview,
-        genre_ids,
-      } = data.results.find(({ id: filmId }: any) => parseInt(id) === filmId)
-      const packshot = poster_path && `${imageBaseUrl}${poster_path}`
+      const selectedFilm = filmSuggestionData.results.find(
+        ({ id: filmId }: any) => parseInt(id) === filmId
+      )
 
-      updateState({
-        [currentUserKey]: {
-          [filmKey]: {
-            name: title,
-            id: foundId,
-            releaseDate: release_date,
-            backgroundImage: backdrop_path && `${imageBaseUrl}${backdrop_path}`,
-            packshot: packshot,
-            summary: overview,
-            genres: genre_ids.map((genreId: number) => {
-              const foundGenre = genreMap.find(({ id }) => genreId === id)
-              return foundGenre?.name
-            }),
-          },
-        },
-      })
+      const formatSelectedFilm = formatFilmData(
+        selectedFilm,
+        currentUserKey,
+        filmKey
+      )
+
+      updateState(formatSelectedFilm)
     } else {
       updateValues({ [filmKey]: value })
       allowFetch.current = true
@@ -196,6 +231,39 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       }
     }
   }
+
+  function getRandomInt(max: number) {
+    return Math.ceil(Math.random() * Math.floor(max))
+  }
+
+  const randomizeOnClick = () => {
+    setRandomizeKeys([currentUserKey, currentFilmKey])
+    setRadomizeParams([
+      `https://api.themoviedb.org/3/discover/movie?api_key=e6b5e279f56d84d84b98848cf0928b53&language=en-US&region=us&sort_by=vote_average.desc&include_adult=false&include_video=false&page=${getRandomInt(
+        9
+      )}&vote_count.gte=5000&vote_average.gte=7.5`,
+      {},
+    ])
+  }
+
+  useEffect(() => {
+    if (radomizeData) {
+      const randomFilm = formatFilmData(
+        radomizeData.results[getRandomInt(19)],
+        randomizeKeys[0],
+        randomizeKeys[1]
+      )
+
+      updateState(randomFilm)
+      clearRandomizeData()
+    }
+  }, [
+    radomizeData,
+    formatFilmData,
+    randomizeKeys,
+    updateState,
+    clearRandomizeData,
+  ])
 
   return (
     <>
@@ -237,17 +305,26 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
               }}
             />
             {!isRating && (
-              <AutoSuggest
-                isLoading={isLoading}
-                suggestions={filmSuggestions}
-                name={filmKey}
-                onChangeFunc={onChange}
-                cssClasses={['w-4/5', 'mt-6']}
-                placeholder='Search film'
-                forwardRef={inputRefs.current[index]}
-                rounded
-                value={values[currentFilmKey]}
-              />
+              <>
+                <AutoSuggest
+                  isLoading={isLoadingFilmSuggestions}
+                  suggestions={filmSuggestions}
+                  name={filmKey}
+                  onChangeFunc={onChange}
+                  cssClasses={['w-4/5', 'mt-6']}
+                  placeholder='Search film'
+                  forwardRef={inputRefs.current[index]}
+                  rounded
+                  value={values[currentFilmKey]}
+                />
+                <Button
+                  type='button'
+                  cssClasses={['z-10', 'mt-5', 'focus:outline-none']}
+                  value='Inspire me!'
+                  color={`#${colorScheme.darkLight}`}
+                  onClick={randomizeOnClick}
+                />
+              </>
             )}
             <div className='z-10 w-full'>
               {id && packshot ? (

@@ -5,13 +5,12 @@ export const useFetch = () => {
   const [data, setData] = useState<any>(null)
   const [params, setParams] = useState<[string, AxiosRequestConfig]>(['', {}])
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [isError, setIsError] = useState<boolean>(false)
+  const [error, setError] = useState<any>(null)
 
   useEffect(() => {
     const [url, config] = params
 
     const fetchData = async () => {
-      setIsError(false)
       setIsLoading(true)
 
       try {
@@ -19,7 +18,7 @@ export const useFetch = () => {
 
         setData(result.data)
       } catch (error) {
-        setIsError(true)
+        setError(error)
       }
 
       setIsLoading(false)
@@ -28,5 +27,7 @@ export const useFetch = () => {
     if (url) fetchData()
   }, [params])
 
-  return { data, isLoading, isError, setParams }
+  const clearData = () => setData(null)
+
+  return { data, isLoading, error, setParams, clearData }
 }
