@@ -25,10 +25,83 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Movie Matcher</title>
+    <style type="text/css">
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+      .page {
+        height: 100vh;
+      }
+      .navbar {
+        height: 4rem;
+        text-align: center;
+        margin: auto;
+        background-color: #457b9d;
+      }
+      .navbar h3 {
+        display: inline-block;
+        padding: 10px;
+        color: #fff;
+        text-decoration: none;
+      }
+      .navbar a {
+        display: inline-block;
+        padding: 10px;
+        color: #fff;
+        text-decoration: none;
+      }
+      .page {
+        background-image: linear-gradient(#77798c, #3d405b);
+        color: #fff;
+      }
+      .page-info {
+        margin: auto;
+        padding: 10px;
+        overflow: auto;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <div class="page">
+        <div class="navbar">
+          <h3>Movie Matcher</h3>
+        </div>
+        <div class="page">
+          <p class="page-info">
+            Loading...
+          </p>
+        </div>
+      </div>
+    </div>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker
+            .register('worker.js')
+            .then(
+              function (registration) {
+                console.log(
+                  'Worker registration successful',
+                  registration.scope
+                )
+              },
+              function (err) {
+                console.log('Worker registration failed', err)
+              }
+            )
+            .catch(function (err) {
+              console.log(err)
+            })
+        })
+      } else {
+        console.log('Service Worker is not supported by browser.')
+      }
+    </script>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

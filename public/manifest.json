@@ -1,25 +1,25 @@
 {
-  "short_name": "Test",
+  "short_name": "React App",
   "name": "Create React App Sample",
   "icons": [
     {
-      "src": "movie.svg",
+      "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
-      "type": "svg"
+      "type": "image/x-icon"
     },
     {
-      "src": "movie.svg",
-      "type": "svg",
+      "src": "logo192.png",
+      "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "movie.svg",
-      "type": "svg",
+      "src": "logo512.png",
+      "type": "image/png",
       "sizes": "512x512"
     }
   ],
   "start_url": ".",
-  "display": "fullscreen",
+  "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"
 }
