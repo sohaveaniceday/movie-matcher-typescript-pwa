@@ -154,7 +154,6 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   // useEffect(() => {
   //   if (isDisplayingSuggestions) {
   //     const activeSuggestionId = filteredSuggestions[activeSuggestion].id
-  //     console.log('activeSuggestionId', activeSuggestionId)
   //     document.getElementById(activeSuggestionId)?.scrollIntoView({
   //       behavior: 'smooth',
   //     })
