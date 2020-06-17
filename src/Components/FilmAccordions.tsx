@@ -86,6 +86,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   const {
     data: radomizeData,
     setParams: setRadomizeParams,
+    isLoading: isLoadingRandomize,
     clearData: clearRandomizeData,
   } = useFetch()
 
@@ -366,6 +367,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   </>
                 ) : id && !packshot ? (
                   <div className='w-40 h-64 mx-auto bg-gray-300' />
+                ) : isLoadingRandomize ? (
+                  <Skeleton override cssClasses={['w-40', 'h-64', 'mx-auto']} />
                 ) : null}
               </div>
               <div className='w-full text-center text-white'>
