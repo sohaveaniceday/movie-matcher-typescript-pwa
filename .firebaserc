@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "moviematcher": "moviematcherapp",
+    "default": "moviematcherapp"
+  }
+}
