@@ -317,13 +317,15 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   rounded
                   value={values[currentFilmKey]}
                 />
-                <Button
-                  type='button'
-                  cssClasses={['z-10', 'mt-5', 'focus:outline-none']}
-                  value='Inspire me!'
-                  color={`#${colorScheme.darkLight}`}
-                  onClick={randomizeOnClick}
-                />
+                <div className='z-10 mt-5'>
+                  <Button
+                    type='button'
+                    cssClasses={['focus:outline-none']}
+                    value='Inspire me!'
+                    color={`#${colorScheme.darkLight}`}
+                    onClick={randomizeOnClick}
+                  />
+                </div>
               </>
             )}
             <div className='z-10 w-full'>
@@ -369,7 +371,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
         return (
           <Accordion
             key={filmKey}
-            title={filmData.name || `Film ${index + 1}`}
+            title={filmData.name || `Movie ${index + 1}`}
             content={accordianContent}
             active={activeFilmNumber === filmNumber}
             onClick={() => {
