@@ -4,6 +4,7 @@ export const initialFilmData: FilmData = {
   releaseDate: '',
   domesticRating: 0,
   foreignRating: 0,
+  totalScore: 0,
   backgroundImage: '',
   packshot: '',
   summary: '',
@@ -121,6 +122,7 @@ export const exampleData = {
       releaseDate: '1988-07-15',
       domesticRating: 0,
       foreignRating: 0,
+      totalScore: 20,
       backgroundImage:
         'https://image.tmdb.org/t/p/original/tlCjsgRQgylZfdwTt4jroa89Y3d.jpg',
       packshot:
@@ -135,6 +137,7 @@ export const exampleData = {
       releaseDate: '2007-12-14',
       domesticRating: 0,
       foreignRating: 0,
+      totalScore: 35,
       backgroundImage:
         'https://image.tmdb.org/t/p/original/ePgD1cwmklyrFBjl6z96IuixuSY.jpg',
       packshot:
@@ -149,6 +152,7 @@ export const exampleData = {
       releaseDate: '2019-03-06',
       domesticRating: 0,
       foreignRating: 0,
+      totalScore: 45,
       backgroundImage:
         'https://image.tmdb.org/t/p/original/w2PMyoyLU22YvrGK3smVM9fW1jj.jpg',
       packshot:
@@ -165,6 +169,7 @@ export const exampleData = {
       releaseDate: '2014-05-14',
       domesticRating: 0,
       foreignRating: 0,
+      totalScore: 10,
       backgroundImage:
         'https://image.tmdb.org/t/p/original/zCjZfevPFBbOh2SAx2syIBHSqEI.jpg',
       packshot:
@@ -179,6 +184,7 @@ export const exampleData = {
       releaseDate: '2002-11-17',
       domesticRating: 0,
       foreignRating: 0,
+      totalScore: 80,
       backgroundImage:
         'https://image.tmdb.org/t/p/original/orI5mvpksYIlhJqzdmeipys6sHQ.jpg',
       packshot:
@@ -193,6 +199,7 @@ export const exampleData = {
       releaseDate: '2006-11-14',
       domesticRating: 0,
       foreignRating: 0,
+      totalScore: 10,
       backgroundImage:
         'https://image.tmdb.org/t/p/original/7IDwdmICNVJjbWcYWxtwHgtZ6qS.jpg',
       packshot:
@@ -203,3 +210,26 @@ export const exampleData = {
     },
   },
 }
+
+export const exampleLocationData = [
+  {
+    icon:
+      'https://utellyassets7.imgix.net/locations_icons/utelly/black_new/iTunesIVAGB.png?w=92&auto=compress&app_version=ae3576e2-0796-4eda-b953-80cadc8e2619_eww2020-06-16',
+    name: 'iTunes',
+    url: 'https://itunes.apple.com/gb/movie/die-hard/id270711082',
+  },
+  {
+    icon:
+      'https://utellyassets7.imgix.net/locations_icons/utelly/black_new/AmazonInstantVideoIVAGB.png?w=92&auto=compress&app_version=ae3576e2-0796-4eda-b953-80cadc8e2619_eww2020-06-16',
+    name: 'Amazon Instant Video',
+    url:
+      'https://www.amazon.co.uk/gp/video/detail/amzn1.dv.gti.74a9f689-aa11-6434-b581-93ea0c8a8ecc?creativeASIN=B00FZIY8JQ&ie=UTF8&linkCode=xm2&tag=utellycom00-21',
+  },
+  {
+    icon:
+      'https://utellyassets7.imgix.net/locations_icons/utelly/black_new/GooglePlayIVAGB.png?w=92&auto=compress&app_version=ae3576e2-0796-4eda-b953-80cadc8e2619_eww2020-06-16',
+    name: 'Google Play',
+    url:
+      'https://play.google.com/store/movies/details/Die_Hard?gl=GB&hl=en&id=zopTL9aW3wo',
+  },
+]

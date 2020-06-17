@@ -27,14 +27,12 @@ export const Accordion = ({
       <div
         className={getClassName([
           'rounded-t-lg',
-          // 'lg:hover:bg-gray-700',
           'cursor-pointer',
           'px-5',
           'h-16',
           'flex',
           'items-center',
           'border-none',
-          // 'focus:border-none',
           'outline-none',
           'focus:outline-none',
         ])}

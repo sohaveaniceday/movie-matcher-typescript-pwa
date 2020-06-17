@@ -3,8 +3,6 @@ import axios, { AxiosRequestConfig } from 'axios'
 
 export const useFetch = () => {
   const [data, setData] = useState<any>(null)
-  // const [url, setUrl] = useState<string>('')
-  // const [config, setConfig] = useState<AxiosRequestConfig>({})
   const [params, setParams] = useState<[string, AxiosRequestConfig]>(['', {}])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isError, setIsError] = useState<boolean>(false)

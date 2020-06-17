@@ -101,6 +101,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
             'text-white',
             'text-2xl',
             'justify-center',
+            'focus:outline-none',
             [allFilmsConfirmed, 'cursor-pointer'],
           ])}
           style={{

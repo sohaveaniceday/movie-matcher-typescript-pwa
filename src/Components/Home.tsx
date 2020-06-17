@@ -32,8 +32,8 @@ export const Home = () => {
 
   return (
     <div style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
-      <div className='hidden h-screen md:block'>Only available on mobile</div>
-      <div className='h-screen md:hidden'>
+      <div className='hidden h-full md:block'>Only available on mobile</div>
+      <div className='h-full md:hidden'>
         <div className='flex flex-col h-full'>
           <div
             className='flex w-full h-16'
@@ -49,11 +49,16 @@ export const Home = () => {
               </div>
             </div>
           </div>
-          {displayResult ? (
-            <Result />
-          ) : (
-            <InputsAndRatings setDisplayResult={setDisplayResult} />
-          )}
+          <div
+            className='h-full overflow-auto'
+            style={{ backgroundColor: `#3d405b` }}
+          >
+            {displayResult ? (
+              <Result />
+            ) : (
+              <InputsAndRatings setDisplayResult={setDisplayResult} />
+            )}
+          </div>
         </div>
       </div>
     </div>

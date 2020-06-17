@@ -114,7 +114,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   }, [debouncedSearchTerm, setParams])
 
   useEffect(() => {
-    // console.log('data', data)
     if (data?.results?.length > 0) {
       const results = data.results.map(
         ({ title, release_date, poster_path, id }: any) => {
@@ -226,74 +225,65 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
         const filmNumber = index + 1
         const filmKey = `film${filmNumber}`
         const { name, id, packshot, summary, genres, releaseDate } = state[
-          currentUserKey
+          currentFilmDataUserKey
         ][filmKey]
 
         const accordianContent = (
-          <div
-            className='relative w-full h-full'
-            style={{
-              backgroundColor: `#3d405b`,
-            }}
-          >
-            <div className='relative flex flex-col items-center h-full overflow-auto'>
-              <div
-                className='absolute w-full h-full'
-                style={{
-                  backgroundImage: `linear-gradient(#77798C,#3d405b)`,
-                }}
+          <div className='relative flex flex-col items-center h-full overflow-auto'>
+            <div
+              className='absolute w-full h-full'
+              style={{
+                backgroundImage: `linear-gradient(#77798C,#3d405b)`,
+              }}
+            />
+            {!isRating && (
+              <AutoSuggest
+                isLoading={isLoading}
+                suggestions={filmSuggestions}
+                name={filmKey}
+                onChangeFunc={onChange}
+                cssClasses={['w-4/5', 'mt-6']}
+                placeholder='Search film'
+                forwardRef={inputRefs.current[index]}
+                rounded
+                value={values[currentFilmKey]}
               />
-              {!isRating && (
-                <AutoSuggest
-                  isLoading={isLoading}
-                  suggestions={filmSuggestions}
-                  name={filmKey}
-                  onChangeFunc={onChange}
-                  cssClasses={['w-4/5', 'mt-6']}
-                  placeholder='Search film'
-                  forwardRef={inputRefs.current[index]}
-                  rounded
-                  value={values[currentFilmKey]}
+            )}
+            <div className='z-10 w-full'>
+              {id && packshot ? (
+                <img
+                  className='h-64 mx-auto my-5 border-4 border-white border-rounded'
+                  alt={name}
+                  src={packshot}
+                  onError={(event) => {
+                    const target = event.target as HTMLImageElement
+                    target.className = 'w-40 h-64 mx-auto my-5 bg-gray-300'
+                  }}
                 />
-              )}
-              <div className='z-10 w-full'>
-                {id && packshot ? (
-                  <img
-                    className='h-64 mx-auto my-5 border-4 border-white border-rounded'
-                    alt={name}
-                    src={packshot}
-                    onError={(event) => {
-                      const target = event.target as HTMLImageElement
-                      target.className = 'w-40 h-64 mx-auto my-5 bg-gray-300'
-                    }}
-                  />
-                ) : id && !packshot ? (
-                  <div className='w-40 h-64 mx-auto my-5 bg-gray-300' />
-                ) : null}
-                <div className='w-full text-center text-white'>
-                  {name && (
-                    <div className='w-full px-2 mb-1 text-3xl clamp line-clamp-2'>
-                      {name}
-                    </div>
-                  )}
-                  {releaseDate && (
-                    <div className='mb-4 text-base'>
-                      {releaseDate.substring(0, 4)}
-                    </div>
-                  )}
-                  {genres.length > 0 && (
-                    <div className='flex flex-wrap justify-center mb-4 flex-inline'>
-                      {genres.map((genre: string) => (
-                        <div key={genre} className='py-1 mx-1'>
-                          <Badge size='xs' content={genre} />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {summary && (
-                    <div className='px-4 mb-5 text-sm'>{summary}</div>
-                  )}
-                </div>
+              ) : id && !packshot ? (
+                <div className='w-40 h-64 mx-auto my-5 bg-gray-300' />
+              ) : null}
+              <div className='w-full text-center text-white'>
+                {name && (
+                  <div className='w-full px-2 mb-1 text-3xl clamp line-clamp-2'>
+                    {name}
+                  </div>
+                )}
+                {releaseDate && (
+                  <div className='mb-4 text-base'>
+                    {releaseDate.substring(0, 4)}
+                  </div>
+                )}
+                {genres.length > 0 && (
+                  <div className='flex flex-wrap justify-center mb-4 flex-inline'>
+                    {genres.map((genre: string) => (
+                      <div key={genre} className='py-1 mx-1'>
+                        <Badge size='xs' content={genre} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {summary && <div className='px-4 mb-5 text-sm'>{summary}</div>}
               </div>
             </div>
           </div>
