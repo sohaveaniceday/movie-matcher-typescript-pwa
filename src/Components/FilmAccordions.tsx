@@ -339,40 +339,41 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
               </>
             )}
             <div className='z-10 w-full'>
-              <div className='h-64 my-5'>
-                {id && packshot ? (
-                  <>
-                    <div className={getClassName([[packshotLoaded, 'hidden']])}>
-                      <Skeleton
-                        override
-                        cssClasses={['w-40', 'h-64', 'mx-auto']}
-                      />
-                    </div>
-                    <img
-                      className={getClassName([
-                        'mx-auto',
-                        'h-full',
-                        [
-                          packshotLoaded,
-                          ['border-4', 'border-white', 'border-rounded'],
-                          'hidden',
-                        ],
-                      ])}
-                      onLoad={() => setPackshotLoaded(true)}
-                      alt={name}
-                      src={packshot}
-                      onError={(event) => {
-                        const target = event.target as HTMLImageElement
-                        target.className = 'w-40 h-64 mx-auto bg-gray-300'
-                      }}
+              {id && packshot ? (
+                <div className='h-64 my-5'>
+                  <div className={getClassName([[packshotLoaded, 'hidden']])}>
+                    <Skeleton
+                      override
+                      cssClasses={['w-40', 'h-64', 'mx-auto']}
                     />
-                  </>
-                ) : id && !packshot ? (
-                  <div className='w-40 h-64 mx-auto bg-gray-300' />
-                ) : isLoadingRandomize ? (
-                  <Skeleton override cssClasses={['w-40', 'h-64', 'mx-auto']} />
-                ) : null}
-              </div>
+                  </div>
+                  <img
+                    className={getClassName([
+                      'mx-auto',
+                      'h-full',
+                      [
+                        packshotLoaded,
+                        ['border-4', 'border-white', 'border-rounded'],
+                        'hidden',
+                      ],
+                    ])}
+                    onLoad={() => setPackshotLoaded(true)}
+                    alt={name}
+                    src={packshot}
+                    onError={(event) => {
+                      const target = event.target as HTMLImageElement
+                      target.className = 'w-40 h-64 mx-auto bg-gray-300'
+                    }}
+                  />
+                </div>
+              ) : id && !packshot ? (
+                <div className='w-40 h-64 mx-auto my-5 bg-gray-300' />
+              ) : isLoadingRandomize ? (
+                <Skeleton
+                  override
+                  cssClasses={['w-40', 'h-64', 'mx-auto', 'my-5']}
+                />
+              ) : null}
               <div className='w-full text-center text-white'>
                 {name && (
                   <div className='w-full px-2 mb-1 text-3xl clamp line-clamp-2'>
