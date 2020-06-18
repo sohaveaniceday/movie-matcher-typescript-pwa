@@ -4,7 +4,6 @@ export const initialFilmData: FilmData = {
   releaseDate: '',
   domesticRating: 0,
   foreignRating: 0,
-  totalScore: 0,
   backgroundImage: '',
   packshot: '',
   summary: '',

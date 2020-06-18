@@ -6,7 +6,6 @@ type FilmData = {
   releaseDate: string
   domesticRating: number
   foreignRating: number
-  totalScore: number
   backgroundImage: string
   packshot: string
   summary: string

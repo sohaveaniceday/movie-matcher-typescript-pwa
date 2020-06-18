@@ -14,37 +14,40 @@ type Location = {
 export const Result = () => {
   const { data, setParams, error } = useFetch()
   const [state] = useServiceState()
+  const [topRatedFilm, setTopRatedFilm] = useState<any>(null)
   const [isReady, setIsReady] = useState<boolean>(false)
   const [locations, setLocations] = useState<Location[]>([])
   const [packshotPalette, setPackshotPalette] = useState<any>(null)
   const [packshotLoaded, setPackshotLoaded] = useState<boolean>(false)
 
-  const [resultUserKey, resultFilmKey] = Object.entries(state).reduce(
-    (acc: string[], [currentUserKey, currentUserValue]: any[]): string[] => {
-      const [topRatedFilmKey, topRatedFilmValue] = Object.entries(
-        currentUserValue
-      ).reduce(
-        (
-          acc: string[],
-          [currentFilmKey, currentFilmValue]: any[]
-        ): string[] => {
-          return currentFilmValue.totalScore > state[acc[0]][acc[1]].totalScore
-            ? (acc = [currentUserKey, currentFilmKey])
+  const { id, name, packshot, summary, genres, releaseDate } =
+    topRatedFilm || {}
+
+  useEffect(() => {
+    if (!topRatedFilm) {
+      const filmDataArray: any = Object.values(state).reduce(
+        (acc: any, currentUser: any): any[] => {
+          const filmData = Object.values(currentUser)
+          return [...acc, ...filmData]
+        },
+        []
+      )
+
+      const topFilm = filmDataArray.reduce(
+        (acc: any, currentFilm: any): any => {
+          const calculateTotalScore = (film: any) =>
+            parseInt(film.domesticRating) * 0.4 +
+            parseInt(film.foreignRating) * 0.6
+
+          return calculateTotalScore(currentFilm) > calculateTotalScore(acc)
+            ? (acc = currentFilm)
             : acc
         },
-        [currentUserKey, 'film1']
+        filmDataArray[0]
       )
-      return state[topRatedFilmKey][topRatedFilmValue].totalScore >
-        state[acc[0]][acc[1]].totalScore
-        ? (acc = [topRatedFilmKey, topRatedFilmValue])
-        : acc
-    },
-    ['user1', 'film1']
-  )
-
-  const { id, name, packshot, summary, genres, releaseDate } = state[
-    resultUserKey
-  ][resultFilmKey]
+      setTopRatedFilm(topFilm)
+    }
+  }, [state, topRatedFilm])
 
   useEffect(() => {
     if (packshot) {
@@ -83,9 +86,12 @@ export const Result = () => {
       const {
         collection: { locations },
       } = data
-      const locationData = locations.map(({ icon, display_name, url }: any) => {
-        return { icon, name: display_name, url }
-      })
+      const locationData: any = locations.reduce(
+        (acc: any, { icon, display_name, url }: any) => {
+          return icon && url ? [...acc, { icon, name: display_name, url }] : acc
+        },
+        []
+      )
       setLocations(locationData)
       setIsReady(true)
     } else if (error) {
@@ -169,6 +175,10 @@ export const Result = () => {
                           src={icon}
                           className='h-8'
                           style={{ filter: `invert(100%)` }}
+                          onError={(event) => {
+                            const target = event.target as HTMLImageElement
+                            target.className = 'hidden'
+                          }}
                         />
                       </a>
                     ))}

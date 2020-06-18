@@ -24,7 +24,7 @@ export const Ratings: FC<RatingsProps> = ({
   setRatings,
   activeUserNumber,
 }: RatingsProps) => {
-  const [state, updateState] = useServiceState()
+  const [, updateState] = useServiceState()
 
   const onUpdate = (values: readonly number[]) => {
     setRatings({
@@ -36,8 +36,12 @@ export const Ratings: FC<RatingsProps> = ({
 
   const onChange = () => {
     if (!allFilmsRated) setAllFilmsRated(true)
-    updateState({
-      [currentUserKey]: Object.keys(ratings)
+    const newState = {
+      [isDomesticRating
+        ? currentUserKey
+        : activeUserNumber === 1
+        ? 'user2'
+        : 'user1']: Object.keys(ratings)
         .sort()
         .reduce(
           (
@@ -54,19 +58,13 @@ export const Ratings: FC<RatingsProps> = ({
                 ? { domesticRating: ratings[currentFilmKey] }
                 : {
                     foreignRating: ratings[currentFilmKey],
-                    totalScore: Math.round(
-                      ratings[currentFilmKey] * 0.4 +
-                        state[currentUserKey][currentFilmKey][
-                          'domesticRating'
-                        ] *
-                          0.6
-                    ),
                   },
             }
           },
           {}
         ),
-    })
+    }
+    updateState(newState)
   }
 
   return (
