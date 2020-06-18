@@ -53,7 +53,7 @@ export const Home = () => {
           </div>
           <div
             className='h-full overflow-auto'
-            style={{ backgroundColor: `#3d405b` }}
+            style={{ backgroundColor: `#${colorScheme.user1Dark}` }}
           >
             {displayResult ? (
               <Result />

@@ -11,6 +11,7 @@ type RatingsProps = {
   currentUserKey: string
   ratings: any
   setRatings: Dispatch<React.SetStateAction<any>>
+  activeUserNumber: 1 | 2
 }
 
 export const Ratings: FC<RatingsProps> = ({
@@ -21,6 +22,7 @@ export const Ratings: FC<RatingsProps> = ({
   currentUserKey,
   ratings,
   setRatings,
+  activeUserNumber,
 }: RatingsProps) => {
   const [state, updateState] = useServiceState()
 
@@ -72,7 +74,15 @@ export const Ratings: FC<RatingsProps> = ({
       <div
         className='absolute w-full h-full'
         style={{
-          backgroundImage: `linear-gradient(#77798C,#3d405b)`,
+          backgroundImage: `linear-gradient(#${
+            activeUserNumber === 1
+              ? colorScheme.user1Light
+              : colorScheme.user2Light
+          },#${
+            activeUserNumber === 1
+              ? colorScheme.user1Dark
+              : colorScheme.user2Dark
+          })`,
         }}
       />
       <div className='flex w-full' style={{ minHeight: '4rem' }}>

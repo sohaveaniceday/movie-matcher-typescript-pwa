@@ -100,7 +100,7 @@ export const Result = () => {
         backgroundImage: `linear-gradient(${
           packshotPalette && isReady
             ? `${packshotPalette.LightVibrant.hex},${packshotPalette.DarkVibrant.hex}`
-            : `#77798C,#3d405b`
+            : `#${colorScheme.user1Light},#${colorScheme.user1Dark}`
         })`,
       }}
     >

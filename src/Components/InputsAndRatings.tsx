@@ -98,7 +98,6 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
             'flex',
             'w-full',
             'h-16',
-            'text-white',
             'text-2xl',
             'justify-center',
             'focus:outline-none',
@@ -108,8 +107,14 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
             backgroundColor: `#${
               (allFilmsConfirmed && !isRating) || allFilmsRated
                 ? colorScheme.light
-                : colorScheme.darkLight
+                : activeUserNumber === 1
+                ? colorScheme.user1Light
+                : colorScheme.user2Light
             }`,
+            color:
+              !allFilmsConfirmed && !isRating
+                ? `#${colorScheme.dark}`
+                : 'white',
             fontFamily: 'Bebas',
           }}
           disabled={!allFilmsConfirmed}

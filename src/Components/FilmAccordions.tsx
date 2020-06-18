@@ -22,6 +22,7 @@ import {
   useDebounce,
   useEventListener,
   getClassName,
+  getRandomInt,
 } from '../util'
 import { imageBaseUrl, genreMap, colorScheme, initialFilmData } from '../static'
 import { Ratings } from './Ratings'
@@ -233,13 +234,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     }
   }
 
-  function getRandomInt(max: number) {
-    return Math.ceil(Math.random() * Math.floor(max))
-  }
-
   const randomizeOnClick = () => {
     if (packshotLoaded) setPackshotLoaded(false)
-    updateState({ [currentUserKey]: { [currentFilmKey]: initialFilmData } })
     setRandomizeKeys([currentUserKey, currentFilmKey])
     setRadomizeParams([
       `https://api.themoviedb.org/3/discover/movie?api_key=e6b5e279f56d84d84b98848cf0928b53&language=en-US&region=us&sort_by=vote_average.desc&include_adult=false&include_video=false&page=${getRandomInt(
@@ -252,7 +248,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   useEffect(() => {
     if (radomizeData) {
       const randomFilm = formatFilmData(
-        radomizeData.results[getRandomInt(19)],
+        radomizeData.results[getRandomInt(19, true)],
         randomizeKeys[0],
         randomizeKeys[1]
       )
@@ -282,6 +278,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
               currentUserKey={currentUserKey}
               ratings={ratings}
               setRatings={setRatings}
+              activeUserNumber={activeUserNumber}
             />
           }
           active={activeFilmNumber === 0}
@@ -300,13 +297,28 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
         ][filmKey]
 
         const accordianContent = (
-          <div className='relative flex flex-col items-center h-full overflow-auto'>
+          <div
+            className='relative flex flex-col items-center h-full overflow-auto'
+            style={{
+              backgroundColor: `#${
+                activeUserNumber === 1
+                  ? colorScheme.user1Dark
+                  : colorScheme.user2Dark
+              }`,
+            }}
+          >
             <div
               className='absolute w-full h-full'
               style={{
                 backgroundImage: `linear-gradient(#${
-                  activeUserNumber === 1 ? '77798C' : 'c6ff95'
-                },#${activeUserNumber === 1 ? '3d405b' : '7ca268'})`,
+                  activeUserNumber === 1
+                    ? colorScheme.user1Light
+                    : colorScheme.user2Light
+                },#${
+                  activeUserNumber === 1
+                    ? colorScheme.user1Dark
+                    : colorScheme.user2Dark
+                })`,
               }}
             />
             {!isRating && (
