@@ -339,7 +339,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                     type='button'
                     cssClasses={['focus:outline-none']}
                     value='Inspire me!'
-                    color={`#${colorScheme.darkLight}`}
+                    color={`#${
+                      activeUserNumber === 1
+                        ? colorScheme.user1Dark
+                        : colorScheme.user2Dark
+                    }`}
                     onClick={randomizeOnClick}
                   />
                 </div>

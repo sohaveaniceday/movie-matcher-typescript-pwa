@@ -72,6 +72,9 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
     }
   }
 
+  const isConfirmed =
+    (allFilmsConfirmed && !isRating) || (isRating && allFilmsRated)
+
   return (
     <form
       className='flex flex-col flex-1 h-full overflow-auto'
@@ -98,34 +101,38 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
             'flex',
             'w-full',
             'h-16',
-            'text-2xl',
             'justify-center',
             'focus:outline-none',
-            [allFilmsConfirmed, 'cursor-pointer'],
+            [isConfirmed, ['cursor-pointer', 'text-3xl'], 'text-2xl'],
           ])}
           style={{
             backgroundColor: `#${
-              (allFilmsConfirmed && !isRating) || allFilmsRated
-                ? colorScheme.light
+              isConfirmed
+                ? colorScheme.darkLight
                 : activeUserNumber === 1
                 ? colorScheme.user1Light
                 : colorScheme.user2Light
             }`,
-            color:
-              !allFilmsConfirmed && !isRating
-                ? `#${colorScheme.dark}`
-                : 'white',
+            color: isConfirmed
+              ? 'white'
+              : `#${
+                  activeUserNumber === 1
+                    ? colorScheme.user1Dark
+                    : colorScheme.user2Dark
+                }`,
             fontFamily: 'Bebas',
           }}
           disabled={!allFilmsConfirmed}
           value={
-            !allFilmsConfirmed && !isRating
+            isConfirmed
+              ? 'Next'
+              : !allFilmsConfirmed && !isRating
               ? `User ${activeUserNumber} - Enter your films`
               : isRating && !allFilmsRated
               ? `User ${activeUserNumber} - Score ${
                   isDomesticRating ? 'your' : 'their'
                 } films`
-              : 'Next'
+              : ''
           }
         />
       </div>

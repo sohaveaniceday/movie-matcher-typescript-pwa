@@ -95,7 +95,11 @@ export const Ratings: FC<RatingsProps> = ({
           cssClasses={['my-auto', 'w-full', 'px-4']}
           onUpdate={onUpdate}
           onChange={onChange}
-          handleColor={`#${colorScheme.light}`}
+          handleColor={`#${
+            activeUserNumber === 1
+              ? colorScheme.user1Dark
+              : colorScheme.user2Dark
+          }`}
           trackColor={`#${colorScheme.lightDark}`}
         />
       </div>
@@ -115,12 +119,11 @@ export const Ratings: FC<RatingsProps> = ({
                       <div className='text-center text-white'>{`${rating}%`}</div>
                     )}
                     <div
-                      className={getClassName([
-                        'w-full',
-                        'bg-blue-200',
-                        'text-center',
-                      ])}
-                      style={{ height: `${rating}%` }}
+                      className={getClassName(['w-full', 'text-center'])}
+                      style={{
+                        height: `${rating}%`,
+                        backgroundColor: `#${colorScheme.medium}`,
+                      }}
                     >
                       {rating > 50 && `${rating}%`}
                     </div>
