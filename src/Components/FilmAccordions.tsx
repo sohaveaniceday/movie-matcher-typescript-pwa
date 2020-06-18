@@ -24,7 +24,7 @@ import {
   getClassName,
   getRandomInt,
 } from '../util'
-import { imageBaseUrl, genreMap, colorScheme, initialFilmData } from '../static'
+import { imageBaseUrl, genreMap, colorScheme } from '../static'
 import { Ratings } from './Ratings'
 
 type FilmAccordionsProps = {
