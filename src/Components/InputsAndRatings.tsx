@@ -126,13 +126,11 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
           value={
             isConfirmed
               ? 'Next'
-              : !allFilmsConfirmed && !isRating
+              : !allFilmsConfirmed
               ? `User ${activeUserNumber} - Enter your films`
-              : isRating && !allFilmsRated
-              ? `User ${activeUserNumber} - Score ${
+              : `User ${activeUserNumber} - Score ${
                   isDomesticRating ? 'your' : 'their'
                 } films`
-              : ''
           }
         />
       </div>
