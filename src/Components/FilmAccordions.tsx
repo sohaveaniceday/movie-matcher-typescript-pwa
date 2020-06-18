@@ -23,7 +23,7 @@ import {
   useEventListener,
   getClassName,
 } from '../util'
-import { imageBaseUrl, genreMap, initialFilmData, colorScheme } from '../static'
+import { imageBaseUrl, genreMap, colorScheme, initialFilmData } from '../static'
 import { Ratings } from './Ratings'
 
 type FilmAccordionsProps = {
@@ -230,11 +230,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     } else {
       updateValues({ [filmKey]: value })
       allowFetch.current = true
-
-      const currentFilmId = state[currentUserKey][filmKey].id
-      if (!!currentFilmId) {
-        updateState({ [currentUserKey]: { [filmKey]: initialFilmData } })
-      }
     }
   }
 
@@ -310,8 +305,8 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
               className='absolute w-full h-full'
               style={{
                 backgroundImage: `linear-gradient(#${
-                  activeUserNumber === 1 ? '77798C' : '7ca268'
-                },#${activeUserNumber === 1 ? '3d405b' : 'c6ff95'})`,
+                  activeUserNumber === 1 ? '77798C' : 'c6ff95'
+                },#${activeUserNumber === 1 ? '3d405b' : '7ca268'})`,
               }}
             />
             {!isRating && (
