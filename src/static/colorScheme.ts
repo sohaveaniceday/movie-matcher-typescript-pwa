@@ -7,7 +7,7 @@ export const colorScheme = {
   // lightAlternate: 'ffc3ab',
   dark: '1d3557',
   darkLight: '457b9d',
-  medium: 'E8E8E8',
+  medium: 'DCDCDC',
   lightDark: 'FFFFFF',
   light: 'e63946',
   user1Dark: 'ff6600',

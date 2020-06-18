@@ -32,11 +32,11 @@ export const Accordion = ({
           'h-16',
           'flex',
           'items-center',
-          'border-none',
           'outline-none',
           'focus:outline-none',
         ])}
         style={{
+          borderColor: `#${colorScheme.medium}`,
           transition: 'background-color 0.6s ease ',
           backgroundColor: active
             ? `#${colorScheme.medium}`

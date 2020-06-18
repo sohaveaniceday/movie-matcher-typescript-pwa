@@ -29,6 +29,7 @@ export const Home = () => {
   useEventListener('resize', handleResize, window)
 
   const [displayResult, setDisplayResult] = useState<boolean>(false)
+  const [activeUserNumber, setActiveUserNumber] = useState<1 | 2>(1)
 
   return (
     <div style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
@@ -53,12 +54,22 @@ export const Home = () => {
           </div>
           <div
             className='h-full overflow-auto'
-            style={{ backgroundColor: `#${colorScheme.user1Dark}` }}
+            style={{
+              backgroundColor: `#${
+                activeUserNumber === 1
+                  ? colorScheme.user1Dark
+                  : colorScheme.user2Dark
+              }`,
+            }}
           >
             {displayResult ? (
               <Result />
             ) : (
-              <InputsAndRatings setDisplayResult={setDisplayResult} />
+              <InputsAndRatings
+                setDisplayResult={setDisplayResult}
+                activeUserNumber={activeUserNumber}
+                setActiveUserNumber={setActiveUserNumber}
+              />
             )}
           </div>
         </div>

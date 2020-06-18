@@ -5,16 +5,19 @@ import { getClassName, useServiceState, useObjectState } from '../util'
 
 type InputsAndRatingsProps = {
   setDisplayResult: Dispatch<React.SetStateAction<boolean>>
+  activeUserNumber: 1 | 2
+  setActiveUserNumber: Dispatch<React.SetStateAction<1 | 2>>
 }
 
 export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
   setDisplayResult,
+  activeUserNumber,
+  setActiveUserNumber,
 }: InputsAndRatingsProps) => {
   const [state] = useServiceState()
   const [isRating, setIsRating] = useState<boolean>(false)
   const [isDomesticRating, setIsDomesticRating] = useState<boolean>(true)
   const [allFilmsRated, setAllFilmsRated] = useState<boolean>(false)
-  const [activeUserNumber, setActiveUserNumber] = useState<1 | 2>(1)
   const [activeFilmNumber, setActiveFilmNumber] = useState<number>(
     isRating ? 0 : 1
   )
@@ -102,24 +105,27 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
             'w-full',
             'h-16',
             'justify-center',
+            'rounded-none',
             'focus:outline-none',
             [isConfirmed, ['cursor-pointer', 'text-3xl'], 'text-2xl'],
           ])}
           style={{
             backgroundColor: `#${
-              isConfirmed
-                ? colorScheme.darkLight
-                : activeUserNumber === 1
-                ? colorScheme.user1Light
-                : colorScheme.user2Light
+              isConfirmed ? colorScheme.light : colorScheme.darkLight
+              // isConfirmed
+              //   ? colorScheme.darkLight
+              //   : activeUserNumber === 1
+              //   ? colorScheme.user1Light
+              //   : colorScheme.user2Light
             }`,
-            color: isConfirmed
-              ? 'white'
-              : `#${
-                  activeUserNumber === 1
-                    ? colorScheme.user1Dark
-                    : colorScheme.user2Dark
-                }`,
+            color: 'white',
+            // color: isConfirmed
+            //   ? 'white'
+            //   : `#${
+            //       activeUserNumber === 1
+            //         ? colorScheme.user1Dark
+            //         : colorScheme.user2Dark
+            //     }`,
             fontFamily: 'Bebas',
           }}
           disabled={!allFilmsConfirmed}
