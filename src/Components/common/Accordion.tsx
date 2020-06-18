@@ -8,6 +8,7 @@ type AccordianProps = {
   content: ReactNode
   active: boolean
   onClick: (event: MouseEvent<HTMLButtonElement>) => void
+  backgroundColor?: string
 } & BaseTypes<JSX.IntrinsicElements['div']>
 
 export const Accordion = ({
@@ -15,6 +16,7 @@ export const Accordion = ({
   content,
   active,
   onClick,
+  backgroundColor,
 }: AccordianProps) => {
   return (
     <div
@@ -23,6 +25,9 @@ export const Accordion = ({
         'flex-col',
         [active, ['flex-1', 'overflow-y-scroll']],
       ])}
+      style={{
+        backgroundColor: backgroundColor,
+      }}
     >
       <div
         className={getClassName([

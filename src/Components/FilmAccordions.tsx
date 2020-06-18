@@ -422,6 +422,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 setActiveFilmNumber(filmNumber)
               }
             }}
+            backgroundColor={`#${
+              activeUserNumber === 1
+                ? colorScheme.user1Dark
+                : colorScheme.user2Dark
+            }`}
           />
         )
       })}

@@ -52,16 +52,7 @@ export const Home = () => {
               </div>
             </div>
           </div>
-          <div
-            className='h-full overflow-auto'
-            style={{
-              backgroundColor: `#${
-                activeUserNumber === 1
-                  ? colorScheme.user1Dark
-                  : colorScheme.user2Dark
-              }`,
-            }}
-          >
+          <div className='h-full overflow-auto'>
             {displayResult ? (
               <Result />
             ) : (

@@ -96,7 +96,7 @@ export const Slider: FC<SliderProps> = ({
                     aria-valuemin={min}
                     aria-valuemax={max}
                     aria-valuenow={value}
-                    className='absolute'
+                    className='absolute focus:outline-none'
                     style={{
                       left: `${percent}%`,
                       transform: 'translate(-50%, -50%)',

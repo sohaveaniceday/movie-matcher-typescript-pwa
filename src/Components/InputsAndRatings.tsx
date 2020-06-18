@@ -99,6 +99,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
       />
       <div className='text-center'>
         <input
+          autoFocus={false}
           type='submit'
           className={getClassName([
             'flex',
@@ -107,28 +108,19 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
             'justify-center',
             'rounded-none',
             'focus:outline-none',
-            [isConfirmed, ['cursor-pointer', 'text-3xl'], 'text-2xl'],
+            [
+              isConfirmed,
+              ['cursor-pointer', 'text-3xl'],
+              ['text-2xl', 'pointer-events-none'],
+            ],
           ])}
           style={{
             backgroundColor: `#${
               isConfirmed ? colorScheme.light : colorScheme.darkLight
-              // isConfirmed
-              //   ? colorScheme.darkLight
-              //   : activeUserNumber === 1
-              //   ? colorScheme.user1Light
-              //   : colorScheme.user2Light
             }`,
             color: 'white',
-            // color: isConfirmed
-            //   ? 'white'
-            //   : `#${
-            //       activeUserNumber === 1
-            //         ? colorScheme.user1Dark
-            //         : colorScheme.user2Dark
-            //     }`,
             fontFamily: 'Bebas',
           }}
-          disabled={!allFilmsConfirmed}
           value={
             isConfirmed
               ? 'Next'
