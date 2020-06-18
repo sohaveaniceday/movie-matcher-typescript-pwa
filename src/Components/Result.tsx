@@ -188,7 +188,7 @@ export const Result = () => {
             </div>
           </>
         ) : (
-          <div className='mx-auto my-10'>
+          <div className='mx-auto my-16'>
             <Skeleton override cssClasses={['w-40', 'h-64']} />
             <div
               className='text-2xl text-center text-white'
