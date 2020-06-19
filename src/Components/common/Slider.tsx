@@ -7,6 +7,7 @@ import {
   Tracks,
   Ticks,
 } from 'react-compound-slider'
+import { colorScheme } from '../../static'
 
 type SliderProps = {
   cssClasses: string[]
@@ -96,7 +97,7 @@ export const Slider: FC<SliderProps> = ({
                     aria-valuemin={min}
                     aria-valuemax={max}
                     aria-valuenow={value}
-                    className='absolute focus:outline-none'
+                    className='absolute border-2 focus:outline-none'
                     style={{
                       left: `${percent}%`,
                       transform: 'translate(-50%, -50%)',
@@ -106,6 +107,7 @@ export const Slider: FC<SliderProps> = ({
                       borderRadius: '50%',
                       boxShadow: '1px 1px 1px 1px rgba(0, 0, 0, 0.3)',
                       backgroundColor: handleColor,
+                      borderColor: `#${colorScheme.medium}`,
                     }}
                   />
                 </div>

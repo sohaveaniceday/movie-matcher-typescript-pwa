@@ -37,6 +37,9 @@ export const Accordion = ({
           'h-16',
           'flex',
           'items-center',
+          'border-t-4',
+          'border-r-4',
+          'border-l-4',
           'outline-none',
           'focus:outline-none',
         ])}
@@ -45,11 +48,16 @@ export const Accordion = ({
           transition: 'background-color 0.6s ease ',
           backgroundColor: active
             ? `#${colorScheme.medium}`
-            : `#${colorScheme.lightDark}`,
+            : `#${colorScheme.light}`,
         }}
         onClick={onClick}
       >
-        <p className='pr-2 font-sans text-lg font-bold text-left text-gray-700 truncate'>
+        <p
+          className='pr-2 font-sans text-lg font-bold text-left truncate'
+          style={{
+            color: `#${active ? colorScheme.light : colorScheme.medium}`,
+          }}
+        >
           {title}
         </p>
         <Icon

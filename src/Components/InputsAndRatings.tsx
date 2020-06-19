@@ -28,6 +28,8 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
     .sort()
     .map((e) => state[currentUserKey][e])
 
+  console.log(filmDataArray, 'filmDataArray')
+
   const initialInputValues = {
     film1: '',
     film2: '',
@@ -105,6 +107,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
             'flex',
             'w-full',
             'h-16',
+            'border-t-4',
             'justify-center',
             'rounded-none',
             'focus:outline-none',
@@ -115,9 +118,21 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
             ],
           ])}
           style={{
+            borderColor: `#${colorScheme.medium}`,
             backgroundColor: `#${
-              isConfirmed ? colorScheme.light : colorScheme.darkLight
+              !isConfirmed
+                ? colorScheme.dark
+                : activeUserNumber === 1
+                ? colorScheme.user1Light
+                : colorScheme.user2Light
             }`,
+            // color: `#${
+            //   isConfirmed
+            //     ? 'FFFFFF'
+            //     : activeUserNumber === 1
+            //     ? colorScheme.user1Dark
+            //     : colorScheme.user2Dark
+            // }`,
             color: 'white',
             fontFamily: 'Bebas',
           }}

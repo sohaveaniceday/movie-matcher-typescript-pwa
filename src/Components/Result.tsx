@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useFetch } from '../Components/customHooks'
-import { useServiceState, getClassName } from '../util'
+import {
+  useServiceState,
+  getClassName,
+  getCompleteFilmDataArray,
+} from '../util'
 import { Skeleton, Badge } from './common'
 import { colorScheme } from '../static'
 import Vibrant from 'node-vibrant'
@@ -25,15 +29,9 @@ export const Result = () => {
 
   useEffect(() => {
     if (!topRatedFilm) {
-      const filmDataArray: any = Object.values(state).reduce(
-        (acc: any, currentUser: any): any[] => {
-          const filmData = Object.values(currentUser)
-          return [...acc, ...filmData]
-        },
-        []
-      )
+      const completeFilmDataArray: any = getCompleteFilmDataArray(state)
 
-      const topFilm = filmDataArray.reduce(
+      const topFilm = completeFilmDataArray.reduce(
         (acc: any, currentFilm: any): any => {
           const calculateTotalScore = (film: any) =>
             parseInt(film.domesticRating) * 0.4 +
@@ -43,7 +41,7 @@ export const Result = () => {
             ? (acc = currentFilm)
             : acc
         },
-        filmDataArray[0]
+        completeFilmDataArray[0]
       )
       setTopRatedFilm(topFilm)
     }
@@ -222,7 +220,7 @@ export const Result = () => {
             'focus:outline-none',
           ])}
           style={{
-            backgroundColor: `#${colorScheme.darkLight}`,
+            backgroundColor: `#${colorScheme.dark}`,
             fontFamily: 'Bebas',
           }}
           onClick={() => {

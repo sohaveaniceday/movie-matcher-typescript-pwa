@@ -6,6 +6,7 @@ type TextInputProps = {
   forwardRef?: RefObject<HTMLInputElement>
   rounded?: boolean
   roundedTop?: boolean
+  border?: boolean
 } & BaseTypes<JSX.IntrinsicElements['input']>
 
 export const TextInput: FC<TextInputProps> = ({
@@ -20,6 +21,7 @@ export const TextInput: FC<TextInputProps> = ({
   rounded = false,
   roundedTop = true,
   disabled = false,
+  border = true,
   forwardRef,
   type = 'text',
   ...TextInputProps
@@ -29,16 +31,12 @@ export const TextInput: FC<TextInputProps> = ({
     [
       disabled,
       ['bg-gray-300', 'pointer-events-none'],
-      [
-        'outline-none',
-        'bg-gray-100',
-        // 'border-gray-600',
-        // 'border-solid',
-        // 'border-4',
-      ],
+      ['outline-none', 'bg-gray-100'],
     ],
     [rounded, 'rounded-full'],
     [roundedTop, 'rounded-t-full'],
+    [border && !roundedTop, 'border-4'],
+    [border && roundedTop, ['border-t-4', 'border-l-4', 'border-r-4']],
     'text-gray-600',
     'w-full',
     'px-4',

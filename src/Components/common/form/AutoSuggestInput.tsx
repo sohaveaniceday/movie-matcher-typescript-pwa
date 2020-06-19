@@ -9,11 +9,13 @@ import React, {
 } from 'react'
 import { useObjectState, getClassName, BaseTypes } from '../../../util'
 import { TextInput } from '..'
+import { colorScheme } from '../../../static'
 
 export type SuggestionProps = {
   name: string
   element: ReactNode
   id: string
+  disabled?: boolean
 }
 
 type AutoSuggestProps = {
@@ -24,6 +26,7 @@ type AutoSuggestProps = {
   cssClasses?: string[]
   rounded?: boolean
   value: string
+  border?: boolean
 } & BaseTypes<JSX.IntrinsicElements['input']>
 
 export const AutoSuggest: FC<AutoSuggestProps> = ({
@@ -38,6 +41,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
   placeholder,
   rounded = false,
   cssClasses = [],
+  border = false,
   value: inputValue,
 }: AutoSuggestProps) => {
   const initialAutoSuggestState = {
@@ -125,6 +129,7 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
     // suggestions
     if (event.keyCode === 13) {
       event.preventDefault()
+      if (selectedItem.disabled) return
       onChangeFunc && onChangeFunc(selectedItem.name, name, selectedItem.id)
       updateAutoSuggestState(initialAutoSuggestState)
     }
@@ -168,12 +173,21 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
           'overflow-y-scroll',
           'text-left',
           'bg-white',
-          'border-2',
           [rounded, 'rounded-b-lg'],
+          [border, ['border-l-4', 'border-r-4', 'border-b-4']],
         ])}
+        style={{ borderColor: `#${colorScheme.medium}` }}
       >
         {filteredSuggestions.map(
-          ({ name, element, id }: SuggestionProps, index: number) => {
+          (
+            {
+              name,
+              element,
+              id,
+              disabled: suggestionDisabled = false,
+            }: SuggestionProps,
+            index: number
+          ) => {
             const isActiveSuggestion = activeSuggestion === index
             return (
               <li
@@ -181,11 +195,26 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
                 data-id={id}
                 data-name={name}
                 className={getClassName([
-                  [isActiveSuggestion, ['bg-blue-300', 'text-white']],
-                  'cursor-pointer',
+                  [
+                    isActiveSuggestion && !suggestionDisabled,
+                    ['bg-blue-300', 'text-white'],
+                  ],
+                  [isActiveSuggestion && suggestionDisabled, 'bg-gray-500'],
+                  [
+                    suggestionDisabled,
+                    [
+                      'cursor-none',
+                      'pointer-events-none',
+                      'bg-gray-300',
+                      'text-white',
+                    ],
+                    'cursor-pointer',
+                  ],
+                  'border-t-2',
                 ])}
+                style={{ borderColor: colorScheme.light }}
                 key={`${name}-${index}`}
-                onClick={onClick}
+                onClick={suggestionDisabled ? undefined : onClick}
               >
                 {element}
               </li>
@@ -217,6 +246,8 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
             placeholder={placeholder}
             rounded={rounded && !isDisplayingSuggestions}
             roundedTop={rounded && isDisplayingSuggestions}
+            border={border}
+            style={{ borderColor: `#${colorScheme.medium}` }}
           />
         </div>
         {suggestionsListComponent}

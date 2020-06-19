@@ -11,6 +11,12 @@ export const Home = () => {
   // Then we set the value in the --vh custom property to the root of the document
   document.documentElement.style.setProperty('--vh', `${vh}px`)
 
+  useEffect(() => {
+    window?.screen?.orientation?.lock('portrait').catch((error) => {
+      console.log(error)
+    })
+  }, [])
+
   const handleResize = () => {
     // We execute the same script as before
     setVh(window.innerHeight * 0.01)
@@ -37,17 +43,23 @@ export const Home = () => {
         Movie Matcher is currently only available on mobile
       </div>
       <div className='h-full md:hidden'>
-        <div className='flex flex-col h-full'>
+        <div
+          className='flex flex-col h-full'
+          style={{ backgroundColor: `#${colorScheme.dark}` }}
+        >
           <div
             className='flex w-full h-16'
-            style={{ backgroundColor: `#${colorScheme.darkLight}` }}
+            onClick={() => {
+              window.location.reload()
+            }}
           >
             <div
-              className='m-auto text-2xl text-white'
-              style={{ fontFamily: 'DAYPBL' }}
+              className='m-auto text-4xl text-white'
+              style={{ fontFamily: 'Bebas' }}
             >
               <div className='flex flex-inline'>
-                Movie <Icon iconName='movie' className='w-8 h-8 mx-2 my-auto' />
+                Movie{' '}
+                <Icon iconName='movie' className='w-10 h-10 mx-2 my-auto' />
                 Matcher
               </div>
             </div>

@@ -23,6 +23,7 @@ import {
   useEventListener,
   getClassName,
   getRandomInt,
+  getCompleteFilmDataArray,
 } from '../util'
 import { imageBaseUrl, genreMap, colorScheme } from '../static'
 import { Ratings } from './Ratings'
@@ -172,11 +173,16 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   useEffect(() => {
     if (filmSuggestionData?.results?.length > 0) {
-      const results = filmSuggestionData.results.map(
+      const results: any = filmSuggestionData.results.map(
         ({ title, release_date, poster_path, id }: any) => {
           const year = release_date?.substring(0, 4)
+          const comepleteFilmDataArray = getCompleteFilmDataArray(state)
+          const disabled = comepleteFilmDataArray.some(
+            ({ id: existingId }: any) => id === existingId
+          )
           return {
             id: id,
+            disabled: disabled,
             element: (
               <div className='flex p-2'>
                 <div
@@ -196,6 +202,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                     {title}
                   </div>
                   <div className='ml-2 text-sm'>{year}</div>
+                  {disabled && (
+                    <div className='ml-2 text-sm text-red-500'>
+                      Already chosen
+                    </div>
+                  )}
                 </div>
               </div>
             ),
@@ -207,7 +218,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     } else {
       setFilmSuggestions([])
     }
-  }, [filmSuggestionData])
+  }, [filmSuggestionData, state])
 
   // Form functions
 
@@ -247,13 +258,23 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   useEffect(() => {
     if (radomizeData) {
-      const randomFilm = formatFilmData(
-        radomizeData.results[getRandomInt(19, true)],
+      const completeFilmDataArray = getCompleteFilmDataArray(state)
+
+      //removes any films that are already chosen
+      const filteredData = radomizeData.results.filter(
+        ({ id }: any) =>
+          !completeFilmDataArray.some(
+            ({ id: existingId }: any) => id === existingId
+          )
+      )
+
+      const randomData = formatFilmData(
+        filteredData[getRandomInt(0, true)],
         randomizeKeys[0],
         randomizeKeys[1]
       )
 
-      updateState(randomFilm)
+      updateState(randomData)
       clearRandomizeData()
     }
   }, [
@@ -262,6 +283,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     randomizeKeys,
     updateState,
     clearRandomizeData,
+    state,
   ])
 
   return (
@@ -333,6 +355,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   forwardRef={inputRefs.current[index]}
                   rounded
                   value={values[currentFilmKey]}
+                  border
                 />
                 <div className='z-10 mt-5'>
                   <Button
@@ -422,11 +445,17 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 setActiveFilmNumber(filmNumber)
               }
             }}
-            backgroundColor={`#${
-              activeUserNumber === 1
-                ? colorScheme.user1Dark
-                : colorScheme.user2Dark
-            }`}
+            backgroundColor={
+              index === 0
+                ? ''
+                : `#${
+                    index === activeFilmNumber || (index === 1 && isRating)
+                      ? activeUserNumber === 1
+                        ? colorScheme.user1Dark
+                        : colorScheme.user2Dark
+                      : colorScheme.medium
+                  }`
+            }
           />
         )
       })}

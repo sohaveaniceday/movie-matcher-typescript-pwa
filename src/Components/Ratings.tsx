@@ -98,7 +98,7 @@ export const Ratings: FC<RatingsProps> = ({
               ? colorScheme.user1Dark
               : colorScheme.user2Dark
           }`}
-          trackColor={`#${colorScheme.lightDark}`}
+          trackColor={`#${colorScheme.light}`}
         />
       </div>
       <div className='z-10 flex flex-1 w-full px-4'>
@@ -120,7 +120,7 @@ export const Ratings: FC<RatingsProps> = ({
                       className={getClassName(['w-full', 'text-center'])}
                       style={{
                         height: `${rating}%`,
-                        backgroundColor: `#${colorScheme.medium}`,
+                        backgroundColor: `#${colorScheme.light}`,
                       }}
                     >
                       {rating > 50 && `${rating}%`}
