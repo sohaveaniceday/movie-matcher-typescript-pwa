@@ -28,8 +28,6 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
     .sort()
     .map((e) => state[currentUserKey][e])
 
-  console.log(filmDataArray, 'filmDataArray')
-
   const initialInputValues = {
     film1: '',
     film2: '',
