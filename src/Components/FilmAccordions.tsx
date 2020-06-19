@@ -269,7 +269,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       )
 
       const randomData = formatFilmData(
-        filteredData[getRandomInt(0, true)],
+        filteredData[getRandomInt(19, true)],
         randomizeKeys[0],
         randomizeKeys[1]
       )
