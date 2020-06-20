@@ -11,12 +11,6 @@ export const Home = () => {
   // Then we set the value in the --vh custom property to the root of the document
   document.documentElement.style.setProperty('--vh', `${vh}px`)
 
-  useEffect(() => {
-    window?.screen?.orientation?.lock('portrait').catch((error) => {
-      console.log(error)
-    })
-  }, [])
-
   const handleResize = () => {
     // We execute the same script as before
     setVh(window.innerHeight * 0.01)
@@ -39,8 +33,10 @@ export const Home = () => {
 
   return (
     <div style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
-      <div className='hidden h-full m-5 text-center md:block'>
-        Movie Matcher is currently only available on mobile
+      <div className='hidden h-full md:block'>
+        <div className='p-5 text-center'>
+          Movie Matcher is currently only available on mobile
+        </div>
       </div>
       <div className='h-full md:hidden'>
         <div
@@ -48,7 +44,7 @@ export const Home = () => {
           style={{ backgroundColor: `#${colorScheme.dark}` }}
         >
           <div
-            className='flex w-full h-16'
+            className='flex w-full h-16 sm:hidden'
             onClick={() => {
               window.location.reload()
             }}

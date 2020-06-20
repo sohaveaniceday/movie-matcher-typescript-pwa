@@ -357,7 +357,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   value={values[currentFilmKey]}
                   border
                 />
-                <div className='z-10 mt-5'>
+                <div className='z-10 m-5'>
                   <Button
                     type='button'
                     cssClasses={['focus:outline-none']}
@@ -374,7 +374,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             )}
             <div className='z-10 w-full'>
               {id && packshot ? (
-                <div className='h-64 my-5'>
+                <div className='h-64 mb-5'>
                   <div className={getClassName([[packshotLoaded, 'hidden']])}>
                     <Skeleton
                       override
@@ -401,11 +401,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   />
                 </div>
               ) : id && !packshot ? (
-                <div className='w-40 h-64 mx-auto my-5 bg-gray-300' />
+                <div className='w-40 h-64 mx-auto mb-5 bg-gray-300' />
               ) : isLoadingRandomize ? (
                 <Skeleton
                   override
-                  cssClasses={['w-40', 'h-64', 'mx-auto', 'my-5']}
+                  cssClasses={['w-40', 'h-64', 'mx-auto', 'mb-5']}
                 />
               ) : null}
               <div className='w-full text-center text-white'>
