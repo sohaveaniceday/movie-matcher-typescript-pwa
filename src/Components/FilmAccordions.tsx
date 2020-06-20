@@ -446,10 +446,10 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
               }
             }}
             backgroundColor={
-              index === 0
+              index === 0 && !isRating
                 ? ''
                 : `#${
-                    index === activeFilmNumber || (index === 1 && isRating)
+                    index === activeFilmNumber
                       ? activeUserNumber === 1
                         ? colorScheme.user1Dark
                         : colorScheme.user2Dark
