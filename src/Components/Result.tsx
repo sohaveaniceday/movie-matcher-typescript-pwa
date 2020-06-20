@@ -176,6 +176,12 @@ export const Result = () => {
                           onError={(event) => {
                             const target = event.target as HTMLImageElement
                             target.className = 'hidden'
+                            setLocations((locationsState) =>
+                              locationsState.filter(
+                                ({ name: existingName }) =>
+                                  name !== existingName
+                              )
+                            )
                           }}
                         />
                       </a>

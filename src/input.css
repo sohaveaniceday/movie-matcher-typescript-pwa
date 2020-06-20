@@ -4,6 +4,11 @@
 
 @tailwind utilities;
 
+html {
+  padding: env(safe-area-inset);
+  overflow-x: hidden;
+}
+
 .clamp {
   display: -webkit-box;
   -webkit-box-orient: vertical;
