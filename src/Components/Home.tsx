@@ -27,15 +27,13 @@ export const Home = () => {
   }, [deboundedVh])
 
   useEventListener('resize', handleResize, window)
+  useEventListener('orientationchange', handleResize, window)
 
   const [displayResult, setDisplayResult] = useState<boolean>(false)
   const [activeUserNumber, setActiveUserNumber] = useState<1 | 2>(1)
 
   return (
-    <div
-      className={'w-full overflow-hidden'}
-      style={{ height: 'calc(var(--vh, 1vh) * 100)' }}
-    >
+    <div style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
       <div className='hidden h-full md:block'>
         <div className='p-5 text-center'>
           Movie Matcher is currently only available on mobile
