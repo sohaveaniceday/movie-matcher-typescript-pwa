@@ -5,6 +5,7 @@ type ButtonProps = {
   cssClasses: string[]
   color: string
   border?: boolean
+  rounded?: boolean
 } & BaseTypes<JSX.IntrinsicElements['button']>
 
 export const Button: FC<ButtonProps> = ({
@@ -14,6 +15,7 @@ export const Button: FC<ButtonProps> = ({
   onClick,
   type,
   border = false,
+  rounded = false,
   ...buttonProps
 }: ButtonProps) => {
   const buttonClassName = getClassName([
@@ -22,7 +24,7 @@ export const Button: FC<ButtonProps> = ({
     'py-2',
     'font-bold',
     'text-white',
-    'rounded',
+    [rounded, 'rounded-full', 'rounded'],
     [border, 'border-4'],
   ])
   return (

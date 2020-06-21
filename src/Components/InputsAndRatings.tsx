@@ -124,13 +124,6 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
                 ? colorScheme.user1Light
                 : colorScheme.user2Light
             }`,
-            // color: `#${
-            //   isConfirmed
-            //     ? 'FFFFFF'
-            //     : activeUserNumber === 1
-            //     ? colorScheme.user1Dark
-            //     : colorScheme.user2Dark
-            // }`,
             color: 'white',
             fontFamily: 'Bebas',
           }}

@@ -311,154 +311,169 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           }}
         />
       )}
-      {filmDataArray.map((filmData, index) => {
-        const filmNumber = index + 1
-        const filmKey = `film${filmNumber}`
-        const { name, id, packshot, summary, genres, releaseDate } = state[
-          currentFilmDataUserKey
-        ][filmKey]
+      <div
+        className={getClassName([
+          'flex',
+          'flex-col',
+          'h-full',
+          'overflow-auto',
+          [isRating, 'sm:hidden'],
+        ])}
+      >
+        {filmDataArray.map((filmData, index) => {
+          const filmNumber = index + 1
+          const filmKey = `film${filmNumber}`
+          const { name, id, packshot, summary, genres, releaseDate } = state[
+            currentFilmDataUserKey
+          ][filmKey]
 
-        const accordianContent = (
-          <div
-            className='relative flex flex-col items-center h-full overflow-auto'
-            style={{
-              backgroundColor: `#${
-                activeUserNumber === 1
-                  ? colorScheme.user1Dark
-                  : colorScheme.user2Dark
-              }`,
-            }}
-          >
+          const accordianContent = (
             <div
-              className='absolute w-full h-full'
+              className='relative flex flex-col items-center h-full overflow-auto'
               style={{
-                backgroundImage: `linear-gradient(#${
-                  activeUserNumber === 1
-                    ? colorScheme.user1Light
-                    : colorScheme.user2Light
-                },#${
+                backgroundColor: `#${
                   activeUserNumber === 1
                     ? colorScheme.user1Dark
                     : colorScheme.user2Dark
-                })`,
+                }`,
               }}
-            />
-            {!isRating && (
-              <>
-                <AutoSuggest
-                  isLoading={isLoadingFilmSuggestions}
-                  suggestions={filmSuggestions}
-                  name={filmKey}
-                  onChangeFunc={onChange}
-                  cssClasses={['w-4/5', 'mt-6']}
-                  placeholder='Search film'
-                  forwardRef={inputRefs.current[index]}
-                  rounded
-                  value={values[currentFilmKey]}
-                  border
-                />
-                <div className='z-10 m-5'>
-                  <Button
-                    type='button'
-                    cssClasses={['focus:outline-none']}
-                    value='Inspire me!'
-                    color={`#${
-                      activeUserNumber === 1
-                        ? colorScheme.user1Dark
-                        : colorScheme.user2Dark
-                    }`}
-                    onClick={randomizeOnClick}
+            >
+              <div
+                className='absolute w-full h-full'
+                style={{
+                  backgroundImage: `linear-gradient(#${
+                    activeUserNumber === 1
+                      ? colorScheme.user1Light
+                      : colorScheme.user2Light
+                  },#${
+                    activeUserNumber === 1
+                      ? colorScheme.user1Dark
+                      : colorScheme.user2Dark
+                  })`,
+                }}
+              />
+              {!isRating && (
+                <>
+                  <AutoSuggest
+                    isLoading={isLoadingFilmSuggestions}
+                    suggestions={filmSuggestions}
+                    name={filmKey}
+                    onChangeFunc={onChange}
+                    cssClasses={['w-4/5', 'mt-6']}
+                    placeholder='Search film'
+                    forwardRef={inputRefs.current[index]}
+                    rounded
+                    value={values[currentFilmKey]}
+                    border
                   />
-                </div>
-              </>
-            )}
-            <div className='z-10 w-full'>
-              {id && packshot ? (
-                <div className='h-64 mb-5'>
-                  <div className={getClassName([[packshotLoaded, 'hidden']])}>
-                    <Skeleton
-                      override
-                      cssClasses={['w-40', 'h-64', 'mx-auto']}
+                  <div className='z-10 m-5'>
+                    <Button
+                      type='button'
+                      cssClasses={['focus:outline-none']}
+                      value='Inspire me!'
+                      color={`#${
+                        activeUserNumber === 1
+                          ? colorScheme.user1Dark
+                          : colorScheme.user2Dark
+                      }`}
+                      onClick={randomizeOnClick}
+                      border
+                      rounded
+                      style={{ borderColor: `#${colorScheme.medium}` }}
                     />
                   </div>
-                  <img
-                    className={getClassName([
-                      'mx-auto',
-                      'h-full',
-                      [
-                        packshotLoaded,
-                        ['border-4', 'border-white', 'border-rounded'],
-                        'hidden',
-                      ],
-                    ])}
-                    onLoad={() => setPackshotLoaded(true)}
-                    alt={name}
-                    src={packshot}
-                    onError={(event) => {
-                      const target = event.target as HTMLImageElement
-                      target.className = 'w-40 h-64 mx-auto bg-gray-300'
-                    }}
+                </>
+              )}
+              <div className='z-10 w-full'>
+                {id && packshot ? (
+                  <div className='h-64 mb-5'>
+                    <div className={getClassName([[packshotLoaded, 'hidden']])}>
+                      <Skeleton
+                        override
+                        cssClasses={['w-40', 'h-64', 'mx-auto']}
+                      />
+                    </div>
+                    <img
+                      className={getClassName([
+                        'mx-auto',
+                        'h-full',
+                        [
+                          packshotLoaded,
+                          ['border-4', 'border-white', 'border-rounded'],
+                          'hidden',
+                        ],
+                      ])}
+                      onLoad={() => setPackshotLoaded(true)}
+                      alt={name}
+                      src={packshot}
+                      onError={(event) => {
+                        const target = event.target as HTMLImageElement
+                        target.className = 'w-40 h-64 mx-auto bg-gray-300'
+                      }}
+                    />
+                  </div>
+                ) : id && !packshot ? (
+                  <div className='w-40 h-64 mx-auto mb-5 bg-gray-300' />
+                ) : isLoadingRandomize ? (
+                  <Skeleton
+                    override
+                    cssClasses={['w-40', 'h-64', 'mx-auto', 'mb-5']}
                   />
+                ) : null}
+                <div className='w-full text-center text-white'>
+                  {name && (
+                    <div className='w-full px-2 mb-1 text-3xl clamp line-clamp-2'>
+                      {name}
+                    </div>
+                  )}
+                  {releaseDate && (
+                    <div className='mb-4 text-base'>
+                      {releaseDate.substring(0, 4)}
+                    </div>
+                  )}
+                  {genres.length > 0 && (
+                    <div className='flex flex-wrap justify-center mb-4 flex-inline'>
+                      {genres.map((genre: string) => (
+                        <div key={genre} className='py-1 mx-1'>
+                          <Badge size='xs' content={genre} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {summary && (
+                    <div className='px-4 mb-5 text-sm'>{summary}</div>
+                  )}
                 </div>
-              ) : id && !packshot ? (
-                <div className='w-40 h-64 mx-auto mb-5 bg-gray-300' />
-              ) : isLoadingRandomize ? (
-                <Skeleton
-                  override
-                  cssClasses={['w-40', 'h-64', 'mx-auto', 'mb-5']}
-                />
-              ) : null}
-              <div className='w-full text-center text-white'>
-                {name && (
-                  <div className='w-full px-2 mb-1 text-3xl clamp line-clamp-2'>
-                    {name}
-                  </div>
-                )}
-                {releaseDate && (
-                  <div className='mb-4 text-base'>
-                    {releaseDate.substring(0, 4)}
-                  </div>
-                )}
-                {genres.length > 0 && (
-                  <div className='flex flex-wrap justify-center mb-4 flex-inline'>
-                    {genres.map((genre: string) => (
-                      <div key={genre} className='py-1 mx-1'>
-                        <Badge size='xs' content={genre} />
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {summary && <div className='px-4 mb-5 text-sm'>{summary}</div>}
               </div>
             </div>
-          </div>
-        )
+          )
 
-        return (
-          <Accordion
-            key={filmKey}
-            title={filmData.name || `Movie ${index + 1}`}
-            content={accordianContent}
-            active={activeFilmNumber === filmNumber}
-            onClick={() => {
-              if (activeFilmNumber !== filmNumber) {
-                setActiveFilmNumber(filmNumber)
+          return (
+            <Accordion
+              key={filmKey}
+              title={filmData.name || `Movie ${index + 1}`}
+              content={accordianContent}
+              active={activeFilmNumber === filmNumber}
+              onClick={() => {
+                if (activeFilmNumber !== filmNumber) {
+                  setActiveFilmNumber(filmNumber)
+                }
+              }}
+              backgroundColor={
+                index === 0 && !isRating
+                  ? ''
+                  : `#${
+                      index === activeFilmNumber
+                        ? activeUserNumber === 1
+                          ? colorScheme.user1Dark
+                          : colorScheme.user2Dark
+                        : colorScheme.medium
+                    }`
               }
-            }}
-            backgroundColor={
-              index === 0 && !isRating
-                ? ''
-                : `#${
-                    index === activeFilmNumber
-                      ? activeUserNumber === 1
-                        ? colorScheme.user1Dark
-                        : colorScheme.user2Dark
-                      : colorScheme.medium
-                  }`
-            }
-          />
-        )
-      })}
+            />
+          )
+        })}
+      </div>
     </>
   )
 }

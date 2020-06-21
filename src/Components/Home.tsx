@@ -12,6 +12,7 @@ export const Home = () => {
   document.documentElement.style.setProperty('--vh', `${vh}px`)
 
   const handleResize = () => {
+    console.log('in handle resize')
     // We execute the same script as before
     setVh(window.innerHeight * 0.01)
   }
@@ -34,12 +35,12 @@ export const Home = () => {
 
   return (
     <div style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
-      <div className='hidden h-full md:block'>
+      <div className='hidden h-full lg:block'>
         <div className='p-5 text-center'>
           Movie Matcher is currently only available on mobile
         </div>
       </div>
-      <div className='h-full md:hidden'>
+      <div className='h-full lg:hidden'>
         <div
           className='flex flex-col h-full'
           style={{ backgroundColor: `#${colorScheme.dark}` }}
