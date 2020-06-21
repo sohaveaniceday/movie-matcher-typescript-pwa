@@ -44,6 +44,7 @@ export const Accordion = ({
           'focus:outline-none',
         ])}
         style={{
+          minHeight: '4rem',
           borderColor: `#${colorScheme.medium}`,
           transition: 'background-color 0.6s ease ',
           backgroundColor: active
