@@ -45,7 +45,7 @@ export const Home = () => {
           style={{ backgroundColor: `#${colorScheme.dark}` }}
         >
           <div
-            className='flex w-full h-16 sm:hidden'
+            className='flex w-full h-16'
             onClick={() => {
               window.location.reload()
             }}
