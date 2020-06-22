@@ -7,7 +7,7 @@ type AccordianProps = {
   title: string
   content: ReactNode
   active: boolean
-  vertical?: boolean
+  horizontal?: boolean
   onClick: (event: MouseEvent<HTMLButtonElement>) => void
   backgroundColor?: string
   backgroundImage?: string
@@ -18,23 +18,23 @@ export const Accordion = ({
   content,
   active,
   onClick,
-  vertical = false,
+  horizontal = false,
   backgroundColor,
   backgroundImage,
 }: AccordianProps) => {
-  const wrapperActiveClass = vertical
+  const wrapperActiveClass = horizontal
     ? ['w-full']
     : ['flex-1', 'overflow-y-scroll']
-  const contentActiveClass = vertical
+  const contentActiveClass = horizontal
     ? ['w-full', 'flex-1', 'border-r-4']
     : ['h-full']
-  const contentInactiveClass = vertical ? ['w-0'] : ['h-0']
+  const contentInactiveClass = horizontal ? ['w-0'] : ['h-0']
 
   return (
     <div
       className={getClassName([
         'flex',
-        [!vertical, 'flex-col'],
+        [!horizontal, 'flex-col'],
         [active, [...wrapperActiveClass]],
       ])}
       style={{
@@ -45,7 +45,7 @@ export const Accordion = ({
       <div
         className={getClassName([
           [
-            vertical,
+            horizontal,
             ['h-full', 'max-h-full', 'border-b-4', 'w-16'],
             ['rounded-t-lg', 'h-16', 'px-5', 'items-center', 'border-l-4'],
           ],
@@ -57,7 +57,7 @@ export const Accordion = ({
           'focus:outline-none',
         ])}
         style={{
-          ...(!vertical && { minHeight: '4rem' }),
+          ...(!horizontal && { minHeight: '4rem' }),
           borderColor: `#${colorScheme.medium}`,
           transition: 'background-color 0.6s ease ',
           backgroundColor: active
@@ -66,7 +66,7 @@ export const Accordion = ({
         }}
         onClick={onClick}
       >
-        {vertical ? (
+        {horizontal ? (
           <div className='flex flex-col h-full '>
             <Icon
               iconName='chevron'
@@ -121,7 +121,7 @@ export const Accordion = ({
           'overflow-auto',
           [active, [...contentActiveClass], [...contentInactiveClass]],
         ])}
-        style={{ ...(vertical && { borderColor: `#${colorScheme.medium}` }) }}
+        style={{ ...(horizontal && { borderColor: `#${colorScheme.medium}` }) }}
       >
         {content}
       </div>

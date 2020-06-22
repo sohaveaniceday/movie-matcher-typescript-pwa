@@ -10,7 +10,6 @@ import React, {
 } from 'react'
 import {
   Accordion,
-  VerticalAccordion,
   Badge,
   AutoSuggest,
   SuggestionProps,
@@ -287,12 +286,12 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     state,
   ])
 
-  const AccordionsComponent = ({ vertical }: { vertical: boolean }) => {
+  const AccordionsComponent = ({ horizontal }: { horizontal: boolean }) => {
     return (
       <>
         {isRating && (
           <Accordion
-            vertical={vertical}
+            horizontal={horizontal}
             title='Ratings'
             content={
               <Ratings
@@ -449,7 +448,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
           return (
             <Accordion
-              vertical={vertical}
+              horizontal={horizontal}
               key={filmKey}
               title={filmData.name || `Movie ${index + 1}`}
               content={accordianContent}
@@ -460,11 +459,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 }
               }}
               backgroundColor={
-                index === 0 && !isRating && !vertical
+                index === 0 && !isRating && !horizontal
                   ? ''
                   : `#${
-                      (vertical && index === activeFilmNumber - 1) ||
-                      (!vertical && index === activeFilmNumber)
+                      (horizontal && index === activeFilmNumber - 1) ||
+                      (!horizontal && index === activeFilmNumber)
                         ? userBackgroundColor
                         : colorScheme.medium
                     }`
@@ -479,11 +478,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     <>
       <div className='hidden h-full md:block'>
         <div className='flex flex-row w-full h-full'>
-          <AccordionsComponent vertical={true} />
+          <AccordionsComponent horizontal={true} />
         </div>
       </div>
       <div className='h-full md:hidden'>
-        <AccordionsComponent vertical={false} />
+        <AccordionsComponent horizontal={false} />
       </div>
     </>
   )
