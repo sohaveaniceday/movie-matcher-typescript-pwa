@@ -24,13 +24,13 @@ import {
   getClassName,
   getRandomInt,
   getCompleteFilmDataArray,
+  generateBackgroundImage,
 } from '../util'
 import { imageBaseUrl, genreMap, colorScheme } from '../static'
 import { Ratings } from './Ratings'
 
 type FilmAccordionsProps = {
   activeUserNumber: 1 | 2
-  setActiveUserNumber: Dispatch<React.SetStateAction<1 | 2>>
   activeFilmNumber: number
   setActiveFilmNumber: Dispatch<React.SetStateAction<number>>
   isRating: boolean
@@ -334,15 +334,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
               <div
                 className='absolute w-full h-full'
                 style={{
-                  backgroundImage: `linear-gradient(#${
-                    activeUserNumber === 1
-                      ? colorScheme.user1Light
-                      : colorScheme.user2Light
-                  },#${
-                    activeUserNumber === 1
-                      ? colorScheme.user1Dark
-                      : colorScheme.user2Dark
-                  })`,
+                  backgroundImage: generateBackgroundImage(activeUserNumber),
                 }}
               />
               {!isRating && (

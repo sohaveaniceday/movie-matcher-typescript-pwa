@@ -1,7 +1,7 @@
 import React, { FC, Dispatch } from 'react'
 import { Slider } from './common'
 import { colorScheme } from '../static'
-import { getClassName, useServiceState } from '../util'
+import { getClassName, useServiceState, generateBackgroundImage } from '../util'
 
 type RatingsProps = {
   filmDataArray: FilmData[]
@@ -72,15 +72,7 @@ export const Ratings: FC<RatingsProps> = ({
       <div
         className='absolute w-full h-full'
         style={{
-          backgroundImage: `linear-gradient(#${
-            activeUserNumber === 1
-              ? colorScheme.user1Light
-              : colorScheme.user2Light
-          },#${
-            activeUserNumber === 1
-              ? colorScheme.user1Dark
-              : colorScheme.user2Dark
-          })`,
+          backgroundImage: generateBackgroundImage(activeUserNumber),
         }}
       />
       <div className='flex w-full' style={{ minHeight: '4rem' }}>

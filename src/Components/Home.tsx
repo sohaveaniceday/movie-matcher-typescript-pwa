@@ -7,7 +7,6 @@ import { Icon } from './common'
 
 export const Home = () => {
   const [displayResult, setDisplayResult] = useState<boolean>(false)
-  const [activeUserNumber, setActiveUserNumber] = useState<1 | 2>(1)
 
   // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
   const [vh, setVh] = useState(window.innerHeight * 0.01)
@@ -33,7 +32,11 @@ export const Home = () => {
   useEventListener('orientationchange', handleResize, window)
 
   return (
-    <div style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
+    <div
+      style={{
+        height: 'calc(var(--vh, 1vh) * 100)',
+      }}
+    >
       <div className='hidden h-full lg:block'>
         <div className='p-5 text-center'>
           Movie Matcher is currently only available on mobile
@@ -61,15 +64,11 @@ export const Home = () => {
               </div>
             </div>
           </div>
-          <div className='h-full overflow-auto'>
+          <div className='relative h-full overflow-auto'>
             {displayResult ? (
               <Result />
             ) : (
-              <InputsAndRatings
-                setDisplayResult={setDisplayResult}
-                activeUserNumber={activeUserNumber}
-                setActiveUserNumber={setActiveUserNumber}
-              />
+              <InputsAndRatings setDisplayResult={setDisplayResult} />
             )}
           </div>
         </div>

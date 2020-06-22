@@ -24,13 +24,13 @@ const assertNoSpaces = (className: string): void => {
   }
 }
 
-const assertMultipleItems = (classNames: string[]): void => {
-  if (classNames.length === 1) {
-    console.warn(
-      `Classname option ${classNames[0]} should be a string as it only contains one item`
-    )
-  }
-}
+// const assertMultipleItems = (classNames: string[]): void => {
+//   if (classNames.length === 1) {
+//     console.warn(
+//       `Classname option ${classNames[0]} should be a string as it only contains one item`
+//     )
+//   }
+// }
 
 const addSingleProperty = (
   option: SingleProperty,
@@ -44,7 +44,7 @@ const addAllProperties = (
   properties: SingleProperty[],
   classNamesObj: ClassNameObj
 ): ClassNameObj => {
-  assertMultipleItems(properties)
+  // assertMultipleItems(properties)
   return {
     ...classNamesObj,
     ...properties.reduce(
@@ -78,7 +78,7 @@ const buildClassNameObj = (properties: Property[]): ClassNameObj =>
 
     // nothing will be added, but still check format of input
     if (Array.isArray(classNames)) {
-      assertMultipleItems(classNames)
+      // assertMultipleItems(classNames)
     } else {
       assertNoSpaces(classNames)
     }

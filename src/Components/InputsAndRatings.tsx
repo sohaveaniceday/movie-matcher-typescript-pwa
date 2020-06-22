@@ -1,23 +1,27 @@
 import React, { useState, FormEvent, Dispatch, FC } from 'react'
 import { FilmAccordions } from './FilmAccordions'
 import { colorScheme } from '../static'
-import { getClassName, useServiceState, useObjectState } from '../util'
+import {
+  getClassName,
+  useServiceState,
+  useObjectState,
+  generateBackgroundImage,
+} from '../util'
+import { HoldingPage } from './common'
 
 type InputsAndRatingsProps = {
   setDisplayResult: Dispatch<React.SetStateAction<boolean>>
-  activeUserNumber: 1 | 2
-  setActiveUserNumber: Dispatch<React.SetStateAction<1 | 2>>
 }
 
 export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
   setDisplayResult,
-  activeUserNumber,
-  setActiveUserNumber,
 }: InputsAndRatingsProps) => {
   const [state] = useServiceState()
   const [isRating, setIsRating] = useState<boolean>(false)
+  const [isHoldingPage, setIsHoldingPage] = useState<boolean>(false)
   const [isDomesticRating, setIsDomesticRating] = useState<boolean>(true)
   const [allFilmsRated, setAllFilmsRated] = useState<boolean>(false)
+  const [activeUserNumber, setActiveUserNumber] = useState<1 | 2>(1)
   const [activeFilmNumber, setActiveFilmNumber] = useState<number>(
     isRating ? 0 : 1
   )
@@ -53,13 +57,13 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
         setIsRating(true)
       }
       setActiveFilmNumber(activeUserNumber === 1 ? 1 : 0)
-      setActiveUserNumber(activeUserNumber === 1 ? 2 : 1)
+      setIsHoldingPage(true)
     } else if (allFilmsRated && isRating) {
       if (activeUserNumber === 1) {
         if (isDomesticRating) {
           setIsDomesticRating(false)
         } else {
-          setActiveUserNumber(2)
+          setIsHoldingPage(true)
           setIsDomesticRating(true)
         }
       } else {
@@ -78,65 +82,86 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
   const isConfirmed =
     (allFilmsConfirmed && !isRating) || (isRating && allFilmsRated)
 
+  const nextUserNumber = activeUserNumber === 1 ? 2 : 1
+  const holdingPageContent = (
+    <div className='text-2xl text-white' style={{ fontFamily: 'Bebas' }}>
+      <div>{`User ${activeUserNumber}, pass device to User ${nextUserNumber}.`}</div>
+      <div>{`User ${nextUserNumber}, tap to continue.`}</div>
+    </div>
+  )
+  const holdingPageFunction = () => {
+    setActiveUserNumber(nextUserNumber)
+    setIsHoldingPage(false)
+  }
+
   return (
-    <form
-      className='flex flex-col flex-1 h-full overflow-auto'
-      onSubmit={onSubmit}
-    >
-      <FilmAccordions
-        activeUserNumber={activeUserNumber}
-        setActiveUserNumber={setActiveUserNumber}
-        activeFilmNumber={activeFilmNumber}
-        setActiveFilmNumber={setActiveFilmNumber}
-        isRating={isRating}
-        isDomesticRating={isDomesticRating}
-        values={inputValues}
-        updateValues={updateInputValues}
-        allFilmsRated={allFilmsRated}
-        setAllFilmsRated={setAllFilmsRated}
-        ratings={ratings}
-        setRatings={setRatings}
-      />
-      <div className='text-center'>
-        <input
-          autoFocus={false}
-          type='submit'
-          className={getClassName([
-            'flex',
-            'w-full',
-            'h-16',
-            'justify-center',
-            'rounded-none',
-            'focus:outline-none',
-            [
-              isConfirmed,
-              ['cursor-pointer', 'text-3xl'],
-              ['text-2xl', 'pointer-events-none'],
-            ],
-          ])}
-          style={{
-            borderColor: `#${colorScheme.medium}`,
-            backgroundColor: `#${
-              !isConfirmed
-                ? colorScheme.dark
-                : activeUserNumber === 1
-                ? colorScheme.user1Light
-                : colorScheme.user2Light
-            }`,
-            color: 'white',
-            fontFamily: 'Bebas',
-          }}
-          value={
-            isConfirmed
-              ? 'Next'
-              : !allFilmsConfirmed
-              ? `User ${activeUserNumber} - Enter your films`
-              : `User ${activeUserNumber} - Score ${
-                  isDomesticRating ? 'your' : 'their'
-                } films`
-          }
+    <>
+      {isHoldingPage && (
+        <HoldingPage
+          style={{ backgroundImage: generateBackgroundImage(nextUserNumber) }}
+          onClick={holdingPageFunction}
+        >
+          {holdingPageContent}
+        </HoldingPage>
+      )}
+      <form
+        className='flex flex-col flex-1 h-full overflow-auto'
+        onSubmit={onSubmit}
+      >
+        <FilmAccordions
+          activeUserNumber={activeUserNumber}
+          activeFilmNumber={activeFilmNumber}
+          setActiveFilmNumber={setActiveFilmNumber}
+          isRating={isRating}
+          isDomesticRating={isDomesticRating}
+          values={inputValues}
+          updateValues={updateInputValues}
+          allFilmsRated={allFilmsRated}
+          setAllFilmsRated={setAllFilmsRated}
+          ratings={ratings}
+          setRatings={setRatings}
         />
-      </div>
-    </form>
+        <div className='text-center'>
+          <input
+            autoFocus={false}
+            type='submit'
+            className={getClassName([
+              'flex',
+              'w-full',
+              'h-16',
+              'justify-center',
+              'rounded-none',
+              'focus:outline-none',
+              [
+                isConfirmed,
+                ['cursor-pointer', 'text-3xl'],
+                ['text-2xl', 'pointer-events-none'],
+              ],
+            ])}
+            style={{
+              borderColor: `#${colorScheme.medium}`,
+              backgroundColor: `#${
+                !isConfirmed
+                  ? colorScheme.dark
+                  : activeUserNumber === 1
+                  ? colorScheme.user1Light
+                  : colorScheme.user2Light
+              }`,
+              color: 'white',
+              fontFamily: 'Bebas',
+            }}
+            value={
+              isConfirmed
+                ? 'Next'
+                : !allFilmsConfirmed
+                ? `User ${activeUserNumber} - Enter your films`
+                : `User ${activeUserNumber} - Score ${
+                    isDomesticRating ? 'your' : 'their'
+                  } films`
+            }
+          />
+        </div>
+      </form>
+    </>
   )
 }
