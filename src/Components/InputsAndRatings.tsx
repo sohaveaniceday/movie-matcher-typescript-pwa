@@ -108,7 +108,41 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
         className='flex flex-col flex-1 h-full overflow-auto'
         onSubmit={onSubmit}
       >
-        <FilmAccordions
+        <div className='flex flex-col flex-1 hidden h-full overflow-y-scroll sm:block'>
+          <div className='flex flex-row w-full h-full'>
+            <FilmAccordions
+              horizontalView={true}
+              activeUserNumber={activeUserNumber}
+              activeFilmNumber={activeFilmNumber}
+              setActiveFilmNumber={setActiveFilmNumber}
+              isRating={isRating}
+              isDomesticRating={isDomesticRating}
+              values={inputValues}
+              updateValues={updateInputValues}
+              allFilmsRated={allFilmsRated}
+              setAllFilmsRated={setAllFilmsRated}
+              ratings={ratings}
+              setRatings={setRatings}
+            />
+          </div>
+        </div>
+        <div className='flex flex-col flex-1 overflow-y-scroll sm:hidden'>
+          <FilmAccordions
+            horizontalView={false}
+            activeUserNumber={activeUserNumber}
+            activeFilmNumber={activeFilmNumber}
+            setActiveFilmNumber={setActiveFilmNumber}
+            isRating={isRating}
+            isDomesticRating={isDomesticRating}
+            values={inputValues}
+            updateValues={updateInputValues}
+            allFilmsRated={allFilmsRated}
+            setAllFilmsRated={setAllFilmsRated}
+            ratings={ratings}
+            setRatings={setRatings}
+          />
+        </div>
+        {/* <FilmAccordions
           activeUserNumber={activeUserNumber}
           activeFilmNumber={activeFilmNumber}
           setActiveFilmNumber={setActiveFilmNumber}
@@ -120,7 +154,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
           setAllFilmsRated={setAllFilmsRated}
           ratings={ratings}
           setRatings={setRatings}
-        />
+        /> */}
         <div className='text-center'>
           <input
             autoFocus={false}
