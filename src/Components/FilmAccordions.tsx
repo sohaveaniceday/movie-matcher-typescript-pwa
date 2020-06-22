@@ -476,12 +476,12 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   }
   return (
     <>
-      <div className='hidden h-full md:block'>
+      <div className='flex flex-col flex-1 hidden h-full overflow-y-scroll sm:block'>
         <div className='flex flex-row w-full h-full'>
           <AccordionsComponent horizontal={true} />
         </div>
       </div>
-      <div className='h-full md:hidden'>
+      <div className='flex flex-col flex-1 overflow-y-scroll sm:hidden'>
         <AccordionsComponent horizontal={false} />
       </div>
     </>
