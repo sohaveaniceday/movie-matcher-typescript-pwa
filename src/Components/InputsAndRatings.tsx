@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, Dispatch, FC } from 'react'
 import { FilmAccordions } from './FilmAccordions'
-import { colorScheme } from '../static'
+import { colorScheme, initialInputValues } from '../static'
 import {
   getClassName,
   useServiceState,
@@ -32,11 +32,6 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
     .sort()
     .map((e) => state[currentUserKey][e])
 
-  const initialInputValues = {
-    film1: '',
-    film2: '',
-    film3: '',
-  }
   const [inputValues, updateInputValues] = useObjectState(initialInputValues)
   const initialRatingValues = {
     film1: 34,

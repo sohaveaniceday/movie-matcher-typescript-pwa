@@ -18,3 +18,8 @@ export const initialObjectServiceState: State = {
   user1: initialUserData,
   user2: initialUserData,
 }
+export const initialInputValues = {
+  film1: '',
+  film2: '',
+  film3: '',
+}
