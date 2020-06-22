@@ -292,7 +292,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       <>
         {isRating && (
           <Accordion
-            vertical
+            vertical={vertical}
             title='Ratings'
             content={
               <Ratings
@@ -449,7 +449,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
           return (
             <Accordion
-              vertical
+              vertical={vertical}
               key={filmKey}
               title={filmData.name || `Movie ${index + 1}`}
               content={accordianContent}
@@ -477,12 +477,12 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   }
   return (
     <>
-      <div className='hidden md-block'>
+      <div className='hidden h-full md:block'>
         <div className='flex flex-row w-full h-full'>
           <AccordionsComponent vertical={true} />
         </div>
       </div>
-      <div className='md:hidden'>
+      <div className='h-full md:hidden'>
         <AccordionsComponent vertical={false} />
       </div>
     </>

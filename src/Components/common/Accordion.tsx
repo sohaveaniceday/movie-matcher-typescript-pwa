@@ -29,6 +29,7 @@ export const Accordion = ({
     ? ['w-full', 'flex-1', 'border-r-4']
     : ['h-full']
   const contentInactiveClass = vertical ? ['w-0'] : ['h-0']
+
   return (
     <div
       className={getClassName([
