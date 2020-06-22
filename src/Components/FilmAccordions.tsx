@@ -10,6 +10,7 @@ import React, {
 } from 'react'
 import {
   Accordion,
+  VerticalAccordion,
   Badge,
   AutoSuggest,
   SuggestionProps,
@@ -438,7 +439,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
         )
 
         return (
-          <Accordion
+          <VerticalAccordion
             key={filmKey}
             title={filmData.name || `Movie ${index + 1}`}
             content={accordianContent}

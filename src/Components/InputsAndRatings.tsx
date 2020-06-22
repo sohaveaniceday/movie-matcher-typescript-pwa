@@ -83,20 +83,22 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
       className='flex flex-col flex-1 h-full overflow-auto'
       onSubmit={onSubmit}
     >
-      <FilmAccordions
-        activeUserNumber={activeUserNumber}
-        setActiveUserNumber={setActiveUserNumber}
-        activeFilmNumber={activeFilmNumber}
-        setActiveFilmNumber={setActiveFilmNumber}
-        isRating={isRating}
-        isDomesticRating={isDomesticRating}
-        values={inputValues}
-        updateValues={updateInputValues}
-        allFilmsRated={allFilmsRated}
-        setAllFilmsRated={setAllFilmsRated}
-        ratings={ratings}
-        setRatings={setRatings}
-      />
+      <div className='flex flex-row w-full h-full'>
+        <FilmAccordions
+          activeUserNumber={activeUserNumber}
+          setActiveUserNumber={setActiveUserNumber}
+          activeFilmNumber={activeFilmNumber}
+          setActiveFilmNumber={setActiveFilmNumber}
+          isRating={isRating}
+          isDomesticRating={isDomesticRating}
+          values={inputValues}
+          updateValues={updateInputValues}
+          allFilmsRated={allFilmsRated}
+          setAllFilmsRated={setAllFilmsRated}
+          ratings={ratings}
+          setRatings={setRatings}
+        />
+      </div>
       <div className='text-center'>
         <input
           autoFocus={false}
