@@ -107,7 +107,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
             'flex',
             'w-full',
             'h-16',
-            'border-t-4',
+            // 'border-t-4',
             'justify-center',
             'rounded-none',
             'focus:outline-none',

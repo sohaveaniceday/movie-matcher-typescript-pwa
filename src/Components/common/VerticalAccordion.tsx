@@ -9,6 +9,7 @@ type AccordianProps = {
   active: boolean
   onClick: (event: MouseEvent<HTMLButtonElement>) => void
   backgroundColor?: string
+  backgroundImage?: string
 } & BaseTypes<JSX.IntrinsicElements['div']>
 
 export const VerticalAccordion = ({
@@ -17,17 +18,19 @@ export const VerticalAccordion = ({
   active,
   onClick,
   backgroundColor,
+  backgroundImage,
 }: AccordianProps) => {
   return (
     <div
       className={getClassName(['flex', [active, 'w-full']])}
       style={{
         backgroundColor: backgroundColor,
+        backgroundImage: backgroundImage,
       }}
     >
       <div
         className={getClassName([
-          'rounded-r-lg',
+          // 'rounded-r-lg',
           'cursor-pointer',
           // 'px-5',
           'h-full',
@@ -53,34 +56,41 @@ export const VerticalAccordion = ({
         }}
         onClick={onClick}
       >
-        <p
-          className='pr-2 font-sans text-lg font-bold text-left truncate rotate-90'
-          style={{
-            color: `#${active ? colorScheme.light : colorScheme.medium}`,
-          }}
-        >
-          {title}
-        </p>
-        <Icon
-          iconName='chevron'
-          className={getClassName([
-            'mt-auto',
-            'm-5',
-            'h-5',
-            'w-5',
-            'text-gray-700',
-            [active, 'rotate-90', 'rotate-180'],
-          ])}
-          style={{
-            transition: '0.6s ease',
-          }}
-        />
+        <div className='flex flex-col h-full '>
+          <Icon
+            iconName='chevron'
+            className={getClassName(['m-5', 'h-5', 'w-5', 'text-gray-700'])}
+            style={{
+              ...(active ? {} : { transform: 'rotate(90deg)' }),
+              transition: '0.6s ease',
+              minHeight: '1.25rem',
+              minWidth: '1.25rem',
+            }}
+          />
+          <p
+            className='p-4 mt-auto font-sans text-lg font-bold truncate '
+            style={{
+              color: `#${active ? colorScheme.light : colorScheme.medium}`,
+              transform: 'rotate(180deg)',
+              // top: '0',
+              // left: '0',
+              // whiteSpace: 'nowrap',
+              // overflow: 'hidden',
+              // textOverflow: 'ellipsis',
+              writingMode: 'vertical-lr',
+              // transformOrigin: 'bottom left',
+            }}
+          >
+            {title}
+          </p>
+        </div>
       </div>
       <div
         className={getClassName([
           'overflow-auto',
-          [active, ['w-full', 'flex-1'], 'w-0'],
+          [active, ['w-full', 'flex-1', 'border-r-4'], 'w-0'],
         ])}
+        style={{ borderColor: `#${colorScheme.medium}` }}
       >
         {content}
       </div>

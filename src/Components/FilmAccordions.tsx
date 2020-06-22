@@ -290,7 +290,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   return (
     <>
       {isRating && (
-        <Accordion
+        <VerticalAccordion
           title='Ratings'
           content={
             <Ratings
@@ -358,7 +358,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                   value={values[currentFilmKey]}
                   border
                 />
-                <div className='z-10 m-5'>
+                <div className='z-10 mt-5'>
                   <Button
                     type='button'
                     cssClasses={['focus:outline-none']}
@@ -376,7 +376,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 </div>
               </>
             )}
-            <div className='z-10 w-full'>
+            <div className='z-10 w-full mt-5'>
               {id && packshot ? (
                 <div className='h-64 mb-5'>
                   <div className={getClassName([[packshotLoaded, 'hidden']])}>
@@ -449,17 +449,13 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                 setActiveFilmNumber(filmNumber)
               }
             }}
-            backgroundColor={
-              index === 0 && !isRating
-                ? ''
-                : `#${
-                    index === activeFilmNumber
-                      ? activeUserNumber === 1
-                        ? colorScheme.user1Dark
-                        : colorScheme.user2Dark
-                      : colorScheme.medium
-                  }`
-            }
+            backgroundColor={`#${
+              index === activeFilmNumber - 1
+                ? activeUserNumber === 1
+                  ? colorScheme.user1Dark
+                  : colorScheme.user2Dark
+                : ''
+            }`}
           />
         )
       })}
