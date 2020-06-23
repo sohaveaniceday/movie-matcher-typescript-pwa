@@ -163,13 +163,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       debouncedSearchTerm &&
       debouncedSearchTerm.length > 1
     ) {
-      // Fire off our API call
-      // setFilmSuggestionParams([
-      //   `https://api.themoviedb.org/3/search/movie?api_key=${
-      //     process.env.REACT_APP_TMDB_API_KEY
-      //   }&query=${encodeURIComponent(debouncedSearchTerm)}`,
-      //   {},
-      // ])
       setFilmSuggestionRequest([
         `https://us-central1-moviematcherapp.cloudfunctions.net/fetchFilmSuggestions`,
         { params: { search: encodeURIComponent(debouncedSearchTerm) } },
