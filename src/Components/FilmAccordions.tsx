@@ -265,7 +265,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             ({ id: existingId }: any) => id === existingId
           )
       )
-      const randomInt = getRandomInt(19, true)
+      const randomInt = getRandomInt(filteredData.length - 1, true)
       console.log('filteredData', filteredData, randomInt)
 
       const randomData = formatFilmData(
