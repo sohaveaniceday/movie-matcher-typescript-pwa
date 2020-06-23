@@ -29,7 +29,7 @@ exports.fetchRandomFilm = functions.https.onRequest((req, res) => {
     functions.config().tmdb.key
   }&language=en-US&region=us&sort_by=vote_average.desc&include_adult=false&include_video=false&page=${
     req.query.page
-  }&vote_count.gte=5000&vote_average.gte=7.5`
+  }&vote_count.gte=5000&vote_average.gte=7`
   return cors(req, res, () => {
     return axios
       .get(url)

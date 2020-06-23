@@ -249,7 +249,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     setRandomizeKeys([currentUserKey, currentFilmKey])
     setRadomizeRequest([
       `https://us-central1-moviematcherapp.cloudfunctions.net/fetchRandomFilm`,
-      { params: { page: getRandomInt(9) } },
+      { params: { page: getRandomInt(15) } },
     ])
   }
 
@@ -266,7 +266,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           )
       )
       const randomInt = getRandomInt(filteredData.length - 1, true)
-      console.log('filteredData', filteredData, randomInt)
 
       const randomData = formatFilmData(
         filteredData[randomInt],
