@@ -1,5 +1,5 @@
 import React, { FC, Dispatch } from 'react'
-import { Slider } from './common'
+import { Slider, Icon } from './common'
 import { colorScheme } from '../static'
 import { getClassName, useServiceState, generateBackgroundImage } from '../util'
 
@@ -92,6 +92,12 @@ export const Ratings: FC<RatingsProps> = ({
           }`}
           trackColor={`#${colorScheme.light}`}
         />
+      </div>
+      <div className='z-10 flex flex-col items-center text-white'>
+        <Icon iconName='arrows' className='w-6 h-6' />
+        <p className='text-lg' style={{ fontFamily: 'Bebas' }}>
+          Slide to rate
+        </p>
       </div>
       <div className='z-10 flex flex-1 w-full px-4'>
         <div className='flex w-full max-h-full'>

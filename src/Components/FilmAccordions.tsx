@@ -255,7 +255,6 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
 
   useEffect(() => {
     if (radomizeData) {
-      console.log('radomizeData', radomizeData)
       const completeFilmDataArray = getCompleteFilmDataArray(state)
 
       //removes any films that are already chosen
@@ -266,9 +265,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
             ({ id: existingId }: any) => id === existingId
           )
       )
+      const randomInt = getRandomInt(19, true)
+      console.log('radomizeData', radomizeData, randomInt)
 
       const randomData = formatFilmData(
-        filteredData[getRandomInt(19, true)],
+        filteredData[randomInt],
         randomizeKeys[0],
         randomizeKeys[1]
       )
