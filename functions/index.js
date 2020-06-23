@@ -45,3 +45,35 @@ exports.fetchRandomFilm = functions.https.onRequest((req, res) => {
       })
   })
 })
+
+exports.fetchLocationsData = functions.https.onRequest((req, res) => {
+  const url = `https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/idlookup`
+  return cors(req, res, () => {
+    return axios
+      .get(url, {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/octet-stream',
+          'x-rapidapi-host':
+            'utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com',
+          'x-rapidapi-key': functions.config().utelly.key,
+          useQueryString: true,
+        },
+        params: {
+          country: 'UK',
+          source_id: req.query.id,
+          source: 'tmdb',
+        },
+      })
+      .then((response) => {
+        console.log('response data', response.data)
+        return res.status(200).json(response.data)
+      })
+      .catch((err) => {
+        console.log('err', err)
+        return res.status(500).json({
+          error: err,
+        })
+      })
+  })
+})

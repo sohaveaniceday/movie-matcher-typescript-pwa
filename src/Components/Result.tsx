@@ -59,20 +59,10 @@ export const Result = () => {
   useEffect(() => {
     if (id) {
       setRequest([
-        `https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/idlookup`,
+        `https://us-central1-moviematcherapp.cloudfunctions.net/fetchLocationsData`,
         {
-          method: 'GET',
-          headers: {
-            'content-type': 'application/octet-stream',
-            'x-rapidapi-host':
-              'utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com',
-            'x-rapidapi-key': process.env.REACT_APP_UTELLY_API_KEY,
-            useQueryString: true,
-          },
           params: {
-            country: 'UK',
-            source_id: id,
-            source: 'tmdb',
+            id,
           },
         },
       ])
