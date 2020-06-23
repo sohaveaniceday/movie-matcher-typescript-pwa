@@ -107,7 +107,7 @@ export const Result = () => {
           backgroundColor: `${
             packshotPalette && isReady
               ? packshotPalette.DarkVibrant.hex
-              : colorScheme.user1Dark
+              : `#${colorScheme.user1Dark}`
           }`,
         }}
       >
