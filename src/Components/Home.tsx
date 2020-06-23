@@ -47,7 +47,7 @@ export const Home = () => {
           className='flex flex-col h-full'
           style={{ backgroundColor: `#${colorScheme.dark}` }}
         >
-          <div
+          <nav
             className='flex w-full h-16'
             onClick={() => {
               window.location.reload()
@@ -63,14 +63,14 @@ export const Home = () => {
                 Matcher
               </div>
             </div>
-          </div>
-          <div className='relative h-full overflow-auto'>
+          </nav>
+          <main className='relative h-full overflow-auto'>
             {displayResult ? (
               <Result />
             ) : (
               <InputsAndRatings setDisplayResult={setDisplayResult} />
             )}
-          </div>
+          </main>
         </div>
       </div>
     </div>
