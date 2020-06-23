@@ -266,7 +266,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
           )
       )
       const randomInt = getRandomInt(19, true)
-      console.log('radomizeData', radomizeData, randomInt)
+      console.log('filteredData', filteredData, randomInt)
 
       const randomData = formatFilmData(
         filteredData[randomInt],
