@@ -67,7 +67,7 @@ export const Home = () => {
             </div>
           </nav>
           <main className='relative h-full overflow-auto'>
-            {displayHoldingPage && (
+            {displayHoldingPage ? (
               <HoldingPage
                 style={{ backgroundImage: generateBackgroundImage(1) }}
                 onClick={() => setDisplayHoldingPage(false)}
@@ -86,8 +86,7 @@ export const Home = () => {
                   User 1, tap the screen to start.
                 </div>
               </HoldingPage>
-            )}
-            {displayResult ? (
+            ) : displayResult ? (
               <Result />
             ) : (
               <InputsAndRatings setDisplayResult={setDisplayResult} />
