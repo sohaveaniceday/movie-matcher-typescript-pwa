@@ -171,7 +171,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
                 ? 'Next'
                 : !allFilmsConfirmed
                 ? `User ${activeUserNumber} - Enter your films`
-                : `User ${activeUserNumber} - Score ${
+                : `User ${activeUserNumber} - Rate ${
                     isDomesticRating ? 'your' : 'their'
                   } films`
             }
