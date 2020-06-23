@@ -93,12 +93,18 @@ export const Ratings: FC<RatingsProps> = ({
           trackColor={`#${colorScheme.light}`}
         />
       </div>
-      <div className='z-10 flex flex-col items-center text-white'>
-        <Icon iconName='arrows' className='w-6 h-6' />
-        <p className='text-lg' style={{ fontFamily: 'Bebas' }}>
-          Slide to rate
-        </p>
-      </div>
+      <p
+        className='z-10 flex inline-flex text-xl text-white'
+        style={{ fontFamily: 'Bebas' }}
+      >
+        <Icon iconName='arrow' className='w-5 h-5 my-auto mr-2' />
+        Slide to rate
+        <Icon
+          iconName='arrow'
+          className='w-5 h-5 my-auto ml-2'
+          style={{ transform: 'rotate(180deg)' }}
+        />
+      </p>
       <div className='z-10 flex flex-1 w-full px-4'>
         <div className='flex w-full max-h-full'>
           <div className='flex w-full h-full flex-inline'>
