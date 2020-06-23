@@ -248,20 +248,20 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
     if (packshotLoaded) setPackshotLoaded(false)
     setRandomizeKeys([currentUserKey, currentFilmKey])
     setRadomizeRequest([
-      `https://api.themoviedb.org/3/discover/movie?api_key=e6b5e279f56d84d84b98848cf0928b53&language=en-US&region=us&sort_by=vote_average.desc&include_adult=false&include_video=false&page=${getRandomInt(
-        9
-      )}&vote_count.gte=5000&vote_average.gte=7.5`,
-      {},
+      `https://us-central1-moviematcherapp.cloudfunctions.net/fetchRandomFilm`,
+      { params: { page: getRandomInt(9) } },
     ])
   }
 
   useEffect(() => {
     if (radomizeData) {
+      console.log('radomizeData', radomizeData)
       const completeFilmDataArray = getCompleteFilmDataArray(state)
 
       //removes any films that are already chosen
       const filteredData = radomizeData.results.filter(
         ({ id }: any) =>
+          id &&
           !completeFilmDataArray.some(
             ({ id: existingId }: any) => id === existingId
           )
