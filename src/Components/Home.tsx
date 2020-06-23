@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { InputsAndRatings } from './InputsAndRatings'
-import { useEventListener, useDebounce } from '../util'
+import { useEventListener, useDebounce, generateBackgroundImage } from '../util'
 import { Result } from './Result'
 import { colorScheme } from '../static'
-import { Icon } from './common'
+import { Icon, HoldingPage } from './common'
 
 export const Home = () => {
   const [displayResult, setDisplayResult] = useState<boolean>(false)
+  const [displayHoldingPage, setDisplayHoldingPage] = useState<boolean>(true)
 
   // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
   const [vh, setVh] = useState(window.innerHeight * 0.01)
@@ -37,7 +38,7 @@ export const Home = () => {
         height: 'calc(var(--vh, 1vh) * 100)',
       }}
     >
-      <div className='hidden h-full lg:block'>
+      <div className='hidden h-full mx-auto lg:block'>
         <div className='p-5 text-center'>
           Movie Matcher is currently only available on mobile
         </div>
@@ -65,6 +66,26 @@ export const Home = () => {
             </div>
           </nav>
           <main className='relative h-full overflow-auto'>
+            {displayHoldingPage && (
+              <HoldingPage
+                style={{ backgroundImage: generateBackgroundImage(1) }}
+                onClick={() => setDisplayHoldingPage(false)}
+              >
+                <div
+                  className='p-10 text-2xl text-white'
+                  style={{ fontFamily: 'Bebas' }}
+                >
+                  Find the perfect movie.
+                  <br />
+                  <br />
+                  2 users take it in turns to pick their shortlist and rate
+                  their preferences. An ideal match will be selected for you.
+                  <br />
+                  <br />
+                  User 1, tap the screen to start.
+                </div>
+              </HoldingPage>
+            )}
             {displayResult ? (
               <Result />
             ) : (

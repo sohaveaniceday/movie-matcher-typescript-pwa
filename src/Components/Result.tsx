@@ -21,7 +21,7 @@ export const Result = () => {
   const [state] = useServiceState()
   const [topRatedFilm, setTopRatedFilm] = useState<any>(null)
   const [isReady, setIsReady] = useState<boolean>(false)
-  const [isHoldingPage, setIsHoldingPage] = useState<boolean>(true)
+  const [displayHoldingPage, setDisplayHoldingPage] = useState<boolean>(true)
   const [locations, setLocations] = useState<Location[]>([])
   const [packshotPalette, setPackshotPalette] = useState<any>(null)
   const [packshotLoaded, setPackshotLoaded] = useState<boolean>(false)
@@ -91,10 +91,10 @@ export const Result = () => {
 
   return (
     <>
-      {isHoldingPage && (
+      {displayHoldingPage && (
         <HoldingPage
           style={{ backgroundImage: generateBackgroundImage(1) }}
-          onClick={() => setIsHoldingPage(false)}
+          onClick={() => setDisplayHoldingPage(false)}
         >
           <div className='text-2xl text-white' style={{ fontFamily: 'Bebas' }}>
             Tap to reveal your movie match

@@ -18,7 +18,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
 }: InputsAndRatingsProps) => {
   const [state] = useServiceState()
   const [isRating, setIsRating] = useState<boolean>(false)
-  const [isHoldingPage, setIsHoldingPage] = useState<boolean>(false)
+  const [isHoldingPage, setDisplayHoldingPage] = useState<boolean>(false)
   const [isDomesticRating, setIsDomesticRating] = useState<boolean>(true)
   const [allFilmsRated, setAllFilmsRated] = useState<boolean>(false)
   const [activeUserNumber, setActiveUserNumber] = useState<1 | 2>(1)
@@ -52,13 +52,13 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
         setIsRating(true)
       }
       setActiveFilmNumber(activeUserNumber === 1 ? 1 : 0)
-      setIsHoldingPage(true)
+      setDisplayHoldingPage(true)
     } else if (allFilmsRated && isRating) {
       if (activeUserNumber === 1) {
         if (isDomesticRating) {
           setIsDomesticRating(false)
         } else {
-          setIsHoldingPage(true)
+          setDisplayHoldingPage(true)
           setIsDomesticRating(true)
         }
       } else {
@@ -86,7 +86,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
   )
   const holdingPageFunction = () => {
     setActiveUserNumber(nextUserNumber)
-    setIsHoldingPage(false)
+    setDisplayHoldingPage(false)
   }
 
   return (
