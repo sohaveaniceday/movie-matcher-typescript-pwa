@@ -30,6 +30,7 @@ export const Home = () => {
 
   useEventListener('resize', handleResize, window)
   useEventListener('orientationchange', handleResize, window)
+  useEventListener('deviceorientation', handleResize, window)
 
   return (
     <div
