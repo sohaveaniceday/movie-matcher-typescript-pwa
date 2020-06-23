@@ -137,19 +137,6 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
             setRatings={setRatings}
           />
         </div>
-        {/* <FilmAccordions
-          activeUserNumber={activeUserNumber}
-          activeFilmNumber={activeFilmNumber}
-          setActiveFilmNumber={setActiveFilmNumber}
-          isRating={isRating}
-          isDomesticRating={isDomesticRating}
-          values={inputValues}
-          updateValues={updateInputValues}
-          allFilmsRated={allFilmsRated}
-          setAllFilmsRated={setAllFilmsRated}
-          ratings={ratings}
-          setRatings={setRatings}
-        /> */}
         <div className='text-center'>
           <input
             autoFocus={false}

@@ -3,12 +3,12 @@ import axios, { AxiosRequestConfig } from 'axios'
 
 export const useFetch = () => {
   const [data, setData] = useState<any>(null)
-  const [params, setParams] = useState<[string, AxiosRequestConfig]>(['', {}])
+  const [request, setRequest] = useState<[string, AxiosRequestConfig]>(['', {}])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<any>(null)
 
   useEffect(() => {
-    const [url, config] = params
+    const [url, config] = request
 
     const fetchData = async () => {
       setIsLoading(true)
@@ -25,9 +25,9 @@ export const useFetch = () => {
     }
 
     if (url) fetchData()
-  }, [params])
+  }, [request])
 
   const clearData = () => setData(null)
 
-  return { data, isLoading, error, setParams, clearData }
+  return { data, isLoading, error, setRequest, clearData }
 }

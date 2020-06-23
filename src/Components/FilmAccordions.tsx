@@ -85,11 +85,11 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   const {
     data: filmSuggestionData,
     isLoading: isLoadingFilmSuggestions,
-    setParams: setFilmSuggestionParams,
+    setRequest: setFilmSuggestionRequest,
   } = useFetch()
   const {
     data: radomizeData,
-    setParams: setRadomizeParams,
+    setRequest: setRadomizeRequest,
     isLoading: isLoadingRandomize,
     clearData: clearRandomizeData,
   } = useFetch()
@@ -164,14 +164,18 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
       debouncedSearchTerm.length > 1
     ) {
       // Fire off our API call
-      setFilmSuggestionParams([
-        `https://api.themoviedb.org/3/search/movie?api_key=${
-          process.env.REACT_APP_TMDB_API_KEY
-        }&query=${encodeURIComponent(debouncedSearchTerm)}`,
-        {},
+      // setFilmSuggestionParams([
+      //   `https://api.themoviedb.org/3/search/movie?api_key=${
+      //     process.env.REACT_APP_TMDB_API_KEY
+      //   }&query=${encodeURIComponent(debouncedSearchTerm)}`,
+      //   {},
+      // ])
+      setFilmSuggestionRequest([
+        `https://us-central1-moviematcherapp.cloudfunctions.net/fetchFilmSuggestions`,
+        { params: { search: encodeURIComponent(debouncedSearchTerm) } },
       ])
     }
-  }, [debouncedSearchTerm, setFilmSuggestionParams])
+  }, [debouncedSearchTerm, setFilmSuggestionRequest])
 
   useEffect(() => {
     if (filmSuggestionData?.results?.length > 0) {
@@ -250,7 +254,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   const randomizeOnClick = () => {
     if (packshotLoaded) setPackshotLoaded(false)
     setRandomizeKeys([currentUserKey, currentFilmKey])
-    setRadomizeParams([
+    setRadomizeRequest([
       `https://api.themoviedb.org/3/discover/movie?api_key=e6b5e279f56d84d84b98848cf0928b53&language=en-US&region=us&sort_by=vote_average.desc&include_adult=false&include_video=false&page=${getRandomInt(
         9
       )}&vote_count.gte=5000&vote_average.gte=7.5`,

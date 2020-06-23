@@ -16,7 +16,7 @@ type Location = {
 }
 
 export const Result = () => {
-  const { data, setParams, error } = useFetch()
+  const { data, setRequest, error } = useFetch()
   const [state] = useServiceState()
   const [topRatedFilm, setTopRatedFilm] = useState<any>(null)
   const [isReady, setIsReady] = useState<boolean>(false)
@@ -58,7 +58,7 @@ export const Result = () => {
 
   useEffect(() => {
     if (id) {
-      setParams([
+      setRequest([
         `https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/idlookup`,
         {
           method: 'GET',
@@ -77,7 +77,7 @@ export const Result = () => {
         },
       ])
     }
-  }, [setParams, id])
+  }, [setRequest, id])
 
   useEffect(() => {
     if (data) {
