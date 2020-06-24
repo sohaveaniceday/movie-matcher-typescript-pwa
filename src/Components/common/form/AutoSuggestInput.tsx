@@ -188,18 +188,19 @@ export const AutoSuggest: FC<AutoSuggestProps> = ({
             }: SuggestionProps,
             index: number
           ) => {
-            const isActiveSuggestion = activeSuggestion === index
+            // const isActiveSuggestion = activeSuggestion === index
             return (
               <li
                 id={id}
                 data-id={id}
                 data-name={name}
                 className={getClassName([
-                  [
-                    isActiveSuggestion && !suggestionDisabled,
-                    ['bg-blue-300', 'text-white'],
-                  ],
-                  [isActiveSuggestion && suggestionDisabled, 'bg-gray-500'],
+                  // TO DO: restablish with desktop version
+                  // [
+                  //   isActiveSuggestion && !suggestionDisabled,
+                  //   ['bg-blue-300', 'text-white'],
+                  // ],
+                  // [isActiveSuggestion && suggestionDisabled, 'bg-gray-500'],
                   [
                     suggestionDisabled,
                     [
