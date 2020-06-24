@@ -57,8 +57,14 @@ export const LandingPage: FC<LandingPageProps> = ({
   )
 
   return (
-    <HoldingPage style={{ backgroundImage: generateBackgroundImage(1) }}>
-      <div className='text-white' style={{ fontFamily: 'Bebas' }}>
+    <HoldingPage
+      scrollable
+      style={{ backgroundImage: generateBackgroundImage(1) }}
+    >
+      <div
+        className='p-5 m-auto overflow-auto text-white'
+        style={{ fontFamily: 'Bebas' }}
+      >
         <Icon iconName='movie' className='w-24 h-24 mx-auto' />
         <div className='text-4xl'>Movie Matcher</div>
         <div className='text-xl text-white' style={{ fontFamily: 'Bebas' }}>

@@ -103,7 +103,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
         className='flex flex-col flex-1 h-full overflow-auto'
         onSubmit={onSubmit}
       >
-        <div className='flex flex-col flex-1 hidden h-full overflow-y-scroll sm:block'>
+        <div className='flex-col flex-1 hidden h-full overflow-y-scroll sm:flex'>
           <div className='flex flex-row w-full h-full'>
             <FilmAccordions
               horizontalView={true}
