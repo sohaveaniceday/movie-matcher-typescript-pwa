@@ -19,7 +19,7 @@ export const Home = () => {
           Movie Matcher is currently only available on mobile
         </div>
       </div>
-      <div className='h-full lg:hidden'>
+      <div className='h-full lg:hidden noselect'>
         <div
           className='flex flex-col h-full'
           style={{ backgroundColor: `#${colorScheme.dark}` }}
