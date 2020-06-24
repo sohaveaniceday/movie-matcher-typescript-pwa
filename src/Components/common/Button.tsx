@@ -3,7 +3,6 @@ import { BaseTypes, getClassName } from '../../util'
 
 type ButtonProps = {
   cssClasses: string[]
-  color: string
   border?: boolean
   rounded?: boolean
 } & BaseTypes<JSX.IntrinsicElements['button']>
@@ -11,7 +10,6 @@ type ButtonProps = {
 export const Button: FC<ButtonProps> = ({
   value,
   cssClasses,
-  color = 'blue',
   onClick,
   type,
   border = false,
@@ -31,7 +29,6 @@ export const Button: FC<ButtonProps> = ({
     <button
       onClick={onClick}
       className={buttonClassName}
-      style={{ backgroundColor: color }}
       type={type}
       {...buttonProps}
     >

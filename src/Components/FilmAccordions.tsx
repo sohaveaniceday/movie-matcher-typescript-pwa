@@ -354,15 +354,17 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                     type='button'
                     cssClasses={['focus:outline-none']}
                     value='Inspire me!'
-                    color={`#${
-                      activeUserNumber === 1
-                        ? colorScheme.user1Dark
-                        : colorScheme.user2Dark
-                    }`}
                     onClick={randomizeOnClick}
                     border
                     rounded
-                    style={{ borderColor: `#${colorScheme.medium}` }}
+                    style={{
+                      borderColor: `#${colorScheme.medium}`,
+                      backgroundColor: `#${
+                        activeUserNumber === 1
+                          ? colorScheme.user1Light
+                          : colorScheme.user2Light
+                      }`,
+                    }}
                   />
                 </div>
               </>

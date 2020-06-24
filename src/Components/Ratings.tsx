@@ -94,7 +94,7 @@ export const Ratings: FC<RatingsProps> = ({
         />
       </div>
       <p
-        className='z-10 flex inline-flex text-xl text-white'
+        className='z-10 inline-flex text-xl text-white'
         style={{ fontFamily: 'Bebas' }}
       >
         <Icon iconName='arrow' className='w-5 h-5 my-auto mr-2' />
