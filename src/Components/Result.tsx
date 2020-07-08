@@ -26,6 +26,8 @@ export const Result = () => {
   const [packshotPalette, setPackshotPalette] = useState<any>(null)
   const [packshotLoaded, setPackshotLoaded] = useState<boolean>(false)
 
+  console.log('locations', locations)
+
   const { id, name, packshot, summary, genres, releaseDate } =
     topRatedFilm || {}
 
@@ -78,7 +80,10 @@ export const Result = () => {
       } = data
       const locationData: any = locations.reduce(
         (acc: any, { icon, display_name, url }: any) => {
-          return icon && url ? [...acc, { icon, name: display_name, url }] : acc
+          const isDuplicate = acc.some(({ name }: any) => name === display_name)
+          return icon && url && !isDuplicate
+            ? [...acc, { icon, name: display_name, url }]
+            : acc
         },
         []
       )

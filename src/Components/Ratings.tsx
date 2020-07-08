@@ -68,13 +68,13 @@ export const Ratings: FC<RatingsProps> = ({
   }
 
   return (
-    <div className='relative flex flex-col items-center h-full'>
-      <div
-        className='absolute w-full h-full'
-        style={{
-          backgroundImage: generateBackgroundImage(activeUserNumber),
-        }}
-      />
+    <div
+      className='relative flex flex-col items-center h-full'
+      style={{
+        backgroundImage: generateBackgroundImage(activeUserNumber),
+      }}
+    >
+      <div className='absolute w-full h-full' />
       <div className='flex w-full' style={{ minHeight: '4rem' }}>
         <Slider
           range={[1, 99]}

@@ -67,7 +67,7 @@ export const Accordion = ({
         onClick={onClick}
       >
         {horizontal ? (
-          <div className='flex flex-col h-full '>
+          <div className='flex flex-col h-full'>
             <Icon
               iconName='chevron'
               className={getClassName(['m-5', 'h-5', 'w-5', 'text-gray-700'])}
