@@ -26,8 +26,6 @@ export const Result = () => {
   const [packshotPalette, setPackshotPalette] = useState<any>(null)
   const [packshotLoaded, setPackshotLoaded] = useState<boolean>(false)
 
-  console.log('locations', locations)
-
   const { id, name, packshot, summary, genres, releaseDate } =
     topRatedFilm || {}
 
