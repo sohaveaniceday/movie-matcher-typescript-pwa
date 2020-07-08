@@ -62,19 +62,26 @@ export const LandingPage: FC<LandingPageProps> = ({
       style={{ backgroundImage: generateBackgroundImage(1) }}
     >
       <div
-        className='p-5 m-auto overflow-auto text-white'
+        className='flex flex-col h-full p-5 overflow-auto text-white'
         style={{ fontFamily: 'Bebas' }}
       >
-        <Icon iconName='movie' className='w-24 h-24 mx-auto' />
-        <div className='text-4xl'>Movie Matcher</div>
-        <div className='text-xl text-white' style={{ fontFamily: 'Bebas' }}>
-          Find the perfect movie.
-        </div>
-        <div className='sm:hidden'>
-          <div className='flex flex-col text-xl'>{buttons}</div>
-        </div>
-        <div className='hidden sm:block'>
-          <div className='flex flex-row justify-center text-xl'>{buttons}</div>
+        <div className='m-auto text-center'>
+          <Icon iconName='movie' className='w-24 h-24 mx-auto' />
+          <div className='mx-auto text-4xl '>Movie Matcher</div>
+          <div
+            className='mx-auto text-xl text-white '
+            style={{ fontFamily: 'Bebas' }}
+          >
+            Find the perfect movie.
+          </div>
+          <div className='sm:hidden'>
+            <div className='flex flex-col text-xl'>{buttons}</div>
+          </div>
+          <div className='hidden sm:block'>
+            <div className='flex flex-row justify-center text-xl'>
+              {buttons}
+            </div>
+          </div>
         </div>
       </div>
     </HoldingPage>

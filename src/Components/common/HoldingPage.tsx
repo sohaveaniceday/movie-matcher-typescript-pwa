@@ -4,7 +4,8 @@ import { BaseTypes, getClassName } from '../../util'
 type HoldingPageProps = {
   cssClasses?: string[]
   scrollable?: boolean
-} & BaseTypes<JSX.IntrinsicElements['button']>
+} & BaseTypes<JSX.IntrinsicElements['button']> &
+  BaseTypes<JSX.IntrinsicElements['div']>
 
 export const HoldingPage: FC<HoldingPageProps> = ({
   cssClasses = [],
@@ -23,7 +24,8 @@ export const HoldingPage: FC<HoldingPageProps> = ({
     [scrollable, 'overflow-scroll'],
     'focus:outline-none',
   ])
-  return (
+
+  return onClick ? (
     <button
       onClick={onClick}
       className={holdingPageCLassName}
@@ -31,5 +33,9 @@ export const HoldingPage: FC<HoldingPageProps> = ({
     >
       {children}
     </button>
+  ) : (
+    <div className={holdingPageCLassName} {...holdingPageProps}>
+      {children}
+    </div>
   )
 }
