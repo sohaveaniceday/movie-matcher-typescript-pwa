@@ -60,7 +60,7 @@ exports.fetchLocationsData = functions.https.onRequest((req, res) => {
           useQueryString: true,
         },
         params: {
-          country: 'UK',
+          country: 'uk',
           source_id: req.query.id,
           source: 'tmdb',
         },
