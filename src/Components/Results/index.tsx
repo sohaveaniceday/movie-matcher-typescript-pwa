@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { useFetch } from '../Components/customHooks'
+import { useFetch, getClassName } from '@sohaveaniceday/component-library'
+import { getCompleteFilmDataArray, generateBackgroundImage } from '../../util'
 import {
   useServiceState,
-  getClassName,
-  getCompleteFilmDataArray,
-  generateBackgroundImage,
-} from '../util'
-import { Skeleton, Badge, HoldingPage } from './common'
-import { colorScheme } from '../static'
+  Skeleton,
+  Badge,
+} from '@sohaveaniceday/component-library'
+
+import { HoldingPage } from '../common'
+import { colorScheme } from '../../static'
 import Vibrant from 'node-vibrant'
 
 type Location = {

@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { BaseTypes, getClassName } from '../../util'
+import { BaseTypes, getClassName } from '@sohaveaniceday/component-library'
 
 type HoldingPageProps = {
   cssClasses?: string[]

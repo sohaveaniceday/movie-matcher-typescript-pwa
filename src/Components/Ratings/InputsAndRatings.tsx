@@ -1,13 +1,14 @@
 import React, { useState, FormEvent, Dispatch, FC } from 'react'
-import { FilmAccordions } from './FilmAccordions'
-import { colorScheme, initialInputValues } from '../static'
+import { FilmAccordions } from '../common/FilmAccordions'
+import { colorScheme, initialInputValues } from '../../static'
+import { generateBackgroundImage } from '../../util'
 import {
   getClassName,
   useServiceState,
   useObjectState,
-  generateBackgroundImage,
-} from '../util'
-import { HoldingPage } from './common'
+} from '@sohaveaniceday/component-library'
+import { HoldingPage } from '../common'
+import { Discover } from '../Discover'
 
 type InputsAndRatingsProps = {
   setDisplayResult: Dispatch<React.SetStateAction<boolean>>
@@ -18,6 +19,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
 }: InputsAndRatingsProps) => {
   const [state] = useServiceState()
   const [isRating, setIsRating] = useState<boolean>(false)
+  const [isDiscover, setIsDiscover] = useState<boolean>(false)
   const [isHoldingPage, setDisplayHoldingPage] = useState<boolean>(false)
   const [isDomesticRating, setIsDomesticRating] = useState<boolean>(true)
   const [allFilmsRated, setAllFilmsRated] = useState<boolean>(false)
@@ -99,6 +101,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
           {holdingPageContent}
         </HoldingPage>
       )}
+      {isDiscover && <Discover />}
       <form
         className='flex flex-col flex-1 h-full overflow-auto'
         onSubmit={onSubmit}
@@ -118,6 +121,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
               setAllFilmsRated={setAllFilmsRated}
               ratings={ratings}
               setRatings={setRatings}
+              setIsDiscover={setIsDiscover}
             />
           </div>
         </div>
@@ -135,6 +139,7 @@ export const InputsAndRatings: FC<InputsAndRatingsProps> = ({
             setAllFilmsRated={setAllFilmsRated}
             ratings={ratings}
             setRatings={setRatings}
+            setIsDiscover={setIsDiscover}
           />
         </div>
         <div className='text-center'>

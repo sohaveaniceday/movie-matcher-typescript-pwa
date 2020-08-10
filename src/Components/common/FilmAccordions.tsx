@@ -8,26 +8,24 @@ import React, {
   Dispatch,
   useCallback,
 } from 'react'
+import { Accordion, AutoSuggest, SuggestionProps } from '.'
 import {
-  Accordion,
+  getRandomInt,
+  getCompleteFilmDataArray,
+  generateBackgroundImage,
+} from '../../util'
+import {
   Badge,
-  AutoSuggest,
-  SuggestionProps,
   Button,
-  Skeleton,
-} from './common'
-import {
   useServiceState,
   useFetch,
   useDebounce,
   useEventListener,
   getClassName,
-  getRandomInt,
-  getCompleteFilmDataArray,
-  generateBackgroundImage,
-} from '../util'
-import { imageBaseUrl, genreMap, colorScheme } from '../static'
-import { Ratings } from './Ratings'
+  Skeleton,
+} from '@sohaveaniceday/component-library'
+import { imageBaseUrl, genreMap, colorScheme } from '../../static'
+import { Ratings } from '../Ratings'
 
 type FilmAccordionsProps = {
   activeUserNumber: 1 | 2
@@ -42,6 +40,7 @@ type FilmAccordionsProps = {
   ratings: any
   setRatings: Dispatch<React.SetStateAction<any>>
   horizontalView: boolean
+  setIsDiscover: Dispatch<React.SetStateAction<boolean>>
 }
 
 export const FilmAccordions: FC<FilmAccordionsProps> = ({
@@ -57,6 +56,7 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
   ratings,
   setRatings,
   horizontalView,
+  setIsDiscover,
 }: FilmAccordionsProps) => {
   // State + Refs
   const [state, updateState] = useServiceState()
@@ -355,6 +355,24 @@ export const FilmAccordions: FC<FilmAccordionsProps> = ({
                     cssClasses={['focus:outline-none']}
                     value='Inspire me!'
                     onClick={randomizeOnClick}
+                    border
+                    rounded
+                    style={{
+                      borderColor: `#${colorScheme.medium}`,
+                      backgroundColor: `#${
+                        activeUserNumber === 1
+                          ? colorScheme.user1Light
+                          : colorScheme.user2Light
+                      }`,
+                    }}
+                  />
+                </div>
+                <div className='z-10 mt-5'>
+                  <Button
+                    type='button'
+                    cssClasses={['focus:outline-none']}
+                    value='Discover'
+                    onClick={() => setIsDiscover(true)}
                     border
                     rounded
                     style={{

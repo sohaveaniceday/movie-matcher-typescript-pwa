@@ -1,5 +1,5 @@
 import React, { FC, RefObject } from 'react'
-import { getClassName, BaseTypes } from '../../../util'
+import { getClassName, BaseTypes } from '@sohaveaniceday/component-library'
 
 type TextInputProps = {
   cssClasses?: string[]

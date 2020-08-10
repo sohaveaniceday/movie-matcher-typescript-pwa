@@ -1,7 +1,12 @@
 import React, { FC, Dispatch } from 'react'
-import { Slider, Icon } from './common'
-import { colorScheme } from '../static'
-import { getClassName, useServiceState, generateBackgroundImage } from '../util'
+import { Slider } from '../common'
+import { colorScheme } from '../../static'
+import { generateBackgroundImage } from '../../util'
+import {
+  getClassName,
+  useServiceState,
+  Icon,
+} from '@sohaveaniceday/component-library'
 
 type RatingsProps = {
   filmDataArray: FilmData[]

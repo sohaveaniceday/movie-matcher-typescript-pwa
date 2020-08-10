@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { getClassName } from '../../util'
+import { getClassName } from '@sohaveaniceday/component-library'
 import {
   Slider as CompoundSlider,
   Rail,

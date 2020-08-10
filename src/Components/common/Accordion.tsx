@@ -1,6 +1,9 @@
 import React, { ReactNode, MouseEvent } from 'react'
-import { Icon } from './Icon'
-import { BaseTypes, getClassName } from '../../util'
+import {
+  BaseTypes,
+  getClassName,
+  Icon,
+} from '@sohaveaniceday/component-library'
 import { colorScheme } from '../../static'
 
 type AccordianProps = {

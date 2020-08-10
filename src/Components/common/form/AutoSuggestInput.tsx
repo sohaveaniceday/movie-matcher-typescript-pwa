@@ -7,7 +7,11 @@ import React, {
   ReactNode,
   RefObject,
 } from 'react'
-import { useObjectState, getClassName, BaseTypes } from '../../../util'
+import {
+  useObjectState,
+  getClassName,
+  BaseTypes,
+} from '@sohaveaniceday/component-library'
 import { TextInput } from '..'
 import { colorScheme } from '../../../static'
 

@@ -1,7 +1,8 @@
 import React, { Dispatch, FC } from 'react'
-import { HoldingPage, Icon, Button } from './common'
+import { HoldingPage } from './common'
 import { generateBackgroundImage } from '../util'
 import { colorScheme } from '../static'
+import { Icon, Button } from '@sohaveaniceday/component-library'
 
 type LandingPageProps = {
   setDisplayLandingPage: Dispatch<React.SetStateAction<boolean>>

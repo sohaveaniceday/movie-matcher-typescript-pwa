@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
-import { InputsAndRatings } from './InputsAndRatings'
-import { Result } from './Result'
+import { InputsAndRatings } from './Ratings/InputsAndRatings'
+import { Result } from './Results'
 import { LandingPage } from './LandingPage'
-import { AboutPage } from './AboutPage'
-import { FullPageWrapper } from './common'
+import { AboutPage } from './common'
+import { FullPageWrapper, Icon } from '@sohaveaniceday/component-library'
 import { colorScheme } from '../static'
-import { Icon } from './common'
 
 export const Home = () => {
   const [displayResult, setDisplayResult] = useState<boolean>(false)
