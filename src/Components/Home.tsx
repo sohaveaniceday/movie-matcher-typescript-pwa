@@ -40,7 +40,7 @@ export const Home = () => {
               </div>
             </div>
           </nav>
-          <main className='relative h-full overflow-auto'>
+          <main className='relative h-full overflow-hidden'>
             {displayLandingPage ? (
               <LandingPage
                 setDisplayLandingPage={setDisplayLandingPage}
